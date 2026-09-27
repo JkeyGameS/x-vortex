@@ -1,4 +1,4 @@
-import config, { isMenuMigrated } from '../config/config.js';
+import config from '../config/config.js';
 import logger from '../utils/logger.js';
 import sessionManager from '../utils/sessionManager.js';
 import { sendMenuById } from '../utils/menuSender.js';
@@ -1046,23 +1046,10 @@ export async function handleSnippetsMenu(context, input) {
     return sendMenu({ sock: context.sock, sender, chatId, text: buildMenu(L(language, 'chatResponses.snippetsTranslate'), '', [...lines, '', '0. ' + L(language, 'chatResponses.back')]), transitionKey: 'chat_snippet_translate' });
   }
   if (trimmed === '6') {
-    if (isMenuMigrated('snippet_impex')) {
-      const user = await getUserByJid(sender);
-      sessionManager.setState(sender, chatId, { currentMenu: 'chat_snippet_impex', pendingAction: null, pendingData: null });
-      await sendMenuById('snippet_impex', { sock: context.sock, sender, chatId, user, language }, 'chat_snippet_impex', { sessionMenu: 'chat_snippet_impex' });
-      return;
-    }
+    const user = await getUserByJid(sender);
     sessionManager.setState(sender, chatId, { currentMenu: 'chat_snippet_impex', pendingAction: null, pendingData: null });
-    return sendMenu({
-      sock: context.sock, sender, chatId,
-      text: buildMenu(L(language, 'chatResponses.snippetsImportExport'), '', [
-        '1. 📤 ' + L(language, 'chatResponses.snippetsExport'),
-        '2. 📥 ' + L(language, 'chatResponses.snippetsImport'),
-        '',
-        '0. ' + L(language, 'chatResponses.back')
-      ]),
-      transitionKey: 'chat_snippet_impex'
-    });
+    await sendMenuById('snippet_impex', { sock: context.sock, sender, chatId, user, language }, 'chat_snippet_impex', { sessionMenu: 'chat_snippet_impex' });
+    return;
   }
   return sendSnippetsMenu(context);
 }

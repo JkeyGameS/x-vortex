@@ -5,7 +5,6 @@ import { validateMenuDefinition } from '../config/menus/schema.js';
 import { renderMenu } from '../utils/menuRenderer.js';
 import { resolveMenuOption, runMenuAction, registerMenuActionHandler } from '../utils/menuRouter.js';
 import { getOptionMarker, isOptionAvailable } from '../utils/menuFeatureMarkers.js';
-import { isMenuMigrated } from '../config/config.js';
 
 const mockRegularUser = {
   jid: '100000000000000@lid',

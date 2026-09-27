@@ -1,4 +1,4 @@
-import config, { isMenuMigrated } from '../config/config.js';
+import config from '../config/config.js';
 import sessionManager from '../utils/sessionManager.js';
 import { sendMenuById } from '../utils/menuSender.js';
 import { sendMenu } from '../utils/messageHelper.js';
@@ -27,34 +27,11 @@ async function render(context, menu, heading, lines, transitionKey = menu, extra
 }
 
 export async function sendUserManagementMenu(context) {
-  if (isMenuMigrated('user_management')) {
-    const sender = context.sender;
-    const chatId = context.chatId || sender;
-    const user = await userService.getUserByJid(sender);
-    const language = languageOf(context);
-    await sendMenuById('user_management', { sock: context.sock, sender, chatId, user, language }, 'admin_to_users', { sessionMenu: 'admin_users' });
-    return;
-  }
+  const sender = context.sender;
+  const chatId = context.chatId || sender;
+  const user = await userService.getUserByJid(sender);
   const language = languageOf(context);
-  const users = await userService.getAllUsers();
-  const blocked = blockService.getBlockedUsers();
-  const testCount = users.filter((user) => user.isTest === true).length;
-  return render(context, 'admin_users', `${t(language, 'admin.userManagement.title')}`, [
-    `${L(language, 'admin.userManagement.total')}: ${users.length}`,
-    `${L(language, 'admin.userManagement.blocked')}: ${blocked.length}`,
-    `${L(language, 'admin.userManagement.test')}: ${testCount}`,
-    '',
-    `1. 🔍 ${L(language, 'admin.userManagement.search')}`,
-    `2. 📄 ${L(language, 'admin.userManagement.list')}`,
-    `3. ❌ ${L(language, 'admin.userManagement.delete')}`,
-    `4. ⛔ ${L(language, 'admin.userManagement.block')}`,
-    `5. ✅ ${L(language, 'admin.userManagement.unblock')}`,
-    `6. 📋 ${L(language, 'admin.userManagement.listBlocked')}`,
-    `7. 🗑️ ${L(language, 'admin.userManagement.purge')}`,
-    `8. 🔧 ${L(language, 'admin.userManagement.advanced')}`,
-    `9. 👥 ${L(language, 'admin.userManagement.bulk')}`,
-    `10. 🎯 ${L(language, 'admin.userManagement.segments')}`
-  ], 'admin_to_users');
+  await sendMenuById('user_management', { sock: context.sock, sender, chatId, user, language }, 'admin_to_users', { sessionMenu: 'admin_users' });
 }
 
 const BULK_ACTIONS = [

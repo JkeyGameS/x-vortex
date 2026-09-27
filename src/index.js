@@ -1,6 +1,6 @@
 import makeWASocket, { useMultiFileAuthState, DisconnectReason } from '@whiskeysockets/baileys';
 import qrcode from 'qrcode-terminal';
-import config, { isMenuMigrated } from './config/config.js';
+import config from './config/config.js';
 import logger from './utils/logger.js';
 import sessionManager from './utils/sessionManager.js';
 import { sendText } from './services/messageService.js';
@@ -838,7 +838,7 @@ async function startBot() {
         faq_search: 'faq_search',
         chat_snippet_impex: 'snippet_impex'
       }[session?.currentMenu || ''];
-      if (migratedChatFaqId && isMenuMigrated(migratedChatFaqId)) {
+      if (migratedChatFaqId) {
         // Legacy parity: admin-only menus ignore non-admin input entirely.
         // User-facing menus (settings, stats, tutorial, info, feedback) skip this.
         if (['chat_faq_menu', 'chat_responses_main', 'chat_settings', 'chat_snippets', 'chat_test_panel', 'chat_import_export', 'admin', 'admin_quick_actions', 'broadcast_submenu', 'admin_users', 'system_settings', 'admin_backup', 'logs', 'admin_search', 'admin_scheduled_tasks', 'command_analytics', 'faq_main', 'faq_add', 'faq_view', 'faq_manage', 'faq_import_export', 'faq_stats', 'faq_search', 'chat_snippet_impex'].includes(session?.currentMenu || '')) {
@@ -2808,51 +2808,49 @@ async function startBot() {
       // the registry speaks new ids. Falls through to legacy handling below
       // when the menu is not migrated.
       const migratedProfileId = { profile: 'profile', profile_edit: 'edit_profile', preferences: 'preferences', stats: 'my_stats' }[session?.currentMenu || ''];
-      if (migratedProfileId && isMenuMigrated(migratedProfileId)) {
-        const pUser = await getUserByJid(sender);
-        const pLang = pUser?.language || config.defaultLanguage;
-        const { resolveMenuOption, runMenuAction } = await import('./utils/menuRouter.js');
-        const { sendMenuById } = await import('./utils/menuSender.js');
-        const { profileCustomHandlers } = await import('./utils/menuCustomHandlers.js');
-        const pResult = resolveMenuOption(migratedProfileId, trimmedText, pUser, pLang);
-        if (pResult.kind === 'back') {
-          if (pResult.to === 'main_menu') {
-            await backToMain({ sock, sender, chatId, pushName }, pLang);
-            return;
-          }
-          const legacyBack = { profile: 'profile', edit_profile: 'profile_edit', preferences: 'preferences', my_stats: 'stats' }[pResult.to] || 'profile';
-          const backTransition = { profile: 'profile_submenu', edit_profile: 'profile_edit', preferences: 'preferences_submenu', my_stats: 'stats_submenu' }[pResult.to];
-          await sendMenuById(pResult.to, { sock, sender, chatId, user: pUser, language: pLang }, backTransition, { sessionMenu: legacyBack });
+      const pUser = await getUserByJid(sender);
+      const pLang = pUser?.language || config.defaultLanguage;
+      const { resolveMenuOption, runMenuAction } = await import('./utils/menuRouter.js');
+      const { sendMenuById } = await import('./utils/menuSender.js');
+      const { profileCustomHandlers } = await import('./utils/menuCustomHandlers.js');
+      const pResult = resolveMenuOption(migratedProfileId, trimmedText, pUser, pLang);
+      if (pResult.kind === 'back') {
+        if (pResult.to === 'main_menu') {
+          await backToMain({ sock, sender, chatId, pushName }, pLang);
           return;
         }
-        if (pResult.kind === 'action') {
-          await runMenuAction(pResult.action, {
-            sock, sender, chatId, pushName, user: pUser, language: pLang,
-            sendMenuFn: async (menuId) => {
-              const { sendEditAdvancedSubmenu, sendAdvancedPreferencesView, languageOf } = await import('./handlers/profileCommand.js');
-              if (menuId === 'edit_profile_advanced') {
-                return sendEditAdvancedSubmenu({ sock, sender, chatId, pushName }, languageOf(sender));
-              }
-              if (menuId === 'preferences_advanced') {
-                return sendAdvancedPreferencesView({ sock, sender, chatId, pushName }, languageOf(sender));
-              }
-              throw new Error(`profile cluster has no opener for '${menuId}'`);
-            },
-            handlers: profileCustomHandlers
-          });
-          return;
-        }
-        // Invalid: legacy per-state messages (menu stays, no re-render).
-        if (session.currentMenu === 'stats') {
-          await sendText(sock, sender, toSmallCaps(tr('common.invalidChoiceValid')));
-          return;
-        }
-        const pMax = session.currentMenu === 'profile'
-          ? 7
-          : (Number.isFinite(Number(pResult.max)) ? Number(pResult.max) : 7);
-        await sendText(sock, sender, toSmallCaps(tr('common.invalidChoiceMinMax', { min: 0, max: pMax })));
+        const legacyBack = { profile: 'profile', edit_profile: 'profile_edit', preferences: 'preferences', my_stats: 'stats' }[pResult.to] || 'profile';
+        const backTransition = { profile: 'profile_submenu', edit_profile: 'profile_edit', preferences: 'preferences_submenu', my_stats: 'stats_submenu' }[pResult.to];
+        await sendMenuById(pResult.to, { sock, sender, chatId, user: pUser, language: pLang }, backTransition, { sessionMenu: legacyBack });
         return;
       }
+      if (pResult.kind === 'action') {
+        await runMenuAction(pResult.action, {
+          sock, sender, chatId, pushName, user: pUser, language: pLang,
+          sendMenuFn: async (menuId) => {
+            const { sendEditAdvancedSubmenu, sendAdvancedPreferencesView, languageOf } = await import('./handlers/profileCommand.js');
+            if (menuId === 'edit_profile_advanced') {
+              return sendEditAdvancedSubmenu({ sock, sender, chatId, pushName }, languageOf(sender));
+            }
+            if (menuId === 'preferences_advanced') {
+              return sendAdvancedPreferencesView({ sock, sender, chatId, pushName }, languageOf(sender));
+            }
+            throw new Error(`profile cluster has no opener for '${menuId}'`);
+          },
+          handlers: profileCustomHandlers
+        });
+        return;
+      }
+      // Invalid: legacy per-state messages (menu stays, no re-render).
+      if (session.currentMenu === 'stats') {
+        await sendText(sock, sender, toSmallCaps(tr('common.invalidChoiceValid')));
+        return;
+      }
+      const pMax = session.currentMenu === 'profile'
+        ? 7
+        : (Number.isFinite(Number(pResult.max)) ? Number(pResult.max) : 7);
+      await sendText(sock, sender, toSmallCaps(tr('common.invalidChoiceMinMax', { min: 0, max: pMax })));
+      return;
 
       // Profile menus: main profile view, edit submenu, name/username input,
       // and name/username confirmation + feature unavailable flow.
@@ -2897,70 +2895,68 @@ async function startBot() {
         const displayName = user?.username ? `@${user.username}` : (user?.name || 'User');
 
         // Migrated main menu path (Phase 3): same inputs, same behavior.
-        if (isMenuMigrated('main_menu')) {
-          const { resolveMenuOption, runMenuAction } = await import('./utils/menuRouter.js');
-          const resendMain = () => sendMigratedMainMenu({ sock, sender, chatId, pushName, user, language, transitionKey: 'main_to_main' });
-          const sendSleepConfirm = async () => {
-            sessionManager.setState(sender, chatId, { currentMenu: 'sleep_confirm', pendingAction: null });
-            await sendMenu({ sock, sender, chatId, text: sleepConfirmationText(language), transitionKey: 'sleep_confirm' });
-          };
-          if (/^[Aa]$/.test(trimmedText)) {
-            const activeUserJid = session?.isTestActive && session.testSession?.testUserJid
-              ? session.testSession.testUserJid
-              : sender;
-            if (!isAdminOperator(activeUserJid)) {
-              reportService.reportToAdmins('security', {
-                user: sender,
-                action: 'admin_command_attempt',
-                details: 'main_menu_option_admin'
-              });
-              await sendText(sock, sender, tr('common.notAuthorizedAdminPanel'));
-            } else {
-              const { default: settingsService } = await import('./services/settingsService.js');
-              const { isOwner } = await import('./services/rolesService.js');
-              if (settingsService.getSettings().adminPanelLocked === true && !isOwner(activeUserJid)) {
-                await sendText(sock, sender, tr('admin.locked'));
-              } else {
-                await sendAdminPanel({ sock, sender, chatId, pushName });
-              }
-            }
-            return;
-          }
-          const mainResult = resolveMenuOption('main_menu', trimmedText, user);
-          if (mainResult.kind === 'action') {
-            if (mainResult.action === 'sleep') {
-              await sendSleepConfirm();
-              return;
-            }
-            const mainFeatureId = MAIN_MENU_FEATURES[trimmedText];
-            const mainStatus = mainFeatureId ? getFeature(mainFeatureId)?.status : 'available';
-            if (mainFeatureId && mainStatus !== 'available') {
-              await featureBlockedReply({ sock, sender, chatId, pushName }, language, mainFeatureId, 'main');
-              return;
-            }
-            const mainOpeners = {
-              profile: () => openProfile({ sock, sender, chatId, pushName }),
-              settings: () => openSettings({ sock, sender, chatId, pushName }),
-              statistics: () => openStatsMenu({ sock, sender, chatId, pushName }),
-              tutorial: () => openTutorial({ sock, sender, chatId, pushName, language, commands, isAdmin: isAdminOperator(sender), user }),
-              info: () => openInfo({ sock, sender, chatId, pushName }),
-              feedback: () => openFeedback({ sock, sender, chatId, pushName })
-            };
-            await runMenuAction(mainResult.action, {
-              sock, sender, chatId, pushName, user, language,
-              sendMenuFn: async (menuId) => {
-                const opener = mainOpeners[menuId];
-                if (!opener) throw new Error(`main menu has no opener for '${menuId}'`);
-                return opener();
-              },
-              handlers: { sleep: sendSleepConfirm }
+        const { resolveMenuOption, runMenuAction } = await import('./utils/menuRouter.js');
+        const resendMain = () => sendMigratedMainMenu({ sock, sender, chatId, pushName, user, language, transitionKey: 'main_to_main' });
+        const sendSleepConfirm = async () => {
+          sessionManager.setState(sender, chatId, { currentMenu: 'sleep_confirm', pendingAction: null });
+          await sendMenu({ sock, sender, chatId, text: sleepConfirmationText(language), transitionKey: 'sleep_confirm' });
+        };
+        if (/^[Aa]$/.test(trimmedText)) {
+          const activeUserJid = session?.isTestActive && session.testSession?.testUserJid
+            ? session.testSession.testUserJid
+            : sender;
+          if (!isAdminOperator(activeUserJid)) {
+            reportService.reportToAdmins('security', {
+              user: sender,
+              action: 'admin_command_attempt',
+              details: 'main_menu_option_admin'
             });
-            return;
+            await sendText(sock, sender, tr('common.notAuthorizedAdminPanel'));
+          } else {
+            const { default: settingsService } = await import('./services/settingsService.js');
+            const { isOwner } = await import('./services/rolesService.js');
+            if (settingsService.getSettings().adminPanelLocked === true && !isOwner(activeUserJid)) {
+              await sendText(sock, sender, tr('admin.locked'));
+            } else {
+              await sendAdminPanel({ sock, sender, chatId, pushName });
+            }
           }
-          // Invalid here (7, 8): legacy behavior re-renders the menu.
-          await resendMain();
           return;
         }
+        const mainResult = resolveMenuOption('main_menu', trimmedText, user);
+        if (mainResult.kind === 'action') {
+          if (mainResult.action === 'sleep') {
+            await sendSleepConfirm();
+            return;
+          }
+          const mainFeatureId = MAIN_MENU_FEATURES[trimmedText];
+          const mainStatus = mainFeatureId ? getFeature(mainFeatureId)?.status : 'available';
+          if (mainFeatureId && mainStatus !== 'available') {
+            await featureBlockedReply({ sock, sender, chatId, pushName }, language, mainFeatureId, 'main');
+            return;
+          }
+          const mainOpeners = {
+            profile: () => openProfile({ sock, sender, chatId, pushName }),
+            settings: () => openSettings({ sock, sender, chatId, pushName }),
+            statistics: () => openStatsMenu({ sock, sender, chatId, pushName }),
+            tutorial: () => openTutorial({ sock, sender, chatId, pushName, language, commands, isAdmin: isAdminOperator(sender), user }),
+            info: () => openInfo({ sock, sender, chatId, pushName }),
+            feedback: () => openFeedback({ sock, sender, chatId, pushName })
+          };
+          await runMenuAction(mainResult.action, {
+            sock, sender, chatId, pushName, user, language,
+            sendMenuFn: async (menuId) => {
+              const opener = mainOpeners[menuId];
+              if (!opener) throw new Error(`main menu has no opener for '${menuId}'`);
+              return opener();
+            },
+            handlers: { sleep: sendSleepConfirm }
+          });
+          return;
+        }
+        // Invalid here (7, 8): legacy behavior re-renders the menu.
+        await resendMain();
+        return;
 
         if (/^[Aa]$/.test(trimmedText)) {
           // Admin Panel stays accessible to admins even when unavailable.
@@ -3077,9 +3073,9 @@ async function startBot() {
     }
   });
 
-  try {
-    logger.info({ mode: config.menuMigration?.mode, migrated: config.menuMigration?.migratedMenus }, '[MENU] migration mode loaded');
-  } catch { /* visibility only — never break startup */ }
+  const { getAllMenus } = await import('./config/menus/registry.js');
+  await import('./config/menus/index.js');
+  logger.info({ menus: getAllMenus().length }, '[MENU] config-driven menu system loaded');
   logger.info('X-Vortex bot is ready');
 }
 

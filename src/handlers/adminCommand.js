@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import config, { isMenuMigrated } from '../config/config.js';
+import config from '../config/config.js';
 import logger from '../utils/logger.js';
 import sessionManager from '../utils/sessionManager.js';
 import settingsService from '../services/settingsService.js';
@@ -2965,20 +2965,7 @@ export async function sendNewBroadcastSubmenu(context, opts = {}) {
 }
 
 export async function sendBroadcastSubmenu(context, opts = {}) {
-  if (isMenuMigrated('broadcast')) return sendNewBroadcastSubmenu(context, opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-
-  sessionManager.setState(sender, chatId, { currentMenu: 'broadcast_submenu', pendingAction: null, pendingData: null });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildBroadcastSubmenu(language, opts.resultLine),
-    transitionKey: opts.transitionKey || 'broadcast_submenu'
-  });
+  return sendNewBroadcastSubmenu(context, opts);
 }
 
 function broadcastCancel(context) {
@@ -4237,43 +4224,7 @@ async function sendNewCommandAnalytics(context) {
 }
 
 export async function showCommandAnalytics(context) {
-  if (isMenuMigrated('analytics')) return sendNewCommandAnalytics(context);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  const top = analyticsService.getTopCommands(10);
-
-  let body = '';
-  if (top.length === 0) {
-    body = L(language, 'admin.analytics.none');
-  } else {
-    const lines = top.map((entry, i) =>
-      `${i + 1}. /${entry.name} – ${entry.total}` +
-      (entry.uniqueUsers > 0 ? ` (${entry.uniqueUsers} ${L(language, 'admin.analytics.users')})` : '')
-    );
-    body = lines.join('\n');
-  }
-
-  const text = buildMenu(
-    '📊 ' + L(language, 'admin.analytics.title'),
-    '',
-    [
-      '1. ' + t(language, 'admin.analytics.optionTop'),
-      '2. ' + t(language, 'admin.analytics.optionResponseTime'),
-      '',
-      '0. ' + L(language, 'admin.analytics.back')
-    ]
-  );
-
-  sessionManager.setState(sender, chatId, { currentMenu: 'command_analytics' });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text,
-    transitionKey: 'command_analytics'
-  });
+  return sendNewCommandAnalytics(context);
 }
 
 export async function showTopCommandsPanel(context) {
@@ -4737,20 +4688,7 @@ async function sendNewLogsPanel(context, opts = {}) {
 }
 
 export async function sendLogsPanel(context, opts = {}) {
-  if (isMenuMigrated('logs')) return sendNewLogsPanel(context, opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-
-  sessionManager.setState(sender, chatId, { currentMenu: 'logs', pendingAction: null, pendingData: null });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildLogsMenu(language),
-    transitionKey: opts.transitionKey || 'system_logs'
-  });
+  return sendNewLogsPanel(context, opts);
 }
 
 function maintenanceStatusText(language) {
@@ -7827,20 +7765,7 @@ async function sendNewAdminSearchPanel(context, opts = {}) {
 }
 
 export async function sendAdminSearchPanel(context, opts = {}) {
-  if (isMenuMigrated('admin_search')) return sendNewAdminSearchPanel(context, opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-
-  sessionManager.setState(sender, chatId, { currentMenu: 'admin_search', pendingAction: null, pendingData: null });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildAdminSearchPrompt(language),
-    transitionKey: opts.transitionKey || 'admin_search'
-  });
+  return sendNewAdminSearchPanel(context, opts);
 }
 
 async function runAdminSearch(query) {
@@ -8118,41 +8043,11 @@ async function sendNewScheduledTasksPanel(context, opts = {}, page = 0) {
 }
 
 export async function sendScheduledTasksPanel(context, opts = {}) {
-  if (isMenuMigrated('scheduled_tasks')) return sendNewScheduledTasksPanel(context, opts, 0);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  const { listScheduledTasks } = await import('../services/scheduledTasksService.js');
-  const tasks = listScheduledTasks();
-
-  sessionManager.setState(sender, chatId, { currentMenu: 'admin_scheduled_tasks', pendingAction: null, pendingData: { page: 0 } });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildScheduledTasksMenu(language, tasks, 0),
-    transitionKey: opts.transitionKey || 'admin_scheduled_tasks'
-  });
+  return sendNewScheduledTasksPanel(context, opts, 0);
 }
 
 async function reshowScheduledTasks(context, page) {
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  const { listScheduledTasks } = await import('../services/scheduledTasksService.js');
-  const tasks = listScheduledTasks();
-  const totalPages = Math.max(1, Math.ceil(tasks.length / SCHEDULED_PAGE_SIZE));
-  const safePage = Math.min(Math.max(0, page), totalPages - 1);
-
-  if (isMenuMigrated('scheduled_tasks')) return sendNewScheduledTasksPanel(context, {}, safePage);
-  sessionManager.setState(sender, chatId, { currentMenu: 'admin_scheduled_tasks', pendingAction: null, pendingData: { page: safePage } });
-
-  await sendMenu({
-    sock: context.sock, sender, chatId,
-    text: buildScheduledTasksMenu(language, tasks, safePage),
-    transitionKey: 'admin_scheduled_tasks'
-  });
+  return sendNewScheduledTasksPanel(context, {}, page);
 }
 
 export async function handleScheduledTasksReply(context, content) {

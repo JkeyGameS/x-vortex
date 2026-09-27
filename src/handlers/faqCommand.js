@@ -1,4 +1,4 @@
-import config, { isMenuMigrated } from '../config/config.js';
+import config from '../config/config.js';
 import logger from '../utils/logger.js';
 import sessionManager from '../utils/sessionManager.js';
 import { sendMenuById } from '../utils/menuSender.js';
@@ -1049,36 +1049,7 @@ export async function handleFaqMain(context, selectedNumber) {
 }
 
 export async function showFaqAddMenu(context, opts = {}) {
-  if (isMenuMigrated('faq_add')) return sendNewFaqPanel(context, 'faq_add', opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  sessionManager.setState(sender, chatId, { currentMenu: 'faq_add', pendingAction: null, pendingData: null });
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildMenu(
-      '➕ ' + toSmallCaps(t(language, 'faq.addMenuTitle')),
-      '',
-      [
-        '1. ⚡ ' + t(language, 'faq.addQuick'),
-        '2. ⚙️ ' + t(language, 'faq.addAdvanced'),
-        '3. 📚 ' + t(language, 'faq.addTemplate'),
-        '4. 📦 ' + t(language, 'faq.addBulk'),
-        '5. 📥 ' + t(language, 'faq.addFromUnmatched'),
-        '6. 📋 ' + t(language, 'faq.addDuplicate'),
-        '7. 📝 ' + t(language, 'faq.addResumeDraft'),
-        '8. 🎨 ' + t(language, 'faq.addFromExample'),
-        '9. 🌐 ' + t(language, 'faq.addMultilang'),
-        '',
-        '0. ' + t(language, 'faq.back'),
-        '',
-        t(language, 'admin.replyPrompt')
-      ]
-    ),
-    transitionKey: opts.transitionKey || 'faq_add'
-  });
+  return sendNewFaqPanel(context, 'faq_add', opts);
 }
 
 export async function handleFaqAddMenu(context, input) {
@@ -1113,35 +1084,7 @@ export async function handleFaqAddMenu(context, input) {
 }
 
 export async function showFaqViewMenu(context, opts = {}) {
-  if (isMenuMigrated('faq_view')) return sendNewFaqPanel(context, 'faq_view', opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  sessionManager.setState(sender, chatId, { currentMenu: 'faq_view', pendingAction: null, pendingData: null });
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildMenu(
-      '📋 ' + toSmallCaps(t(language, 'faq.viewMenuTitle')),
-      '',
-      [
-        '1. 📋 ' + t(language, 'faq.viewAll'),
-        '2. 🔤 ' + t(language, 'faq.viewByLang'),
-        '3. 🗂️ ' + t(language, 'faq.viewByCategory'),
-        '4. 🔛 ' + t(language, 'faq.viewEnabled'),
-        '5. ❌ ' + t(language, 'faq.viewDisabled'),
-        '6. 📝 ' + t(language, 'faq.viewDrafts'),
-        '7. 🕒 ' + t(language, 'faq.viewRecent'),
-        '8. ⭐ ' + t(language, 'faq.viewFavorites'),
-        '',
-        '0. ' + t(language, 'faq.back'),
-        '',
-        t(language, 'admin.replyPrompt')
-      ]
-    ),
-    transitionKey: opts.transitionKey || 'faq_view'
-  });
+  return sendNewFaqPanel(context, 'faq_view', opts);
 }
 
 export async function handleFaqViewMenu(context, input) {
@@ -1656,16 +1599,7 @@ export async function showFaqPerformanceDashboard(context, opts = {}) {
 }
 
 export async function showFaqSearchPrompt(context, opts = {}) {
-  if (isMenuMigrated('faq_search')) return sendNewFaqPanel(context, 'faq_search', opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  sessionManager.setState(sender, chatId, { currentMenu: 'faq_search', pendingAction: null, pendingData: null });
-  return sendMenu({
-    sock: context.sock, sender, chatId,
-    text: buildMenu('🔍 ' + toSmallCaps(t(language, 'faq.searchMenuTitle')), '', [toSmallCaps(t(language, 'faq.searchPrompt')), '', '0. ' + L(language, 'faq.back')]),
-    transitionKey: opts.transitionKey || 'faq_search'
-  });
+  return sendNewFaqPanel(context, 'faq_search', opts);
 }
 
 export async function handleFaqSearchPrompt(context, input) {
@@ -1775,32 +1709,7 @@ export async function handleFaqTestQuestion(context, input) {
 }
 
 export async function showFaqImportExportMenu(context, opts = {}) {
-  if (isMenuMigrated('faq_import_export')) return sendNewFaqPanel(context, 'faq_import_export', opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  sessionManager.setState(sender, chatId, { currentMenu: 'faq_import_export', pendingAction: null, pendingData: null });
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildMenu(
-      '📦 ' + toSmallCaps(t(language, 'faq.ieMenuTitle')),
-      '',
-      [
-        ...(opts.resultLine ? [toSmallCaps(opts.resultLine), ''] : []),
-        '1. 📤 ' + t(language, 'faq.ieExportJson'),
-        '2. 📥 ' + t(language, 'faq.ieImportJson'),
-        '3. 📥 ' + t(language, 'faq.ieImportCsv'),
-        '4. 💾 ' + t(language, 'faq.ieSnapshots'),
-        '',
-        '0. ' + t(language, 'faq.back'),
-        '',
-        t(language, 'admin.replyPrompt')
-      ]
-    ),
-    transitionKey: opts.transitionKey || 'faq_import_export'
-  });
+  return sendNewFaqPanel(context, 'faq_import_export', opts);
 }
 
 export async function handleFaqImportExportMenu(context, input, documentContent = null) {

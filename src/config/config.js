@@ -113,25 +113,7 @@ sessionTimeoutMinutes: 5,
   chatRateLimitCooldownBehavior: 'silent', // 'silent' | 'polite'
   chatDryRunMaxLogEntries: 500, // cap for data/chatDryRunLog.json
   chatSnippetMaxDepth: 3, // max recursive {snippet:name} expansion depth
-  // Menu system migration toggle (Phase 7: + user/FAQ cluster)
-  menuMigration: {
-    mode: 'partial', // 'off' | 'partial' | 'full'
-    migratedMenus: ['main_menu', 'profile', 'edit_profile', 'preferences', 'my_stats', 'chat_faq', 'chat_responses', 'chat_settings', 'snippets', 'test_panel', 'chat_import_export', 'adminPanel', 'quick_actions', 'broadcast', 'user_management', 'system_settings', 'backup_restore', 'logs', 'scheduled_tasks', 'analytics', 'admin_search', 'settings', 'statistics', 'tutorial', 'tutorial_getting_started', 'tutorial_profile_guide', 'tutorial_settings_prefs', 'tutorial_self_destruct', 'tutorial_feedback', 'tutorial_whats_new', 'info', 'info_about', 'info_version', 'info_developer', 'info_website', 'feedback', 'faq', 'faq_add', 'faq_view', 'faq_manage', 'faq_import_export', 'faq_stats', 'faq_search', 'snippet_impex'] // menu IDs rendered by the new renderer (Phases 1+)
-  },
   // Add other settings as needed
 };
 
 export default config;
-
-/**
- * Phase 0 helper: decide whether a menu uses the new renderer.
- * 'off' = legacy builders everywhere; 'full' = new renderer everywhere;
- * 'partial' = new renderer only for listed menu IDs.
- */
-export function isMenuMigrated(menuId) {
-  if (!config.menuMigration) return false;
-  if (config.menuMigration.mode === 'full') return true;
-  if (config.menuMigration.mode === 'off') return false;
-  return Array.isArray(config.menuMigration.migratedMenus)
-    && config.menuMigration.migratedMenus.includes(menuId);
-}

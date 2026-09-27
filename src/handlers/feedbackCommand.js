@@ -1,4 +1,4 @@
-import config, { isMenuMigrated } from '../config/config.js';
+import config from '../config/config.js';
 import sessionManager from '../utils/sessionManager.js';
 import { sendMenuById } from '../utils/menuSender.js';
 import { sendText } from '../services/messageService.js';
