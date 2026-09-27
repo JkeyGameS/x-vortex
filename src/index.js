@@ -2798,53 +2798,89 @@ async function startBot() {
         return;
       }
 
-      // Migrated profile-cluster menus (Phase 4): session keeps legacy ids,
-      // the registry speaks new ids. Falls through to legacy handling below
-      // when the menu is not migrated.
+      // Guard: a session left pointing at a menu id that no longer exists in
+      // the registry would otherwise be routed against a missing definition.
+      // Reset to the main menu so the user is never stuck.
+      if (session?.currentMenu) {
+        const REGISTRY_IDS = {
+          profile: 'profile', profile_edit: 'edit_profile', preferences: 'preferences', stats: 'my_stats',
+          main: 'main_menu', settings: 'settings', tutorial_main: 'tutorial', info: 'info',
+          feedback_main: 'feedback', faq_main: 'faq', faq_add: 'faq_add', faq_view: 'faq_view',
+          faq_manage: 'faq_manage', faq_import_export: 'faq_import_export', faq_stats: 'faq_stats',
+          faq_search: 'faq_search', chat_faq_menu: 'chat_faq', chat_responses_main: 'chat_responses',
+          chat_settings: 'chat_settings', chat_snippets: 'snippets', chat_test_panel: 'test_panel',
+          chat_import_export: 'chat_import_export', chat_snippet_impex: 'snippet_impex',
+          admin: 'adminPanel', admin_quick_actions: 'quick_actions', broadcast_submenu: 'broadcast',
+          admin_users: 'user_management', system_settings: 'system_settings', admin_backup: 'backup_restore',
+          logs: 'logs', admin_scheduled_tasks: 'scheduled_tasks', command_analytics: 'analytics',
+          admin_search: 'admin_search', tutorial_getting_started: 'tutorial_getting_started',
+          tutorial_profile_guide: 'tutorial_profile_guide', tutorial_settings_prefs: 'tutorial_settings_prefs',
+          tutorial_self_destruct: 'tutorial_self_destruct', tutorial_feedback: 'tutorial_feedback',
+          tutorial_whats_new: 'tutorial_whats_new', info_about: 'info_about', info_version: 'info_version',
+          info_developer: 'info_developer', info_website: 'info_website'
+        };
+        const registryId = REGISTRY_IDS[session.currentMenu];
+        if (registryId) {
+          const { getMenu } = await import('./config/menus/registry.js');
+          if (!getMenu(registryId)) {
+            logger.warn({ sender, currentMenu: session.currentMenu, registryId }, '[MENU] unknown menu in session, resetting');
+            sessionManager.setState(sender, chatId, { currentMenu: 'main', pendingAction: null, pendingData: null });
+            const gUser = await getUserByJid(sender);
+            const gLang = gUser?.language || config.defaultLanguage;
+            await sendMigratedMainMenu({ sock, sender, chatId, user: gUser, language: gLang, transitionKey: 'main_menu' });
+            return;
+          }
+        }
+      }
+
+      // Profile-cluster menus: session keeps legacy ids, the registry speaks
+      // new ids. Only route here when the session is actually in one of those
+      // four menus; otherwise fall through to the other handlers below.
       const migratedProfileId = { profile: 'profile', profile_edit: 'edit_profile', preferences: 'preferences', stats: 'my_stats' }[session?.currentMenu || ''];
-      const pUser = await getUserByJid(sender);
-      const pLang = pUser?.language || config.defaultLanguage;
-      const { resolveMenuOption, runMenuAction } = await import('./utils/menuRouter.js');
-      const { sendMenuById } = await import('./utils/menuSender.js');
-      const { profileCustomHandlers } = await import('./utils/menuCustomHandlers.js');
-      const pResult = resolveMenuOption(migratedProfileId, trimmedText, pUser, pLang);
-      if (pResult.kind === 'back') {
-        if (pResult.to === 'main_menu') {
-          await backToMain({ sock, sender, chatId, pushName }, pLang);
+      if (migratedProfileId) {
+        const pUser = await getUserByJid(sender);
+        const pLang = pUser?.language || config.defaultLanguage;
+        const { resolveMenuOption, runMenuAction } = await import('./utils/menuRouter.js');
+        const { sendMenuById } = await import('./utils/menuSender.js');
+        const { profileCustomHandlers } = await import('./utils/menuCustomHandlers.js');
+        const pResult = resolveMenuOption(migratedProfileId, trimmedText, pUser, pLang);
+        if (pResult.kind === 'back') {
+          if (pResult.to === 'main_menu') {
+            await backToMain({ sock, sender, chatId, pushName }, pLang);
+            return;
+          }
+          const legacyBack = { profile: 'profile', edit_profile: 'profile_edit', preferences: 'preferences', my_stats: 'stats' }[pResult.to] || 'profile';
+          const backTransition = { profile: 'profile_submenu', edit_profile: 'profile_edit', preferences: 'preferences_submenu', my_stats: 'stats_submenu' }[pResult.to];
+          await sendMenuById(pResult.to, { sock, sender, chatId, user: pUser, language: pLang }, backTransition, { sessionMenu: legacyBack });
           return;
         }
-        const legacyBack = { profile: 'profile', edit_profile: 'profile_edit', preferences: 'preferences', my_stats: 'stats' }[pResult.to] || 'profile';
-        const backTransition = { profile: 'profile_submenu', edit_profile: 'profile_edit', preferences: 'preferences_submenu', my_stats: 'stats_submenu' }[pResult.to];
-        await sendMenuById(pResult.to, { sock, sender, chatId, user: pUser, language: pLang }, backTransition, { sessionMenu: legacyBack });
+        if (pResult.kind === 'action') {
+          await runMenuAction(pResult.action, {
+            sock, sender, chatId, pushName, user: pUser, language: pLang,
+            sendMenuFn: async (menuId) => {
+              const { sendEditAdvancedSubmenu, sendAdvancedPreferencesView, languageOf } = await import('./handlers/profileCommand.js');
+              if (menuId === 'edit_profile_advanced') {
+                return sendEditAdvancedSubmenu({ sock, sender, chatId, pushName }, languageOf(sender));
+              }
+              if (menuId === 'preferences_advanced') {
+                return sendAdvancedPreferencesView({ sock, sender, chatId, pushName }, languageOf(sender));
+              }
+              throw new Error(`profile cluster has no opener for '${menuId}'`);
+            },
+            handlers: profileCustomHandlers
+          });
+          return;
+        }
+        // Invalid: legacy per-state messages (menu stays, no re-render).
+        if (session.currentMenu === 'stats') {
+          await sendText(sock, sender, toSmallCaps(tr('common.invalidChoiceValid')));
+          return;
+        }
+        // Use the router's computed max so the hint matches the visible options.
+        const pMax = Number.isFinite(Number(pResult.max)) ? Number(pResult.max) : 0;
+        await sendText(sock, sender, toSmallCaps(tr('common.invalidChoiceMinMax', { min: 0, max: pMax })));
         return;
       }
-      if (pResult.kind === 'action') {
-        await runMenuAction(pResult.action, {
-          sock, sender, chatId, pushName, user: pUser, language: pLang,
-          sendMenuFn: async (menuId) => {
-            const { sendEditAdvancedSubmenu, sendAdvancedPreferencesView, languageOf } = await import('./handlers/profileCommand.js');
-            if (menuId === 'edit_profile_advanced') {
-              return sendEditAdvancedSubmenu({ sock, sender, chatId, pushName }, languageOf(sender));
-            }
-            if (menuId === 'preferences_advanced') {
-              return sendAdvancedPreferencesView({ sock, sender, chatId, pushName }, languageOf(sender));
-            }
-            throw new Error(`profile cluster has no opener for '${menuId}'`);
-          },
-          handlers: profileCustomHandlers
-        });
-        return;
-      }
-      // Invalid: legacy per-state messages (menu stays, no re-render).
-      if (session.currentMenu === 'stats') {
-        await sendText(sock, sender, toSmallCaps(tr('common.invalidChoiceValid')));
-        return;
-      }
-      const pMax = session.currentMenu === 'profile'
-        ? 7
-        : (Number.isFinite(Number(pResult.max)) ? Number(pResult.max) : 7);
-      await sendText(sock, sender, toSmallCaps(tr('common.invalidChoiceMinMax', { min: 0, max: pMax })));
-      return;
 
       // Profile menus: main profile view, edit submenu, name/username input,
       // and name/username confirmation + feature unavailable flow.
