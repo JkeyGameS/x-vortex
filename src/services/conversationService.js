@@ -12,7 +12,6 @@ import { buildHelpMessage } from '../handlers/helpCommand.js';
 import * as chatNotifyService from './chatNotifyService.js';
 import * as reportService from './reportService.js';
 import { logAdminAction } from './adminLogService.js';
-import { buildMainMenu } from '../handlers/startCommand.js';
 import { buildMenu } from '../utils/menuBuilder.js';
 import { matchRule, getRule as getChatRule } from './chatRuleService.js';
 import { matchFaq } from './faqService.js';
@@ -54,10 +53,9 @@ export async function performRuleAction(context, sender, chatId, language, user,
     if (act.startsWith('open_menu:')) {
       const target = act.slice('open_menu:'.length);
       if (target === 'main') {
-        const { buildMainMenu } = await import('../handlers/startCommand.js');
-        const displayName = user?.username ? `@${user.username}` : (user?.name || 'User');
+        const { sendMigratedMainMenu } = await import('../handlers/startCommand.js');
         sessionManager.setState(sender, chatId, { currentMenu: 'main' });
-        await sendMenu({ sock: context.sock, sender, chatId, text: buildMainMenu(language, displayName, user), transitionKey: 'rule_action_main' });
+        await sendMigratedMainMenu({ sock: context.sock, sender, chatId, user, language, transitionKey: 'rule_action_main' });
       } else if (target === 'profile') {
         const { openProfile } = await import('../handlers/profileCommand.js');
         await openProfile({ sock: context.sock, sender, chatId, pushName: user?.name || 'User' });
@@ -317,13 +315,8 @@ async function finishIntro(context, language, user) {
   await withTyping(context.sock, context.sender, async () => {
     await sendText(context.sock, context.sender, ack);
   });
-  await sendMenu({
-    sock: context.sock,
-    sender: context.sender,
-    chatId: context.chatId,
-    text: buildMainMenu(language, displayNameOf(user), user),
-    transitionKey: 'onboarding_to_main'
-  });
+  const { sendMigratedMainMenu } = await import('../handlers/startCommand.js');
+  await sendMigratedMainMenu({ sock: context.sock, sender: context.sender, chatId: context.chatId, user, language, transitionKey: 'onboarding_to_main' });
 }
 
 async function sendOffFlow(context, language, session, trimmed) {

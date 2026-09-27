@@ -39,7 +39,6 @@ import { findUserByUsername, findUser } from '../services/userService.js';
 import { hasPermission } from '../services/rolesService.js';
 import { logAdminAction } from '../services/adminLogService.js';
 import { reportToAdmins } from '../services/reportService.js';
-import { buildMainMenu } from './startCommand.js';
 import { sendAdminPanel } from './adminCommand.js';
 
 const HISTORY_PAGE_SIZE = 5;
@@ -768,16 +767,10 @@ export async function handleFeedbackReply(context, input) {
   if (menu === 'feedback_main') {
     switch (trimmed) {
       case '0': {
+        const { sendMigratedMainMenu } = await import('./startCommand.js');
         const user = await getUserByJid(sender).catch(() => null);
-        const displayName = user?.username ? `@${user.username}` : (user?.name || 'User');
         sessionManager.setState(sender, chatId, { currentMenu: 'main' });
-        return sendMenu({
-          sock: context.sock,
-          sender,
-          chatId,
-          text: buildMainMenu(language, displayName, user),
-          transitionKey: 'feedback_back_to_main'
-        });
+        return sendMigratedMainMenu({ sock: context.sock, sender, chatId, user, language, transitionKey: 'feedback_back_to_main' });
       }
       case '1':
         return sendFeedbackState(context, 'feedback_rating', buildRatingScale(language), 'feedback_to_rating');

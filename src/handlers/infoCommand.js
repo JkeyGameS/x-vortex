@@ -9,7 +9,6 @@ import { buildMenu } from '../utils/menuBuilder.js';
 import { sendMenu } from '../utils/messageHelper.js';
 import { getUserByJid } from '../services/userService.js';
 import { getFeatureNames, getFeature } from '../services/featureFlagService.js';
-import { buildMainMenu } from './startCommand.js';
 
 function L(language, key, params = {}) {
   return toSmallCaps(t(language, key, params));
@@ -35,29 +34,7 @@ export function getFeatureSummary() {
   return { availableCount, comingSoonCount, unavailableCount, maintenanceCount };
 }
 
-export function buildInfoMenu(language) {
-  const { availableCount, comingSoonCount, unavailableCount, maintenanceCount } = getFeatureSummary();
-  return buildMenu(
-    t(language, 'info.title'),
-    '',
-    [
-      '📊 ' + L(language, 'info.features') + ':',
-      `*${availableCount}* ${t(language, 'info.cmd')} · ${t(language, 'admin.featureStatus.available')} ✅`,
-      `*${comingSoonCount}* ${t(language, 'info.cmd')} · ${t(language, 'admin.featureStatus.coming_soon')} 🔆`,
-      `*${unavailableCount}* ${t(language, 'info.cmd')} · ${t(language, 'admin.featureStatus.unavailable')} ⛔️`,
-      `*${maintenanceCount}* ${t(language, 'info.cmd')} · ${t(language, 'admin.featureStatus.maintenance')} ⚠️`,
-      '',
-      '1. ' + t(language, 'info.optionAbout'),
-      '2. ' + t(language, 'info.optionVersion'),
-      '3. ' + t(language, 'info.optionDeveloper'),
-      '4. ' + t(language, 'info.optionWebsite'),
-      '',
-      '0. ' + t(language, 'info.back'),
-      '',
-      t(language, 'info.replyPrompt')
-    ]
-  );
-}
+
 
 export function buildAboutBot(language) {
   return buildMenu(
@@ -155,7 +132,7 @@ registerBodyResolver('infoVersionBody', async (user, language) => bodyOf(buildVe
 registerBodyResolver('infoDeveloperBody', async (user, language) => bodyOf(buildDeveloper(language)));
 registerBodyResolver('infoWebsiteBody', async (user, language) => bodyOf(buildWebsite(language)));
 
-async function sendNewInfoMenu(context, opts = {}) {
+export async function sendInfoMenu(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender).catch(() => null);
@@ -163,20 +140,7 @@ async function sendNewInfoMenu(context, opts = {}) {
   await sendMenuById('info', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'info_menu', { resultLine: opts.resultLine, sessionMenu: 'info' });
 }
 
-export async function sendInfoMenu(context, opts = {}) {
-  return sendNewInfoMenu(context, opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = opts.language || await languageOf(sender);
-  sessionManager.setState(sender, chatId, { currentMenu: 'info' });
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildInfoMenu(language),
-    transitionKey: opts.transitionKey || 'info_menu'
-  });
-}
+
 
 export async function openInfo(context, opts = {}) {
   return sendInfoMenu(context, { ...opts, transitionKey: opts.transitionKey || 'main_to_info' });
@@ -201,16 +165,10 @@ export async function handleInfoReply(context, input) {
   if (menu === 'info') {
     switch (trimmed) {
       case '0': {
+        const { sendMigratedMainMenu } = await import('./startCommand.js');
         const user = await getUserByJid(sender).catch(() => null);
-        const displayName = user?.username ? `@${user.username}` : (user?.name || 'User');
         sessionManager.setState(sender, chatId, { currentMenu: 'main' });
-        return sendMenu({
-          sock: context.sock,
-          sender,
-          chatId,
-          text: buildMainMenu(language, displayName, user),
-          transitionKey: 'info_back_to_main'
-        });
+        return sendMigratedMainMenu({ sock: context.sock, sender, chatId, user, language, transitionKey: 'info_back_to_main' });
       }
       case '1':
         return sendInfoSubmenu(context, 'info_about', buildAboutBot(language), 'info_to_about');

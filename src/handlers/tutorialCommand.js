@@ -258,16 +258,10 @@ export async function handleTutorialReply(context, input) {
 
   if (session.currentMenu === 'tutorial_main') {
     if (value === '0') {
-      const { buildMainMenu } = await import('./startCommand.js');
+      const { sendMigratedMainMenu } = await import('./startCommand.js');
       const user = context.user || {};
       sessionManager.setState(sender, chatId, { currentMenu: 'main' });
-      return sendMenu({
-        sock: context.sock,
-        sender,
-        chatId,
-        text: buildMainMenu(language, user.username ? `@${user.username}` : (user.name || 'User'), user),
-        transitionKey: 'tutorial_to_main'
-      });
+      return sendMigratedMainMenu({ sock: context.sock, sender, chatId, user, language, transitionKey: 'tutorial_to_main' });
     }
     const submenu = {
       '1': ['tutorial_getting_started', 'gettingStartedTitle', ['gettingStarted1', 'gettingStarted2', 'gettingStarted3']],

@@ -23,7 +23,6 @@ import { buildMenu } from '../utils/menuBuilder.js';
 import { sendMenu } from '../utils/messageHelper.js';
 import { buildMenuHelp } from '../utils/menuHelp.js';
 import { askConfirmation } from '../utils/confirmationHelper.js';
-import { buildMainMenu } from './startCommand.js';
 import { startRestore, handleRestoreData } from './restoreCommand.js';
 import { sendChatPanel, handleChatReply, openEditChat, executeDeleteChatRule, executeImportChatRules } from './chatCommand.js';
 import { sendFaqPanel, handleFaqReply, openEditFaq, executeDeleteFaqEntry, executeImportFaqEntries } from './faqCommand.js';
@@ -161,45 +160,13 @@ function activityFeedLines(language) {
   return lines;
 }
 
-export function buildAdminPanel(language, resultLine = '', senderJid = null) {
-  const options = ADMIN_PANEL_OPTIONS.map((opt) => {
-    const locked = senderJid && opt.perm && !hasPermission(senderJid, opt.perm);
-    return opt.number + '. ' + t(language, opt.labelKey) + (locked ? ' 🔒' : '');
-  });
-  return buildMenu(
-    t(language, 'admin.title'),
-    '',
-    [
-      ...(resultLine ? [toSmallCaps(resultLine), ''] : []),
-      ...dashboardLines(language),
-      '',
-      ...activityFeedLines(language),
-      '',
-      t(language, 'admin.prompt'),
-      '',
-      ...options,
-      '',
-      '0. ' + t(language, 'admin.test.optionBack'),
-      '',
-      t(language, 'admin.replyPrompt')
-    ]
-  );
-}
+
 
 function groupedMenu(language, heading, lines, prompt = 'admin.replyPrompt') {
   return buildMenu(heading, '', [...lines, '', '0. ' + t(language, 'admin.test.optionBack'), '', t(language, prompt)]);
 }
 
-export function buildUserManagementMenu(language) {
-  return groupedMenu(language, t(language, 'admin.userManagement.title'), [
-    '1. ' + t(language, 'admin.userManagement.search'),
-    '2. ' + t(language, 'admin.userManagement.delete'),
-    '3. ' + t(language, 'admin.userManagement.block'),
-    '4. ' + t(language, 'admin.userManagement.unblock'),
-    '5. ' + t(language, 'admin.userManagement.listBlocked'),
-    '6. ' + t(language, 'admin.optionPurge')
-  ]);
-}
+
 
 export function buildChatFaqMenu(language, resultLine = '') {
   return buildMenu(
@@ -504,9 +471,7 @@ export async function handleReplyAnalyticsReset(context, input) {
   return showReplyAnalyticsMenu(context);
 }
 
-export async function sendChatFaqImportExport(context, opts = {}) {
-  return sendNewChatFaqImportExport(context, opts);
-}
+
 
 export async function sendCombinedExport(context, scope) {
   const sender = context.sender;
@@ -915,7 +880,7 @@ registerBodyResolver('testPanelBody', async (user, language) => [
   '0. ' + t(language, 'admin.test.optionBack')
 ]);
 
-async function sendNewChatFaqMenu(context, opts = {}) {
+export async function sendChatFaqMenu(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -924,7 +889,7 @@ async function sendNewChatFaqMenu(context, opts = {}) {
   await sendMenuById('chat_faq', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'chat_faq_menu', { resultLine: opts.resultLine, sessionMenu: 'chat_faq_menu' });
 }
 
-async function sendNewChatSettingsPanel(context, opts = {}) {
+export async function sendChatSettingsPanel(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -933,7 +898,7 @@ async function sendNewChatSettingsPanel(context, opts = {}) {
   await sendMenuById('chat_settings', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'chat_settings', { resultLine: opts.resultLine, sessionMenu: 'chat_settings' });
 }
 
-async function sendNewChatTestPanel(context, opts = {}) {
+export async function sendChatTestPanel(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -942,7 +907,7 @@ async function sendNewChatTestPanel(context, opts = {}) {
   await sendMenuById('test_panel', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'chat_test_panel', { resultLine: opts.resultLine, sessionMenu: 'chat_test_panel' });
 }
 
-async function sendNewChatFaqImportExport(context, opts = {}) {
+export async function sendChatFaqImportExport(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -951,9 +916,7 @@ async function sendNewChatFaqImportExport(context, opts = {}) {
   await sendMenuById('chat_import_export', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'chat_import_export', { resultLine: opts.resultLine, sessionMenu: 'chat_import_export' });
 }
 
-export async function sendChatTestPanel(context, opts = {}) {
-  return sendNewChatTestPanel(context, opts);
-}
+
 
 async function testSnippetLines(language, userLanguage, styledPreview, user) {
   try {
@@ -1362,7 +1325,7 @@ registerBodyResolver('adminSearchBody', async (user, language) => [
   '0. ' + t(language, 'admin.systemSettings.optionBack')
 ]);
 
-async function sendNewAdminPanel(context, opts = {}) {
+export async function sendAdminPanel(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -1371,24 +1334,10 @@ async function sendNewAdminPanel(context, opts = {}) {
   await sendMenuById('adminPanel', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'admin_panel', { resultLine: opts.resultLine, sessionMenu: 'admin' });
 }
 
-export async function sendAdminPanel(context, opts = {}) {
-  return sendNewAdminPanel(context, opts);
-}
+
 
 export async function sendAdminPanelResult(context, resultLine) {
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-
-  sessionManager.setState(sender, chatId, { currentMenu: 'admin', pendingAction: null, pendingData: null });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildAdminPanel(language, toSmallCaps(resultLine), sender),
-    transitionKey: 'admin_return'
-  });
+  return sendAdminPanel(context, { resultLine, transitionKey: 'admin_return' });
 }
 
 function denyNoPermission(sock, sender, language) {
@@ -1412,20 +1361,7 @@ export async function sendUserManagementMenu(context) {
   return sendComprehensiveUserManagementMenu(context);
 }
 
-export async function sendChatFaqMenu(context, opts = {}) {
-  return sendNewChatFaqMenu(context);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  sessionManager.setState(sender, chatId, { currentMenu: 'chat_faq_menu', pendingAction: null, pendingData: null });
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildChatFaqMenu(language, opts.resultLine),
-    transitionKey: opts.transitionKey || 'chat_faq_menu'
-  });
-}
+
 
 // ---------------------------------------------------------------------------
 // Chat Settings submenu (global chat system controls)
@@ -1494,76 +1430,9 @@ function chatSettingsValueText(language, key, value) {
   }
 }
 
-export function buildChatSettingsMenu(language, resultLine = '') {
-  const s = getChatSettingsState();
-  let typingState;
-  try {
-    typingState = getTypingSettingsState();
-  } catch {
-    typingState = { globalEnabled: true, allowUserOverride: true, readReceiptsEnabled: true, defaults: { typingType: 'composing', targeting: {} } };
-  }
-  return buildMenu(
-    t(language, 'chatSettings.title'),
-    '',
-    [
-      ...(resultLine ? [toSmallCaps(resultLine), ''] : []),
-      '1. 🔛 ' + toSmallCaps(t(language, 'chatSettings.optChatSystem')) + ': ' + chatSettingsValueText(language, 'chatEnabled', s.chatEnabled),
-      '2. 🎯 ' + toSmallCaps(t(language, 'chatSettings.optFuzzy')) + ': ' + chatSettingsValueText(language, 'fuzzyMatching', s.fuzzyMatching),
-      '3. ⏱️ ' + toSmallCaps(t(language, 'chatSettings.optCooldown')) + ': ' + chatSettingsValueText(language, 'defaultCooldownSeconds', s.defaultCooldownSeconds),
-      '4. 🌊 ' + toSmallCaps(t(language, 'chatSettings.optFallback')) + ': ' + chatSettingsValueText(language, 'fallbackBehavior', s.fallbackBehavior),
-      '5. ⚡ ' + toSmallCaps(t(language, 'chatSettings.optPriority')) + ': ' + chatSettingsValueText(language, 'priorityMode', s.priorityMode),
-      '6. 🌐 ' + toSmallCaps(t(language, 'chatSettings.optAutoTranslate')) + ': ' + chatSettingsValueText(language, 'autoTranslate', s.autoTranslate),
-      '7. 🧠 ' + toSmallCaps(t(language, 'chatSettings.optContext')) + ': ' + chatSettingsValueText(language, 'contextAwareness', s.contextAwareness),
-      '8. 🔢 ' + toSmallCaps(t(language, 'chatSettings.optMaxReplies')) + ': ' + chatSettingsValueText(language, 'maxRepliesPerMinute', s.maxRepliesPerMinute),
-      '9. 🚫 ' + toSmallCaps(t(language, 'chatSettings.optIgnoreList')) + ` (${getChatIgnoreCount()})`,
-      '10. 🧪 ' + toSmallCaps(t(language, 'chatSettings.optDryRun')) + ': ' + chatSettingsValueText(language, 'dryRunMode', s.dryRunMode),
-      '11. 📊 ' + toSmallCaps(t(language, 'chatSettings.optLogMatches')) + ': ' + chatSettingsValueText(language, 'logChatMatches', s.logChatMatches),
-      '12. 🌍 ' + toSmallCaps(t(language, 'chatSettings.optLanguageFilter')) + ': ' + chatSettingsValueText(language, 'languageFilter', s.languageFilter),
-      '13. ⏳ ' + toSmallCaps(t(language, 'chatSettings.optDelayOverride')) + ': ' + chatSettingsValueText(language, 'chatReplyDelayMs', s.chatReplyDelayMs),
-      '14. 🔁 ' + toSmallCaps(t(language, 'chatSettings.optAntiRepetition')) + ': ' + chatSettingsValueText(language, 'antiRepetition', s.antiRepetition),
-      '15. ⚖️ ' + toSmallCaps(t(language, 'chatSettings.optWeightedRandom')) + ': ' + chatSettingsValueText(language, 'weightedRandom', s.weightedRandom),
-      '16. 🧠 ' + toSmallCaps(t(language, 'chatSettings.optContextAwareness')) + ': ' + chatSettingsValueText(language, 'contextAwarenessEnabled', s.contextAwarenessEnabled),
-      '17. ⏱️ ' + toSmallCaps(t(language, 'chatSettings.optContextExpiry')) + ': ' + chatSettingsValueText(language, 'contextExpiryMs', s.contextExpiryMs),
-      '18. 🧠 ' + toSmallCaps(t(language, 'chatSettings.optManageContexts')),
-      '19. 🎭 ' + toSmallCaps(t(language, 'chatSettings.optToneDetection')) + ': ' + chatSettingsValueText(language, 'toneDetection', s.toneDetection),
-      '20. 🕒 ' + toSmallCaps(t(language, 'chatSettings.optTimeAwareness')) + ': ' + chatSettingsValueText(language, 'timeAwareness', s.timeAwareness),
-      '21. 📝 ' + toSmallCaps(t(language, 'chatSettings.optToneWords')),
-      '22. 🎨 ' + toSmallCaps(t(language, 'chatSettings.optReplyStyle')) + ': ' + chatSettingsValueText(language, 'replyStylePersonalization', s.replyStylePersonalization),
-      '23. 💬 ' + toSmallCaps(t(language, 'chatSettings.optFollowUps')) + ': ' + chatSettingsValueText(language, 'followUps', s.followUps),
-      '24. 🎲 ' + toSmallCaps(t(language, 'chatSettings.optFollowUpChance')) + ': ' + chatSettingsValueText(language, 'followUpChance', s.followUpChance),
-      '25. 📊 ' + toSmallCaps(t(language, 'chatSettings.optAbTesting')) + ': ' + chatSettingsValueText(language, 'abTesting', s.abTesting),
-      '26. 🎯 ' + toSmallCaps(t(language, 'chatSettings.optContextBoost')) + ': ' + chatSettingsValueText(language, 'contextPriorityBoost', s.contextPriorityBoost),
-      '27. 🚦 ' + toSmallCaps(t(language, 'chatSettings.optRateLimit')) + ': ' + chatSettingsValueText(language, 'rateLimitEnabled', s.rateLimitEnabled),
-      '28. 🔢 ' + toSmallCaps(t(language, 'chatSettings.optRateLimitMax')) + ': ' + chatSettingsValueText(language, 'rateLimitMaxReplies', s.rateLimitMaxReplies),
-      '29. ⏱️ ' + toSmallCaps(t(language, 'chatSettings.optRateLimitWindow')) + ': ' + chatSettingsValueText(language, 'rateLimitWindowMs', s.rateLimitWindowMs),
-      '30. 🧩 ' + toSmallCaps(t(language, 'chatSettings.optSnippetDepth')) + ': ' + chatSettingsValueText(language, 'snippetMaxDepth', s.snippetMaxDepth),
-      '31. ⌨️ ' + toSmallCaps(t(language, 'chatSettings.optTypingAnimation')) + ': ' + chatSettingsValueText(language, 'typingGlobal', typingState.globalEnabled),
-      '32. 🎛️ ' + toSmallCaps(t(language, 'chatSettings.optTypingTargeting')) + ': ' + chatSettingsValueText(language, 'typingTargeting', typingState.defaults.targeting),
-      '33. 🔒 ' + toSmallCaps(t(language, 'chatSettings.optTypingOverride')) + ': ' + chatSettingsValueText(language, 'typingOverride', typingState.allowUserOverride),
-      '34. 📖 ' + toSmallCaps(t(language, 'chatSettings.optTypingReceipts')) + ': ' + chatSettingsValueText(language, 'typingReceipts', typingState.readReceiptsEnabled),
-      '35. 🎙️ ' + toSmallCaps(t(language, 'chatSettings.optTypingDefaultType')) + ': ' + chatSettingsValueText(language, 'typingDefaultType', typingState.defaults.typingType),
-      '',
-      '0. ' + t(language, 'admin.test.optionBack'),
-      '',
-      t(language, 'admin.replyPrompt')
-    ]
-  );
-}
 
-export async function sendChatSettingsPanel(context, opts = {}) {
-  return sendNewChatSettingsPanel(context, opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-  sessionManager.setState(sender, chatId, { currentMenu: 'chat_settings', pendingAction: null, pendingData: null });
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildChatSettingsMenu(language, opts.resultLine),
-    transitionKey: opts.transitionKey || 'chat_settings'
-  });
-}
+
+
 
 export async function handleChatSettingsReply(context, selectedNumber) {
   const sender = context.sender;
@@ -2699,16 +2568,16 @@ export async function handleChatSettingsDelayOverride(context, input) {
   return sendChatSettingsPanel(context);
 }
 
-async function sendNewAdminBackupMenu(context) {
+export async function sendAdminBackupMenu(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
   const language = resolveLanguage(sender);
     sessionManager.setState(sender, chatId, { currentMenu: 'admin_backup', pendingAction: null, pendingData: null });
-  await sendMenuById('backup_restore', { sock: context.sock, sender, chatId, user, language }, 'admin_to_backup', { sessionMenu: 'admin_backup' });
+  await sendMenuById('backup_restore', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'admin_to_backup', { resultLine: opts.resultLine, sessionMenu: 'admin_backup' });
 }
 
-async function sendNewAdminLogsMenu(context) {
+export async function sendAdminLogsMenu(context) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -2717,13 +2586,9 @@ async function sendNewAdminLogsMenu(context) {
   await sendMenuById('logs', { sock: context.sock, sender, chatId, user, language }, 'admin_to_logs', { sessionMenu: 'admin_logs' });
 }
 
-export async function sendAdminBackupMenu(context) {
-  return sendNewAdminBackupMenu(context);
-}
 
-export async function sendAdminLogsMenu(context) {
-  return sendNewAdminLogsMenu(context);
-}
+
+
 
 export async function handleGroupedAdminReply(context, menu, selectedNumber) {
   if (menu === 'admin_users') {
@@ -2955,7 +2820,7 @@ function buildBroadcastSubmenu(language, resultLine = '') {
   );
 }
 
-export async function sendNewBroadcastSubmenu(context, opts = {}) {
+export async function sendBroadcastSubmenu(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -2964,9 +2829,7 @@ export async function sendNewBroadcastSubmenu(context, opts = {}) {
   await sendMenuById('broadcast', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'broadcast_submenu', { resultLine: opts.resultLine, sessionMenu: 'broadcast_submenu' });
 }
 
-export async function sendBroadcastSubmenu(context, opts = {}) {
-  return sendNewBroadcastSubmenu(context, opts);
-}
+
 
 function broadcastCancel(context) {
   const sender = context.sender;
@@ -4215,7 +4078,7 @@ async function executeDeleteTemplate(context, data) {
 // Command Analytics (admin)
 // ---------------------------------------------------------------------------
 
-async function sendNewCommandAnalytics(context) {
+export async function showCommandAnalytics(context) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -4223,9 +4086,7 @@ async function sendNewCommandAnalytics(context) {
   await sendMenuById('analytics', { sock: context.sock, sender, chatId, user, language }, 'command_analytics', { sessionMenu: 'command_analytics' });
 }
 
-export async function showCommandAnalytics(context) {
-  return sendNewCommandAnalytics(context);
-}
+
 
 export async function showTopCommandsPanel(context) {
   const sender = context.sender;
@@ -4361,38 +4222,10 @@ async function runTestAction(context, type, reportData) {
 // Backup & Restore submenu (admin)
 // ---------------------------------------------------------------------------
 
-function buildBackupRestoreMenu(language, resultLine = '') {
-  return buildMenu(
-    t(language, 'admin.backupRestore.title'),
-    '',
-    [
-      ...(resultLine ? [toSmallCaps(resultLine), ''] : []),
-      t(language, 'admin.backupRestore.prompt'),
-      '',
-      '1. ' + t(language, 'admin.backupRestore.optionBackup'),
-      '2. ' + t(language, 'admin.backupRestore.optionRestore'),
-      '',
-      '0. ' + t(language, 'admin.backupRestore.optionBack'),
-      '',
-      t(language, 'admin.backupRestore.replyPrompt')
-    ]
-  );
-}
+
 
 export async function sendBackupRestorePanel(context, opts = {}) {
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
-
-  sessionManager.setState(sender, chatId, { currentMenu: 'backup_restore' });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildBackupRestoreMenu(language, opts.resultLine),
-    transitionKey: opts.transitionKey || 'backup_restore'
-  });
+  return sendAdminBackupMenu(context, opts);
 }
 
 async function runBackup(context) {
@@ -4450,29 +4283,9 @@ function conversationStatusText(language) {
   return L(language, 'admin.systemSettings.statusOff');
 }
 
-function buildSystemSettingsMenu(language, resultLine = '') {
-  return buildMenu(
-    t(language, 'admin.systemSettings.title'),
-    '',
-    [
-      ...(resultLine ? [toSmallCaps(resultLine), ''] : []),
-      '1. ' + t(language, 'admin.systemSettings.optionGeneral'),
-      '2. ' + t(language, 'admin.systemSettings.optionAdminAccess'),
-      '3. ' + t(language, 'admin.systemSettings.optionFeatureFlags'),
-      '4. ' + t(language, 'admin.systemSettings.optionNotifications'),
-      '5. ' + t(language, 'admin.systemSettings.optionConversation'),
-      '6. ' + t(language, 'admin.systemSettings.optionUpdates'),
-      '7. ' + t(language, 'admin.systemSettings.optionDataManagement'),
-      '8. ' + t(language, 'admin.systemSettings.optionLogs'),
-      '',
-      '0. ' + t(language, 'admin.systemSettings.optionBack'),
-      '',
-      t(language, 'admin.systemSettings.replyPrompt')
-    ]
-  );
-}
 
-async function sendNewSystemSettingsPanel(context, opts = {}) {
+
+export async function sendSystemSettingsPanel(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -4481,22 +4294,7 @@ async function sendNewSystemSettingsPanel(context, opts = {}) {
   await sendMenuById('system_settings', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'system_settings', { resultLine: opts.resultLine, sessionMenu: 'system_settings' });
 }
 
-export async function sendSystemSettingsPanel(context, opts = {}) {
-  return sendNewSystemSettingsPanel(context, opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
 
-  sessionManager.setState(sender, chatId, { currentMenu: 'system_settings', pendingAction: null, pendingData: null });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildSystemSettingsMenu(language, opts.resultLine),
-    transitionKey: opts.transitionKey || 'system_settings'
-  });
-}
 
 function buildGeneralSettingsMenu(language, resultLine = '') {
   const settings = settingsService.getSettings();
@@ -4663,22 +4461,9 @@ export async function sendDataPanel(context, opts = {}) {
   });
 }
 
-function buildLogsMenu(language) {
-  return buildMenu(
-    t(language, 'admin.systemSettings.logsTitle'),
-    '',
-    [
-      '1. ' + t(language, 'admin.logs.adminLog'),
-      '2. ' + t(language, 'admin.logs.errorLog'),
-      '',
-      '0. ' + t(language, 'admin.systemSettings.optionBack'),
-      '',
-      t(language, 'admin.systemSettings.replyPrompt')
-    ]
-  );
-}
 
-async function sendNewLogsPanel(context, opts = {}) {
+
+export async function sendLogsPanel(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -4687,9 +4472,7 @@ async function sendNewLogsPanel(context, opts = {}) {
   await sendMenuById('logs', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'system_logs', { resultLine: opts.resultLine, sessionMenu: 'logs' });
 }
 
-export async function sendLogsPanel(context, opts = {}) {
-  return sendNewLogsPanel(context, opts);
-}
+
 
 function maintenanceStatusText(language) {
   const settings = settingsService.getSettings();
@@ -7591,31 +7374,9 @@ const QUICK_ACTIONS = [
   { number: '5', labelKey: 'admin.quick.emergency', perm: 'emergency' }
 ];
 
-function buildQuickActionsMenu(language, sender, resultLine = '') {
-  const settings = settingsService.getSettings();
-  const stateOf = (on) => statusText(language, on);
-  const lines = QUICK_ACTIONS.map((opt) => {
-    const locked = !hasPermission(sender, opt.perm);
-    let label = t(language, opt.labelKey);
-    if (opt.number === '2') label += ': ' + stateOf(settings.maintenanceMode);
-    if (opt.number === '4') label += ': ' + stateOf(settings.adminNotificationsEnabled !== false);
-    return opt.number + '. ' + label + (locked ? ' 🔒' : '');
-  });
-  return buildMenu(
-    t(language, 'admin.quick.title'),
-    '',
-    [
-      ...(resultLine ? [toSmallCaps(resultLine), ''] : []),
-      ...lines,
-      '',
-      '0. ' + t(language, 'admin.systemSettings.optionBack'),
-      '',
-      t(language, 'admin.systemSettings.replyPrompt')
-    ]
-  );
-}
 
-async function sendNewQuickActionsPanel(context, opts = {}) {
+
+export async function sendQuickActionsPanel(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -7624,22 +7385,7 @@ async function sendNewQuickActionsPanel(context, opts = {}) {
   await sendMenuById('quick_actions', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'admin_quick_actions', { resultLine: opts.resultLine, sessionMenu: 'admin_quick_actions' });
 }
 
-export async function sendQuickActionsPanel(context, opts = {}) {
-  return sendNewQuickActionsPanel(context, opts);
-  const sender = context.sender;
-  const chatId = context.chatId || sender;
-  const language = resolveLanguage(sender);
 
-  sessionManager.setState(sender, chatId, { currentMenu: 'admin_quick_actions', pendingAction: null, pendingData: null });
-
-  return sendMenu({
-    sock: context.sock,
-    sender,
-    chatId,
-    text: buildQuickActionsMenu(language, sender, opts.resultLine),
-    transitionKey: opts.transitionKey || 'admin_quick_actions'
-  });
-}
 
 async function quickConfirm(context, action, questionKey) {
   const sender = context.sender;
@@ -7755,7 +7501,7 @@ function buildAdminSearchPrompt(language) {
   );
 }
 
-async function sendNewAdminSearchPanel(context, opts = {}) {
+export async function sendAdminSearchPanel(context, opts = {}) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -7764,9 +7510,7 @@ async function sendNewAdminSearchPanel(context, opts = {}) {
   await sendMenuById('admin_search', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'admin_search', { resultLine: opts.resultLine, sessionMenu: 'admin_search' });
 }
 
-export async function sendAdminSearchPanel(context, opts = {}) {
-  return sendNewAdminSearchPanel(context, opts);
-}
+
 
 async function runAdminSearch(query) {
   const q = (query || '').trim().toLowerCase();
@@ -8016,24 +7760,9 @@ function scheduledTaskLine(n, task) {
   return { static: `${n}. ${emoji} `, dynamic: `${task.title}${task.detail ? ' ' + task.detail : ''} @ ${when}` };
 }
 
-function buildScheduledTasksMenu(language, tasks, page) {
-  const start = page * SCHEDULED_PAGE_SIZE;
-  const visible = tasks.slice(start, start + SCHEDULED_PAGE_SIZE);
-  const lines = visible.map((task, i) => scheduledTaskLine(start + i + 1, task));
-  const hasNext = start + SCHEDULED_PAGE_SIZE < tasks.length;
-  const hasPrev = page > 0;
-  const body = tasks.length === 0 ? [toSmallCaps(t(language, 'admin.scheduled.empty')), ''] : [...lines, ''];
-  if (hasNext) body.push('9. ' + t(language, 'admin.search.next'));
-  if (hasPrev) body.push('10. ' + t(language, 'admin.search.previous'));
-  if (hasNext || hasPrev) body.push('');
-  return buildMenu(
-    t(language, 'admin.scheduled.title'),
-    '',
-    [...body, '0. ' + t(language, 'admin.systemSettings.optionBack')]
-  );
-}
 
-async function sendNewScheduledTasksPanel(context, opts = {}, page = 0) {
+
+export async function sendScheduledTasksPanel(context, opts = {}, page = 0) {
   const sender = context.sender;
   const chatId = context.chatId || sender;
   const user = await getUserByJid(sender);
@@ -8042,12 +7771,10 @@ async function sendNewScheduledTasksPanel(context, opts = {}, page = 0) {
   await sendMenuById('scheduled_tasks', { sock: context.sock, sender, chatId, user, language }, opts.transitionKey || 'admin_scheduled_tasks', { resultLine: opts.resultLine, sessionMenu: 'admin_scheduled_tasks' });
 }
 
-export async function sendScheduledTasksPanel(context, opts = {}) {
-  return sendNewScheduledTasksPanel(context, opts, 0);
-}
+
 
 async function reshowScheduledTasks(context, page) {
-  return sendNewScheduledTasksPanel(context, {}, page);
+  return sendScheduledTasksPanel(context, {}, page);
 }
 
 export async function handleScheduledTasksReply(context, content) {
@@ -8449,15 +8176,9 @@ export async function handleAdminReply(context, selectedNumber) {
 
   switch (selectedNumber) {
     case '0': {
+      const { sendMigratedMainMenu } = await import('./startCommand.js');
       const user = await getUserByJid(sender);
-      const displayName = user?.username ? `@${user.username}` : (user?.name || 'Admin');
-      await sendMenu({
-        sock: context.sock,
-        sender,
-        chatId,
-        text: buildMainMenu(language, displayName, user),
-        transitionKey: 'admin_to_main'
-      });
+      await sendMigratedMainMenu({ sock: context.sock, sender, chatId, user, language, transitionKey: 'admin_to_main' });
       sessionManager.goToMain(sender, chatId);
       break;
     }

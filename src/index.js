@@ -119,11 +119,8 @@ import {
   sendAdminBackupMenu,
   sendAdminLogsMenu,
   handleGroupedAdminReply,
-  sendTemplateSubmenu,
-  buildAdminPanel,
-  buildTestMenu
+  sendTemplateSubmenu,  buildTestMenu
 } from './handlers/adminCommand.js';
-import { buildMainMenu, MAIN_MENU_FEATURES, sendMigratedMainMenu, command as startCommand } from './handlers/startCommand.js';
 import {
   handleChatReply, handleChatAddStart, handleChatAddTriggerInput, handleChatAddTriggerEdit,
   handleChatAddCustomTrigger, handleChatAddReplies, handleChatAddPreview, handleChatAddLanguage,
@@ -505,7 +502,6 @@ async function startBot() {
     const helpFrom = session.helpFrom || 'main';
     const user = await getUserByJid(sender);
     const language = user?.language || config.defaultLanguage;
-    const displayName = user?.username ? `@${user.username}` : (user?.name || 'User');
     const { sendMenu } = await import('./utils/messageHelper.js');
 
     let text;
@@ -513,9 +509,9 @@ async function startBot() {
     let nextMenu;
 
     if (helpFrom === 'admin') {
-      text = buildAdminPanel(language);
-      transitionKey = 'admin_panel';
-      nextMenu = 'admin';
+      await sendAdminPanel({ sock, sender, chatId, user, language, transitionKey: 'help_back' });
+      sessionManager.setState(sender, chatId, { currentMenu: 'admin', helpFrom: null });
+      return;
     } else if (helpFrom === 'test_submenu') {
       text = buildTestMenu(language);
       transitionKey = 'test_submenu';
@@ -567,9 +563,9 @@ async function startBot() {
       sessionManager.setState(sender, chatId, { helpFrom: null });
       return;
     } else {
-      text = buildMainMenu(language, displayName, userInfo);
-      transitionKey = 'main_menu';
-      nextMenu = 'main';
+      await sendMigratedMainMenu({ sock, sender, chatId, user, language, transitionKey: 'help_back' });
+      sessionManager.setState(sender, chatId, { currentMenu: 'main', helpFrom: null });
+      return;
     }
 
     sessionManager.setState(sender, chatId, { currentMenu: nextMenu, helpFrom: null });
@@ -715,9 +711,8 @@ async function startBot() {
         if (trimmedText === '0') {
           if (helpFrom === 'main') {
             // Back: return to the main menu, resetting pagination state.
-            const displayName = userInfo?.username ? `@${userInfo.username}` : (userInfo?.name || 'User');
             sessionManager.setState(sender, chatId, { currentMenu: 'main', helpPage: null, helpFrom: null });
-            await sendMenu({ sock, sender, chatId, text: buildMainMenu(lang, displayName, userInfo), transitionKey: 'help_back_to_main' });
+            await sendMigratedMainMenu({ sock, sender, chatId, user: userInfo, language: lang, transitionKey: 'help_back_to_main' });
           } else {
             // Cancel: delete the help message and clear the session. If the
             // deletion fails (e.g. message too old), just clear the session.
@@ -2772,9 +2767,8 @@ async function startBot() {
 
       if (session?.currentMenu === 'sleep_confirm') {
         if (trimmedText === '2' || trimmedText === '0') {
-          const displayName = userInfo?.username ? `@${userInfo.username}` : (userInfo?.name || 'User');
           sessionManager.setState(sender, chatId, { currentMenu: 'main' });
-          await sendMenu({ sock, sender, chatId, text: buildMainMenu(language, displayName, userInfo), transitionKey: 'sleep_confirm' });
+          await sendMigratedMainMenu({ sock, sender, chatId, user: userInfo, language, transitionKey: 'sleep_confirm' });
           return;
         }
         if (trimmedText === '1') {
@@ -2870,9 +2864,8 @@ async function startBot() {
           if (trimmedText === '0') {
             const user = await getUserByJid(sender);
             const language = user?.language || config.defaultLanguage;
-            const displayName = user?.username ? `@${user.username}` : (user?.name || 'User');
             sessionManager.setState(sender, chatId, { currentMenu: 'main' });
-            await sendMenu({ sock, sender, chatId, text: buildMainMenu(language, displayName, user), transitionKey: 'main_to_main' });
+            await sendMigratedMainMenu({ sock, sender, chatId, user, language, transitionKey: 'main_to_main' });
             return;
           }
           if (trimmedText === '9') {
@@ -3034,11 +3027,7 @@ async function startBot() {
           return;
         }
 
-        await sendMenu({
-          sock, sender, chatId,
-          text: buildMainMenu(language, displayName, userInfo),
-          transitionKey: 'main_to_main'
-        });
+        await sendMigratedMainMenu({ sock, sender, chatId, user: userInfo, language, transitionKey: 'main_to_main' });
         return;
       }
 

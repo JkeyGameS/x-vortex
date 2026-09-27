@@ -26,7 +26,6 @@ import {
   getTopSuggestionKeywords
 } from '../services/statsService.js';
 import { getFeedbackStats } from '../services/feedbackService.js';
-import { buildMainMenu } from './startCommand.js';
 import { sendFeedbackAdmin } from './feedbackCommand.js';
 
 const TOP_PAGE_SIZE = 10;
@@ -303,14 +302,10 @@ export async function handleStatsReply(context, input) {
 
   if (menu === 'stats_main') {
     if (trimmed === '0') {
+      const { sendMigratedMainMenu } = await import('./startCommand.js');
       const user = await getUserByJid(sender).catch(() => null);
-      const displayName = user?.username ? `@${user.username}` : (user?.name || 'User');
       sessionManager.setState(sender, chatId, { currentMenu: 'main' });
-      return sendMenu({
-        sock: context.sock, sender, chatId,
-        text: buildMainMenu(language, displayName, user),
-        transitionKey: 'stats_back_to_main'
-      });
+      return sendMigratedMainMenu({ sock: context.sock, sender, chatId, user, language, transitionKey: 'stats_back_to_main' });
     }
     if (trimmed === '1') {
       const user = await getUserByJid(sender).catch(() => null);

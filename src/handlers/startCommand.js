@@ -63,35 +63,7 @@ export async function sendMigratedMainMenu(context) {
   return true;
 }
 
-export function buildMainMenu(language, displayName, user = null) {
-  const adminEnabled = isFeatureEnabled('adminPanel');
 
-  const options = [
-    '0. ' + t(language, 'onboarding.menuExit'),
-    '\n' + mainMenuOption('1', 'onboarding.menuProfile', language, MAIN_MENU_FEATURES[1]),
-    mainMenuOption('2', 'onboarding.menuSettings', language, MAIN_MENU_FEATURES[2]),
-    mainMenuOption('3', 'onboarding.menuStatistics', language, MAIN_MENU_FEATURES[3]),
-    mainMenuOption('4', 'onboarding.menuTutorial', language, MAIN_MENU_FEATURES[4]),
-    mainMenuOption('5', 'onboarding.menuAbout', language, MAIN_MENU_FEATURES[5]),
-    mainMenuOption('6', 'onboarding.menuFeedback', language, MAIN_MENU_FEATURES[6]),
-    '\n9. ' + t(language, 'menuHelp.option'),
-    (adminEnabled ? '\nA. ' + t(language, 'onboarding.menuAdmin') : null)
-  ].filter(Boolean);
-
-  return buildMenu(
-    t(language, 'onboarding.mainMenuGreetingStatic'),
-    displayName,
-    [
-      ...(buildMessageSettingsStatus(language, user) ? [buildMessageSettingsStatus(language, user)] : []),
-      '',
-      t(language, 'onboarding.mainMenuPrompt'),
-      '',
-      ...options,
-      '',
-      t(language, 'onboarding.languageReplyPrompt')
-    ]
-  );
-}
 
 export const command = {
   name: 'start',
