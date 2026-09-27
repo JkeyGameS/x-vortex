@@ -1,8 +1,8 @@
 // Phase 2 test harness: auto-registration of standalone menu commands,
 // conflict handling (manual wins), and execute() delegation to sendMenuById.
-import { registerMenu, unregisterMenu } from '../config/menus/registry.js';
-import { buildMenuCommands } from '../handlers/menuCommandLoader.js';
-import { loadCommands } from '../handlers/commandHandler.js';
+import { registerMenu, unregisterMenu } from '../src/config/menus/registry.js';
+import { buildMenuCommands } from '../src/handlers/menuCommandLoader.js';
+import { loadCommands } from '../src/handlers/commandHandler.js';
 
 const sent = [];
 const sock = {

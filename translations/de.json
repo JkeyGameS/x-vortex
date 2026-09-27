@@ -242,7 +242,6 @@
     "optionBroadcast": "📢 Rundsendung",
     "optionUsers": "👥 Benutzer verwalten",
     "optionBlocked": "⛔ Blockierte Benutzer",
-    "optionPurge": "🗑️ Testbenutzer löschen",
     "optionUserManagement": "👥 Benutzerverwaltung",
     "optionFeatureManagement": "🧩 Funktionsverwaltung",
     "optionChatFaq": "💬 Chat- und FAQ-Verwaltung",
@@ -589,11 +588,8 @@
     "restoreDone": "{count} Benutzer wiederhergestellt ✅",
     "backupRestore": {
       "title": "💾 Backup & Wiederherstellung",
-      "prompt": "Wähle eine Aktion:",
       "optionBackup": "📤 Backup (Export)",
-      "optionRestore": "📥 Wiederherstellung (Import)",
-      "replyPrompt": "Antworte mit der Nummer deiner Wahl.",
-      "optionBack": "Zurück"
+      "optionRestore": "📥 Wiederherstellung (Import)"
     },
     "test": {
       "title": "Admin-Tests",

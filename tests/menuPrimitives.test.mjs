@@ -1,10 +1,10 @@
 // Phase 1 test harness: exercises renderer, router, markers, registry.
 // No live flow calls these primitives; safe to run anytime.
-import { registerMenu, getMenu, findMenuByCommand, unregisterMenu } from '../config/menus/registry.js';
-import { validateMenuDefinition } from '../config/menus/schema.js';
-import { renderMenu } from '../utils/menuRenderer.js';
-import { resolveMenuOption, runMenuAction, registerMenuActionHandler } from '../utils/menuRouter.js';
-import { getOptionMarker, isOptionAvailable } from '../utils/menuFeatureMarkers.js';
+import { registerMenu, getMenu, findMenuByCommand, unregisterMenu } from '../src/config/menus/registry.js';
+import { validateMenuDefinition } from '../src/config/menus/schema.js';
+import { renderMenu } from '../src/utils/menuRenderer.js';
+import { resolveMenuOption, runMenuAction, registerMenuActionHandler } from '../src/utils/menuRouter.js';
+import { getOptionMarker, isOptionAvailable } from '../src/utils/menuFeatureMarkers.js';
 
 const mockRegularUser = {
   jid: '100000000000000@lid',
@@ -57,7 +57,6 @@ registerMenu(testMenu);
 check('registered', !!getMenu('test_menu'));
 check('find by command', findMenuByCommand('/testmenu')?.id === 'test_menu');
 check('find by alias', findMenuByCommand('tm')?.id === 'test_menu');
-check('migration off by default', isMenuMigrated('test_menu') === false);
 
 // render regular (admin option hidden)
 const reg = await renderMenu('test_menu', mockRegularUser, 'en');

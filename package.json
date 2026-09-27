@@ -1,16 +1,15 @@
 {
   "name": "x-vortex",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "X-Vortex WhatsApp bot",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "backup:menus": "node src/scripts/backupMenus.js",
-    "test:menus": "node src/scripts/testMenuPrimitives.js",
-    "test:menuCommands": "node src/scripts/testMenuCommands.js"
+    "test:menus": "node tests/menuPrimitives.test.mjs",
+    "test:menuCommands": "node tests/menuCommands.test.mjs",
+    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs"
   },
   "keywords": [],
   "author": "",

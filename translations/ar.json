@@ -242,7 +242,6 @@
     "optionBroadcast": "📢 بث",
     "optionUsers": "👥 إدارة المستخدمين",
     "optionBlocked": "⛔ المستخدمون المحظورون",
-    "optionPurge": "🗑️ حذف مستخدمي الاختبار",
     "optionUserManagement": "👥 إدارة المستخدمين",
     "optionFeatureManagement": "🧩 إدارة الميزات",
     "optionChatFaq": "💬 إدارة الدردشة والأسئلة الشائعة",
@@ -589,11 +588,8 @@
     "restoreDone": "تمت استعادة {count} مستخدم ✅",
     "backupRestore": {
       "title": "💾 النسخ الاحتياطي والاستعادة",
-      "prompt": "اختر إجراءً:",
       "optionBackup": "📤 النسخ الاحتياطي (تصدير)",
-      "optionRestore": "📥 الاستعادة (استيراد)",
-      "replyPrompt": "رد برقم اختيارك.",
-      "optionBack": "رجوع"
+      "optionRestore": "📥 الاستعادة (استيراد)"
     },
     "test": {
       "title": "اختبارات الإدارة",

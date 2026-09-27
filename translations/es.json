@@ -242,7 +242,6 @@
     "optionBroadcast": "📢 Transmisión",
     "optionUsers": "👥 Gestionar usuarios",
     "optionBlocked": "⛔ Usuarios bloqueados",
-    "optionPurge": "🗑️ Purgar usuarios de prueba",
     "optionUserManagement": "👥 Gestión de usuarios",
     "optionFeatureManagement": "🧩 Gestión de funciones",
     "optionChatFaq": "💬 Gestión de chat y FAQ",
@@ -589,11 +588,8 @@
     "restoreDone": "{count} usuario(s) restaurado(s) ✅",
     "backupRestore": {
       "title": "💾 Copia de seguridad y restauración",
-      "prompt": "Elige una acción:",
       "optionBackup": "📤 Copia de seguridad (exportar)",
-      "optionRestore": "📥 Restaurar (importar)",
-      "replyPrompt": "Responde con el número de tu elección.",
-      "optionBack": "Atrás"
+      "optionRestore": "📥 Restaurar (importar)"
     },
     "test": {
       "title": "Pruebas de administrador",

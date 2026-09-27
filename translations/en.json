@@ -242,7 +242,6 @@
     "optionBroadcast": "📢 Broadcast",
     "optionUsers": "👥 Manage Users",
     "optionBlocked": "⛔ Blocked Users",
-    "optionPurge": "🗑️ Purge Test Users",
     "optionUserManagement": "👥 User Management",
     "optionFeatureManagement": "🧩 Feature Management",
     "optionChatFaq": "💬 Chat & FAQ Management",
@@ -592,11 +591,8 @@
     "restoreDone": "Restored {count} user(s) ✅",
     "backupRestore": {
       "title": "💾 Backup & Restore",
-      "prompt": "Choose an action:",
       "optionBackup": "📤 Backup (export)",
-      "optionRestore": "📥 Restore (import)",
-      "replyPrompt": "Reply with the number of your choice.",
-      "optionBack": "Back"
+      "optionRestore": "📥 Restore (import)"
     },
     "test": {
       "title": "Admin Tests",

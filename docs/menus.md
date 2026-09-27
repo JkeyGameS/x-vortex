@@ -1,249 +1,291 @@
-# Menu System Migration (Phase 0 — Safety Net & Scaffolding)
+# X-Vortex Menu System
 
-## Purpose
+The menu system is **config-driven**. Every menu the bot can show is declared as a
+data definition in `src/config/menus/`, registered in a central registry, and rendered
+by a single renderer. Handlers no longer build menu text by hand.
 
-The menu system is being migrated to a centralized, config-driven approach
-(`src/config/menus/` + renderer + router) so that menu text, emojis, options,
-and routing live in one place instead of being scattered across handlers.
-This reduces drift between locales, duplicate emoji literals, and routing bugs
-(e.g. menu states missing from the router allowlist).
+> Phases 0-8 of the menu refactor are complete. The migration toggle
+> (`config.menuMigration`) and the `isMenuMigrated()` helper have been **removed**;
+> the config-driven path is the only path.
 
-Phase 0 is **purely additive**: no live behavior changes. It adds scaffolding,
-a migration toggle, backup utilities, and stubs.
+---
 
-## Migration mode flags (`config.menuMigration`)
+## 1. Why config-driven
 
-- `mode: 'off'` (default) — everything uses the old builders.
-- `mode: 'partial'` — only menus listed in `migratedMenus` use the new renderer.
-- `mode: 'full'` — everything uses the new renderer (end of the refactor).
+Before the refactor, a single menu existed in two places: a builder function
+(`buildXxxMenu`) that assembled strings, and a handler that called it. Changing a
+menu label meant editing handler code, and a missing translation silently rendered a
+raw key inside a hand-built string.
 
-`isMenuMigrated(menuId)` (exported from `src/config/config.js`) implements
-this decision and will be called by send paths in later phases.
+Now a menu is one JSON-like object. The renderer owns all formatting rules
+(heading style, small caps, back row, footer, feature markers), so a definition
+describes *what* the menu contains, never *how* it is formatted. Adding a menu is a
+new file plus one registry line.
 
-## Menu definition schema (`src/config/menus/schema.js`)
+---
+
+## 2. Folder structure
+
+```
+src/config/menus/
+  schema.js        # validateMenuDefinition() - asserts shape at registration
+  registry.js      # registerMenu / getMenu / getAllMenus / findMenuByCommand
+  index.js         # imports + registers every definition (the single entry point)
+  mainMenu.js      # main menu
+  settings.js      # user Settings shell
+  statistics.js    # user Statistics shell
+  feedback.js      # user Feedback shell
+  info.js          # Info hub
+  infoSubs.js      # about / version / developer / website
+  profile/         # profile, edit_profile, preferences, my_stats
+  tutorial/        # tutorial hub + static sections
+  chatFaq/         # chat hub, chat settings, responses, snippets, test panel,
+                   # import/export, FAQ shells (faq, add, view, manage, impex,
+                   # stats, search), snippet import/export
+  admin/           # adminPanel, quick actions, broadcast, user management,
+                   # system settings, backup/restore, logs, scheduled tasks,
+                   # analytics, admin search
+```
+
+---
+
+## 3. Schema reference
+
+### MenuDefinition
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | string | Unique menu ID, e.g. `'main_menu'` |
+| `headingKey` | string | Translation key for the heading (no emoji in the string) |
+| `headingEmoji` | string\|null | Emoji concatenated in code, prepended to heading |
+| `standaloneCommand` | string | e.g. `'/profile'`; enables auto-registration |
+| `aliases` | string[] | e.g. `['/me', '/myprofile']` |
+| `descriptionKey` | string | Used for the generated `/help` entry |
+| `adminOnly` | boolean | Generated command is admin-only |
+| `groupAllowed` | boolean | Default `true` |
+| `parent` | string\|null | Parent menu ID (`null` = top level) |
+| `backTo` | string\|null | Menu ID returned to on `0`; `null` = no back row |
+| `backLabelKey` | string | Override the back label |
+| `footerKey` | string\|null | Footer prompt; `null` = no footer row |
+| `footerItalic` | boolean | Default `true` |
+| `transitionKey` | string | Legacy transition key for hybrid `edit`/`delete_send` sends |
+| `sessionMenu` | string | Legacy session state ID (defaults to `id`) |
+| `showMarkers` | boolean | Default `true`; `false` hides markers on list-style menus |
+| `type` | string | e.g. `'mainMenu'` - selects renderer framing |
+| `prefixLines` | string[] | Verbatim lines injected before the option block |
+| `type`/`appendLines`/`dynamicSuffix` | see MenuOption | |
+
+### MenuOption
+
+| Field | Type | Notes |
+|---|---|---|
+| `number` | string | `'1'`..`'9'`, or a letter like `'A'` |
+| `labelKey` | string | Translation key for the label (no emoji in the string) |
+| `emoji` | string | Emoji concatenated in code, prepended to the label |
+| `action` | string | `open:<menuId>` \| `copy_id` \| `sleep` \| `custom:<name>` |
+| `featureId` | string | Attaches a feature marker/status |
+| `hideWhenUnavailable` | boolean | Hide the row when the feature is not `available` |
+| `adminOnly` | boolean | Only rendered for admins |
+| `hidden` | boolean | Never rendered |
+| `breakBefore` | boolean | Blank line before this option |
+| `fallbackKey` | string | Legacy key used when `labelKey` is missing |
+| `progressId` | string | Progress key, consumed by `progressResolver` |
+| `appendLines` | string[] | Pre-formatted sub-lines rendered under the option |
+| `dynamicSuffix` | string | Named suffix resolver appended after the label |
+| `perm` | string | Permission id; `dynamicSuffix: 'permLock'` shows 🔒 when lacking it |
+| `max` | number\|function | Upper bound for numeric input validation |
+
+Definitions are validated by `validateMenuDefinition()` at registration time, so a
+malformed definition fails fast on startup instead of rendering broken text.
+
+---
+
+## 4. Adding a menu
+
+1. Create `src/config/menus/<name>.js`:
 
 ```js
-{
-  id: 'main_menu',          // stable menu id, also used in migratedMenus
-  headingKey: '...',        // translation key for the heading (no emoji)
-  headingEmoji: '👤',       // emoji prepended to the heading
-  standaloneCommand: '/profile',
-  aliases: ['/me'],
-  parent: null,             // parent menu id (null for top-level)
-  backTo: null,             // menu id for '0'; null = no back row (main menu)
-  backLabelKey: undefined,  // override, default common.back → 0. ʙᴀᴄᴋ
-  footerKey: undefined,     // override, default admin.replyPrompt (italic)
+import { registerMenu } from './registry.js';
+
+export default registerMenu({
+  id: 'my_menu',
+  headingKey: 'menu.my_menu.heading',
+  headingEmoji: '🧩',
+  standaloneCommand: '/mymenu',
+  aliases: ['/mm'],
+  descriptionKey: 'menu.my_menu.description',
+  adminOnly: false,
+  parent: 'main_menu',
+  backTo: 'main_menu',
+  footerKey: 'menu.my_menu.footer',
   options: [
-    {
-      number: '1', labelKey: '...', emoji: '👤',
-      action: 'open:profile',   // open:<id> | copy_id | sleep | custom:<name>
-      featureId: 'profileEditing', adminOnly: false, hidden: false
-    }
+    { number: '1', labelKey: 'menu.my_menu.doThing', emoji: '▶️', action: 'custom:myThing' }
   ]
-}
+});
 ```
 
-`validateMenuDefinition(def)` throws on missing/malformed fields and is
-called by `registerMenu()`.
+2. Import it in `src/config/menus/index.js`.
+3. Add the label/heading/footer translation keys to all five locales in
+   `translations/`.
+4. If the option uses `custom:<name>`, register `myThing` in
+   `src/utils/menuCustomHandlers.js`.
 
-## How to register a menu
+The menu is now renderable via `sendMenuById('my_menu', ctx)` and reachable at
+`/mymenu`.
+
+## 5. Adding an option
+
+Append to the menu's `options` array. That is the whole change - no handler edits.
+
+For a dynamic list, replace `options` with a function:
 
 ```js
-import { registerMenu } from '../config/menus/registry.js';
-registerMenu(myDefinition); // validated + stored by id
+dynamicOptions: async (user, language) => getItems(user).map((it, i) => ({
+  number: String(i + 1),
+  labelKey: 'menu.my_menu.item',
+  params: { name: it.name },
+  action: 'open:my_menu_detail'
+}))
 ```
 
-Look up with `getMenu(id)`, `getAllMenus()`, `findMenuByCommand('/cmd')`.
-No menus are registered yet — definitions arrive in Phases 3+.
+---
 
-## How to render and route
+## 6. Resolvers
+
+Resolvers generate the parts of a menu that depend on live data. They are
+registered by name in `src/utils/menuResolvers.js` and referenced from the
+definition, so data access stays out of the definitions.
+
+| Resolver | Definition field | Purpose |
+|---|---|---|
+| `cardResolver` | `cardResolver` | Verbatim lines above the option block (profile cards, dashboard headers) |
+| `dashboardResolver` | `dashboardResolver` | Dynamic summary block (statistics, analytics) |
+| `summaryResolver` | `summaryResolver` | Short dynamic block |
+| `bodyResolver` | `bodyResolver` | Replaces options/back/footer entirely (tutorial sections, FAQ help) |
+| `progressResolver` | `progressResolver` | Option prefixes; combines with each option's `progressId` to add ✅ |
+| rating / value | `dynamicSuffix` | Named suffix appended after a label (on/off, 🔒 for permissions) |
+| `dynamicOptions` | `dynamicOptions` | `(user, language) => MenuOption[]` for paginated lists |
+
+Resolvers receive `(user, language, context)`.
+
+Registering one:
 
 ```js
-import { renderMenu } from '../utils/menuRenderer.js';
-import { resolveMenuOption, runMenuAction } from '../utils/menuRouter.js';
-import { sendMenuById } from '../utils/menuSender.js';
-
-const { text, options } = await renderMenu('main_menu', user, 'en');
-const r = resolveMenuOption('main_menu', input, user);
-// { kind: 'action', action, option } | { kind: 'back', to } | { kind: 'invalid', max } | { kind: 'error', reason }
-await runMenuAction(r.action, { ...context, sendMenuFn });
-await sendMenuById('main_menu', context, transitionKey); // render + hybrid send + session update
+registerDashboardResolver('my_stats', async (user, language) => {
+  const s = await getStats();
+  return [`📊 ${toSmallCaps(t(language, 'menu.my_menu.users'))}: ${s.total}`];
+});
 ```
 
-Renderer rules: hidden options skipped; `adminOnly` checked against
-`config.adminJids`; markers via `menuFeatureMarkers`; back row only when
-`backTo` is set; footer italic-wrapped. Router matching is case-insensitive
-(`a`/`A`); hidden/admin-invisible options never match; `max` is the last
-visible option number for invalid-choice messages. `runMenuAction` stays
-decoupled via `context.sendMenuFn`; `sleep`/`copy_id`/`custom:*` resolve
-through `context.handlers` or `registerMenuActionHandler()` (wired Phase 3+).
+---
 
-## How feature markers are integrated
+## 7. Custom handlers
 
-`src/utils/menuFeatureMarkers.js` wraps the existing feature registry:
-`getOptionMarker(featureId)` returns the effective marker (`''` when absent,
-unknown, or removed by admin; unavailable features still show theirs);
-`isOptionAvailable(featureId)` is true when available or when no featureId.
-Unavailable options stay selectable — the runtime unavailable flow handles them.
+`action: 'custom:<name>'` dispatches to a handler map passed to `runMenuAction()`.
+The maps live in `src/utils/menuCustomHandlers.js`:
 
-## How to test with npm run test:menus
-
-`src/scripts/testMenuPrimitives.js` registers a dummy menu, renders it for
-regular/admin users, exercises resolve/back/invalid/error paths, the
-`open:`/`custom:` engine, and marker edge cases. No translation edits:
-missing keys fall back to the raw key. No live flow calls these primitives.
-
-## Standalone commands (Phase 2)
-
-A menu with `standaloneCommand: '/profile'` (plus `aliases: ['/me']`) is
-auto-registered as a slash command by `src/handlers/menuCommandLoader.js`
-(`buildMenuCommands()`). The generated command delegates entirely to
-`sendMenuById()`; `adminOnly`/`groupAllowed` come from the definition
-(`adminOnly === true` / `groupAllowed !== false`).
-
-- Naming convention: `standaloneCommand` must start with `/`; the leading
-  slash is stripped for the command name (aliases too, lowercased).
-- Conflict handling: manual commands always win. If a generated name or
-  alias already exists (names and aliases share one map), the generated one
-  is skipped with a `[MENU_CMD]` warning and the manual entry is preserved.
-- `commandHandler.loadCommands()` loads manual commands first, then merges
-  generated ones, and logs `[MENU_CMD] menu commands summary` only when
-  something was registered or skipped (silent while no menus are migrated).
-- Testing: `npm run test:menuCommands` (dummy menu, execute delegation,
-  name + alias conflicts, plain menus ignored).
-
-## Migrated menus (Phase 4): profile, edit_profile, preferences, my_stats
-
-- Definitions: `src/config/menus/profile/` (index/editProfile/preferences/myStats).
-- Toggle: `migratedMenus` adds the four ids (mode stays `partial`).
-- Swap: conditionals inside `sendProfileView`/`sendEditSubmenu`/
-  `sendPreferencesView`/`sendStatsView` (+ `backToMain` routes main via toggle).
-- Session states keep legacy ids (`profile`, `profile_edit`, `preferences`,
-  `stats`); the registry speaks new ids. Mapping lives in the index branch.
-- Dynamic lists (edit/preferences available + Advanced node) materialize per
-  user via `dynamicOptions()` mirroring the legacy numbering exactly.
-- Profile card + stats body are verbatim resolver copies
-  (`profileCard`/`myStatsBody`, registered from profileCommand); plain-string
-  lines are small-capped like `buildMenu` does (dynamic fragments rely on it).
-- Available lists suppress markers (`showMarkers: false`), matching legacy;
-  the Advanced (old-builder) lists still show them.
-- Preferences notification/announcement state uses `dynamicSuffix` resolvers.
-- Click actions delegate to `dispatchProfileAction` via `menuCustomHandlers`
-  (feature gates + prompts unchanged); unmigrated submenus
-  (`message_settings`, `pref_advanced`, language, typing, self-destruct…)
-  are reached through the same handlers and route on legacy states.
-- Invalid input replicates legacy per-state texts (profile max 7 hardcoded).
-- Standalone `/profile`, `/preferences` (+aliases) stay manual (loader skips).
-
-## Migrated menus (Phase 3): main_menu
-
-- Definition: `src/config/menus/mainMenu.js` (registered in `menus/index.js`).
-- Toggle: `config.menuMigration = { mode: 'partial', migratedMenus: ['main_menu'] }`.
-- Sending: `startCommand.sendMigratedMainMenu()` when
-  `isMenuMigrated('main_menu')`, else legacy `sendOldMainMenu()`.
-- Routing: the `currentMenu === 'main'` branch in `index.js` resolves via
-  `resolveMenuOption` and dispatches `open:*` through existing openers;
-  `0` keeps its pre-existing sleep-confirm path; invalid singles re-render;
-  anything else falls through to chat rules — all exactly as before.
-- Parity notes (verified byte-identical vs `data/menuSnapshots/main_menu_*`):
-  option `0` keeps its emoji inline (`Asleep 💤` suffix); the admin row is
-  feature-gated, not admin-gated; `{username}` stays raw-case in the heading;
-  lowercase `a` behaves like the legacy branch.
-
-## How to toggle migration
+- `profileCustomHandlers`
+- `chatFaqCustomHandlers`
+- `adminCustomHandlers`
+- `userCustomHandlers`
 
 ```js
-menuMigration: { mode: 'partial', migratedMenus: ['main_menu'] }
+export const userCustomHandlers = {
+  myThing: async (context) => {
+    const { sender, chatId, user, language } = context;
+    await doThing(user);
+    await sendMenuById('my_menu', { ...context, resultLine: t(language, 'menu.my_menu.done') });
+  }
+};
 ```
 
-## How to revert
+A handler returns after rendering so the router does not fall through.
 
-Set `mode` back to `'off'` and restart — `sendOldMainMenu()` and the legacy
-router branch take over again. `sendOldMainMenu` is preserved until Phase 8.
+---
 
-## Migrated menus (Phase 5): chat_faq, chat_responses, chat_settings, snippets, test_panel, chat_import_export
+## 8. Standalone commands
 
-- Definitions: `src/config/menus/chatFaq/` (index/chatResponses/chatSettings/snippets/testPanel/importExport).
-- Toggle: `migratedMenus` adds the six ids (mode stays `partial`).
-- Swap: conditionals inside `sendChatFaqMenu`/`sendChatSettingsPanel`/
-  `sendChatTestPanel`/`sendChatFaqImportExport` (adminCommand) and
-  `sendChatPanel`/`sendSnippetsMenu` (chatCommand). `resultLine` forces the
-  legacy builder (new renderer has no result-line support yet).
-- Session keeps legacy ids; definitions carry `transitionKey`/`sessionMenu`
-  consumed by `sendMenuById`.
-- Suffixes replicate `chatSettingsValueText` via self-contained resolvers in
-  `menuResolvers.js` (no import cycle); whole-line casing matches legacy
-  `buildMenu` (labels AND suffixes capped).
-- Click actions delegate to existing senders/flows via `chatFaqCustomHandlers`
-  (toggles, submenu openers, snippet/import flows). Unmigrated submenus keep
-  legacy states and routes. Test panel keeps legacy free-text processing;
-  only `0` is router-handled.
-- Invalid input replicates legacy per-state texts (hub/snippets resend,
-  responses max 6 + resend, settings max 35, import/export max 8).
-- Standalone `/chatfaq`, `/chatresponses`, `/snippets`, `/testpanel`
-  auto-register (admin-only); manual `/chatsettings` wins. Non-admins are
-  denied by the dispatcher (`adminOnly: true`).
-- Dynamic/paginated menus (rule/FAQ lists, wizards, stats views) stay on
-  builders until Phase 7.
+`src/handlers/menuCommandLoader.js` walks the registry at startup and builds a slash
+command for every definition with a `standaloneCommand`. The generated command calls
+`sendMenuById(menu.id, ctx)` and inherits `adminOnly` from the definition.
 
-## Migrated menus (Phase 6): adminPanel, quick_actions, broadcast, user_management, system_settings, backup_restore, logs, scheduled_tasks, analytics, admin_search
+**Conflict resolution is manual-wins.** If a command with the same name is already
+registered by a handler module, the manual one is kept and the loader logs:
 
-- Definitions: `src/config/menus/admin/` (10 files).
-- Toggle: `migratedMenus` adds the ten ids (mode stays `partial`).
-- Swap: conditionals inside existing senders; `resultLine` forces legacy.
-  Session keeps legacy ids (`admin`, `admin_quick_actions`,
-  `broadcast_submenu`, `admin_users`, `system_settings`, `admin_backup`,
-  `logs`, `admin_search`, `admin_scheduled_tasks`, `command_analytics`).
-- Dynamic content via verbatim resolvers registered from adminCommand:
-  `adminDashboard` (status/uptime/counts + activity feed),
-  `userMgmtSummary` (totals), `scheduledTasksBody` (paginated, session page),
-  `adminSearchBody` (static prompt). Unmigrated `sendAdminLogsMenu`
-  (grouped `admin_logs` state) is intentionally left alone — the live flow
-  is `sendLogsPanel` (state `logs`).
-- Admin option 🔒 suffixes via `perm` + `permLock` resolver (mirrors the
-  legacy builder; click-time gates stay in legacy reply handlers).
-- Click actions re-dispatch through legacy reply handlers
-  (`adminCustomHandlers`), preserving locks, perms, confirms, and sub-flows.
-  Free-text states (search, scheduled, test panel) keep legacy processors;
-  only their renders migrated.
-- Invalid input replicates legacy per-state texts (panel max 13, quick max
-  5, broadcast max 3, system max 8, analytics/logs max 2, resends for
-  users/backup); the help interceptor (`9`, `10` in system_settings) runs
-  before resolve, as in legacy.
-- Back rows use legacy per-source transition keys (all `delete_send`);
-  `adminPanel → main_menu` reuses the main-menu toggle path.
-- Standalone `/scheduled`, `/tasks`, `/logs` auto-register (admin-only);
-  manual `/admin`, `/broadcast`, `/users`, `/syssettings`, `/backup`,
-  `/analytics` win. Non-admins are denied by the dispatcher.
-- Dynamic/paginated flows (user lists, exports detail, log viewers,
-  broadcast scheduling, feature tree, feedback subsystem) stay on builders
-  for Phase 7+.
+```
+[MENU_CMD] Skipping auto-registration for '/settings' — already exists manually
+```
 
-## Migrated menus (Phase 7): settings, statistics, tutorial (+6 static subs), info (+4 subs), feedback, faq (+6 subs), snippet_impex
+This is intentional for commands that carry behavior beyond opening a menu - for
+example `/start` performs onboarding for new users, `/chatsettings` supports
+`on|off|list|reset` subcommands, and `/profile` and `/stats` run a feature gate
+before opening. Those handlers stay; only genuinely redundant openers are omitted
+from the definitions. A summary of registered vs skipped commands is logged at
+startup.
 
-- Definitions: `src/config/menus/` root + `tutorial/` + `chatFaq/` additions.
-- Toggle: `migratedMenus` adds 24 ids (mode stays `partial`).
-- Swap: conditionals inside existing senders; `resultLine` forces legacy.
-  Session keeps legacy ids (`settings`, `stats_main`, `tutorial_main`,
-  `info`, `feedback_main`, `faq_main`, …).
-- Dynamic content via verbatim resolvers registered from owner modules
-  (`tutorialProgress`, stats/info dashboards, tutorial/info/faq bodies).
-  Tutorial progress checkmarks via `progressId` + async resolver; feedback
-  per-user notes via `dynamicOptions` + `appendLines`.
-- Click actions re-dispatch legacy reply handlers with fixed input
-  (`userCustomHandlers`), preserving gates, side effects (tutorial progress),
-  wizards, and pagination. Free-text states (faq_search) keep legacy
-  processors; only `0` is router-handled.
-- Invalid input re-dispatches legacy with the original input (exact edge
-  behavior); back rows navigate via `backTo` (+ toggle-aware main backs).
-- The `tutorial_commands`/`tutorial_search`/quick-tips flows, feedback
-  sub-flows, FAQ lists/details/wizards, `pref_advanced`, and the help
-  subsystem stay fully legacy (no render migration).
-- Standalone: no new manual collisions found beyond existing; generated
-  commands defer to manuals per Phase 2 rules. Non-admin FAQ access denied
-  by legacy branch gates (mirrored in the new branch).
+---
 
-## Temporary artifacts (removed in Phase 8)
+## 9. Feature markers
 
-- `src/config/emojiFallback.js` — emoji safety net for missing keys.
-- `data/menuSnapshots/` — baseline menu outputs (`npm run backup:menus`).
+Attach `featureId` to an option to bind it to the feature registry:
+
+```js
+{ number: '3', labelKey: 'profile.optionStats', emoji: '📊',
+  featureId: 'statistics', hideWhenUnavailable: false }
+```
+
+`src/utils/menuFeatureMarkers.js` resolves the effective marker
+(`getOptionMarker`) and availability (`isOptionAvailable`) from the feature flag
+service, so an admin disabling a feature immediately changes the rendered menu.
+`hideWhenUnavailable: true` removes the row entirely instead of marking it.
+
+---
+
+## 10. Back navigation
+
+`0` is resolved by the router:
+
+- `backTo` names the parent menu ID; the sender renders it with the correct
+  transition.
+- `backTo: null` means the menu has no back row (the main menu uses its own
+  `0 = exit` option).
+- `backLabelKey` overrides the default localized `back` label.
+
+Session state and the new menu IDs are bridged by `sessionMenu`, so legacy session
+values keep working while the registry speaks the new IDs.
+
+---
+
+## 11. Testing
+
+```bash
+npm test                # both suites
+npm run test:menus      # renderer / schema / router / markers primitives
+npm run test:menuCommands   # auto-registration + conflict resolution
+```
+
+`tests/menuPrimitives.test.mjs` registers a synthetic menu and asserts rendering,
+markers, back rows, validation failures and router outcomes.
+`tests/menuCommands.test.mjs` asserts that every definition with a
+`standaloneCommand` produces a registered command and that manual commands win
+conflicts.
+
+---
+
+## 12. Migration history
+
+| Phase | Scope |
+|---|---|
+| 0 | Scaffolding: schema, registry, renderer, router, sender, snapshots |
+| 1 | Primitives + standalone command auto-registration |
+| 2 | Standalone command loader |
+| 3 | Main menu |
+| 4 | Profile, edit profile, preferences, my stats |
+| 5 | Chat/FAQ cluster |
+| 6 | Admin cluster |
+| 7 | User cluster (settings, statistics, tutorial, info, feedback, FAQ shells) |
+| 8 | Cleanup: conditionals, toggle, legacy builders and temp files removed |
+
+Legacy code that is not a static menu (paginated lists, wizards, interactive
+prompts) still lives in its owning handler and is reached through custom handlers.
+Those flows are out of scope for the config-driven renderer by design.
