@@ -119,8 +119,10 @@ import {
   sendAdminBackupMenu,
   sendAdminLogsMenu,
   handleGroupedAdminReply,
-  sendTemplateSubmenu,  buildTestMenu
+  sendTemplateSubmenu,
+  buildTestMenu
 } from './handlers/adminCommand.js';
+import { MAIN_MENU_FEATURES, sendMigratedMainMenu, command as startCommand } from './handlers/startCommand.js';
 import {
   handleChatReply, handleChatAddStart, handleChatAddTriggerInput, handleChatAddTriggerEdit,
   handleChatAddCustomTrigger, handleChatAddReplies, handleChatAddPreview, handleChatAddLanguage,
