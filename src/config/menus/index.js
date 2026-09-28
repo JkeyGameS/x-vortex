@@ -38,6 +38,7 @@ import faqImportExportMenu from './chatFaq/faqImportExport.js';
 import faqStatsMenu from './chatFaq/faqStats.js';
 import faqSearchMenu from './chatFaq/faqSearch.js';
 import snippetImpexMenu from './chatFaq/snippetImpex.js';
+import helpMenu from './help.js';
 
 registerMenu(mainMenu);
 registerMenu(profileMenu);
@@ -75,6 +76,7 @@ registerMenu(faqImportExportMenu);
 registerMenu(faqStatsMenu);
 registerMenu(faqSearchMenu);
 registerMenu(snippetImpexMenu);
+registerMenu(helpMenu);
 
 // Re-export the registry API so callers import from one place.
 export { registerMenu, getMenu, getAllMenus, findMenuByCommand, unregisterMenu } from './registry.js';
@@ -96,3 +98,4 @@ export { default as logsDefinition } from './admin/logs.js';
 export { default as scheduledTasksDefinition } from './admin/scheduledTasks.js';
 export { default as analyticsDefinition } from './admin/analytics.js';
 export { default as adminSearchDefinition } from './admin/adminSearch.js';
+export { default as helpDefinition } from './help.js';

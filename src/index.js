@@ -2970,7 +2970,15 @@ async function startBot() {
             statistics: () => openStatsMenu({ sock, sender, chatId, pushName }),
             tutorial: () => openTutorial({ sock, sender, chatId, pushName, language, commands, isAdmin: isAdminOperator(sender), user }),
             info: () => openInfo({ sock, sender, chatId, pushName }),
-            feedback: () => openFeedback({ sock, sender, chatId, pushName })
+            feedback: () => openFeedback({ sock, sender, chatId, pushName }),
+            // Help stays paginated and is owned by helpCommand; the registry
+            // shell exists so `open:help` resolves instead of failing.
+            help: async () => {
+              const { openHelp } = await import('./handlers/helpCommand.js');
+              return openHelp({ sock, sender, chatId, pushName, user, language }, { origin: 'main' });
+            },
+            // Reached only if the earlier admin gate is ever bypassed.
+            adminPanel: () => sendAdminPanel({ sock, sender, chatId, pushName })
           };
           await runMenuAction(mainResult.action, {
             sock, sender, chatId, pushName, user, language,
@@ -3098,9 +3106,31 @@ async function startBot() {
     }
   });
 
-  const { getAllMenus } = await import('./config/menus/registry.js');
+  const { getAllMenus, getMenu } = await import('./config/menus/registry.js');
   await import('./config/menus/index.js');
-  logger.info({ menus: getAllMenus().length }, '[MENU] config-driven menu system loaded');
+  const registeredMenus = getAllMenus();
+  logger.info(
+    { count: registeredMenus.length, ids: registeredMenus.map((m) => m.id).join(', ') },
+    `[MENU_REGISTRY] ${registeredMenus.length} menus registered`
+  );
+  // Startup validation: every menu reachable from the main menu must resolve,
+  // otherwise pressing that option would fail at runtime.
+  const CRITICAL_MENUS = ['main_menu', 'profile', 'settings', 'statistics', 'tutorial', 'info', 'feedback', 'help', 'adminPanel'];
+  for (const id of CRITICAL_MENUS) {
+    if (!getMenu(id)) logger.error({ menuId: id }, '[MENU] critical menu not registered!');
+  }
+  // Cross-check every open:<menuId> action across all definitions.
+  const dangling = [];
+  for (const m of registeredMenus) {
+    for (const opt of m.options || []) {
+      if (typeof opt.action === 'string' && opt.action.startsWith('open:')) {
+        const target = opt.action.slice('open:'.length);
+        if (!getMenu(target)) dangling.push(`${m.id}:${opt.number} -> open:${target}`);
+      }
+    }
+  }
+  if (dangling.length) logger.error({ dangling }, '[MENU] definitions reference unregistered menus');
+  else logger.info('[MENU] all open: targets resolve');
   logger.info('X-Vortex bot is ready');
 }
 

@@ -5,6 +5,9 @@ import { validateMenuDefinition } from '../src/config/menus/schema.js';
 import { renderMenu } from '../src/utils/menuRenderer.js';
 import { resolveMenuOption, runMenuAction, registerMenuActionHandler } from '../src/utils/menuRouter.js';
 import { getOptionMarker, isOptionAvailable } from '../src/utils/menuFeatureMarkers.js';
+// Load the real definitions so runMenuAction's registry check sees the same
+// menu set as production.
+import '../src/config/menus/index.js';
 
 const mockRegularUser = {
   jid: '100000000000000@lid',
@@ -94,13 +97,28 @@ await runMenuAction('open:profile', { sendMenuFn });
 check('open: delegates to sendMenuFn', opened[0] === 'profile', opened.join(','));
 registerMenuActionHandler('sayHello', async () => 'hello');
 check('custom handler runs', (await runMenuAction('custom:sayHello', {})) === 'hello');
-let sleepThrew = false;
-try {
-  await runMenuAction('sleep', {});
-} catch {
-  sleepThrew = true;
-}
-check('sleep without handler throws (wired Phase 3+)', sleepThrew);
+
+// runMenuAction never throws: a missing menu or handler is reported to the
+// user and reported as { success: false } so the dispatcher never dies on a
+// mis-wired action.
+const sock = { sendMessage: async () => ({ key: { id: 'x' } }) };
+const failCtx = { sock, sender: 'x@s.whatsapp.net', language: 'en' };
+
+let openMissing = await runMenuAction('open:does_not_exist', { ...failCtx, sendMenuFn });
+check('open: unregistered menu → success:false', openMissing && openMissing.success === false, JSON.stringify(openMissing));
+
+let noSender = await runMenuAction('open:profile', {});
+check('open: missing sendMenuFn → success:false', noSender && noSender.success === false, JSON.stringify(noSender));
+
+let sleepResult = await runMenuAction('sleep', { ...failCtx });
+check('sleep without handler → success:false (no throw)', sleepResult && sleepResult.success === false, JSON.stringify(sleepResult));
+
+let unknown = await runMenuAction('nonsense:action', { ...failCtx });
+check('unknown action → success:false', unknown && unknown.success === false, JSON.stringify(unknown));
+
+let emptyThrew = false;
+try { await runMenuAction('', {}); } catch { emptyThrew = true; }
+check('empty action does not throw', !emptyThrew);
 
 // markers (no live dependency beyond the feature registry)
 check('marker none without featureId', getOptionMarker(undefined) === '' && getOptionMarker(null) === '');

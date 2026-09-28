@@ -1017,7 +1017,8 @@
     "timeYearAgo": "hace 1 año",
     "timeYearsAgo": "hace {n} años",
     "next": "Siguiente ▶",
-    "previous": "◀ Anterior"
+    "previous": "◀ Anterior",
+    "menuUnavailable": "Este menú no está disponible en este momento. Inténtalo de nuevo más tarde."
   },
   "farewell": {
     "tagline": "Tu asistente personal para perfiles, ajustes, estadísticas y más.",

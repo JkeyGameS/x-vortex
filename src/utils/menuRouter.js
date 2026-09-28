@@ -1,5 +1,8 @@
 import { getMenu } from '../config/menus/registry.js';
 import { visibleMenuOptions, materializeDefinition } from './menuRenderer.js';
+import logger from './logger.js';
+import { toSmallCaps } from './smallCaps.js';
+import { t } from '../services/localeService.js';
 
 const customHandlers = new Map();
 
@@ -52,31 +55,74 @@ function resolveHandler(name, context) {
 }
 
 /**
+ * Reply to the user when a menu action cannot be completed. Silently swallowing
+ * these left users staring at an unchanged menu with no explanation, so every
+ * failure path in runMenuAction reports back.
+ */
+async function notifyMenuFailure(context, key) {
+  const sock = context?.sock;
+  const sender = context?.sender;
+  if (!sock || !sender) return;
+  try {
+    const language = context?.language || 'en';
+    await sock.sendMessage(sender, { text: '❌ ' + toSmallCaps(t(language, key)) });
+  } catch (err) {
+    logger.error({ err, key }, '[MENU] failed to deliver menu error notice');
+  }
+}
+
+/**
  * Execute a menu action. Navigation ('back') is handled by the caller via
  * resolveMenuOption; this runs the action itself.
  * context: { sock, sender, chatId, user, language, session, sendMenuFn, handlers }
  * @returns {*} handler result (open:* returns sendMenuFn result)
  */
 export async function runMenuAction(action, context = {}) {
-  if (typeof action !== 'string' || !action) throw new Error('runMenuAction requires an action string');
-  if (action.startsWith('open:')) {
-    const to = action.slice('open:'.length);
-    if (!to) throw new Error('runMenuAction: open: action missing menu id');
-    if (typeof context.sendMenuFn !== 'function') {
-      throw new Error('runMenuAction: context.sendMenuFn is required for open: actions');
+  if (typeof action !== 'string' || !action) {
+    logger.error({ action }, '[MENU] runMenuAction called without an action string');
+    return { success: false };
+  }
+  try {
+    if (action.startsWith('open:')) {
+      const to = action.slice('open:'.length);
+      if (!to) throw new Error('runMenuAction: open: action missing menu id');
+      if (!getMenu(to)) {
+        logger.error({ menuId: to }, '[MENU] open: target is not registered');
+        await notifyMenuFailure(context, 'common.menuUnavailable');
+        return { success: false };
+      }
+      if (typeof context.sendMenuFn !== 'function') {
+        logger.error({ menuId: to }, '[MENU] open: action has no sendMenuFn');
+        await notifyMenuFailure(context, 'common.menuUnavailable');
+        return { success: false };
+      }
+      return await context.sendMenuFn(to, context.user, context.language, {});
     }
-    return context.sendMenuFn(to, context.user, context.language, {});
+    if (action === 'sleep' || action === 'copy_id') {
+      const handler = resolveHandler(action, context);
+      if (!handler) {
+        logger.error({ action }, '[MENU] no handler registered');
+        await notifyMenuFailure(context, 'common.menuUnavailable');
+        return { success: false };
+      }
+      return await handler(context);
+    }
+    if (action.startsWith('custom:')) {
+      const name = action.slice('custom:'.length);
+      const handler = resolveHandler(name, context);
+      if (!handler) {
+        logger.error({ name }, '[MENU] custom handler not found');
+        await notifyMenuFailure(context, 'common.menuUnavailable');
+        return { success: false };
+      }
+      return await handler(context);
+    }
+    logger.warn({ action }, '[MENU] unknown action');
+    await notifyMenuFailure(context, 'common.menuUnavailable');
+    return { success: false };
+  } catch (err) {
+    logger.error({ err, action }, '[MENU] runMenuAction failed');
+    await notifyMenuFailure(context, 'common.menuUnavailable');
+    return { success: false };
   }
-  if (action === 'sleep' || action === 'copy_id') {
-    const handler = resolveHandler(action, context);
-    if (!handler) throw new Error(`runMenuAction: no handler registered for '${action}' (wire in Phase 3+)`);
-    return handler(context);
-  }
-  if (action.startsWith('custom:')) {
-    const name = action.slice('custom:'.length);
-    const handler = resolveHandler(name, context);
-    if (!handler) throw new Error(`runMenuAction: no handler registered for '${action}'`);
-    return handler(context);
-  }
-  throw new Error(`runMenuAction: unknown action '${action}'`);
 }

@@ -6,6 +6,7 @@ import config from '../config/config.js';
 import { getUserByJid, trackFeatureUsage } from '../services/userService.js';
 import { addError } from '../services/errorLogService.js';
 import { helpOrder } from '../config/menuConfig.js';
+import { registerBodyResolver } from '../utils/menuResolvers.js';
 
 const PAGE_SIZE = 5;
 
@@ -194,3 +195,16 @@ export const command = {
     }
   },
 };
+// Body resolver for the 'help' registry shell (src/config/menus/help.js).
+// It renders page 1 of the paginated help viewer so main-menu option 9
+// resolves against the registry; openHelp() still owns pagination and session
+// state, and the body is re-rendered by helpCommand on navigation.
+registerBodyResolver('helpPage', async (user, language) => {
+  const isAdmin = (config.adminJids || []).includes(user?.jid);
+  return buildHelpMessage({
+    language: language || user?.language || config.defaultLanguage,
+    page: 1,
+    isAdmin,
+    origin: 'main'
+  });
+});

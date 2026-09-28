@@ -1020,7 +1020,8 @@
     "timeYearAgo": "1 year ago",
     "timeYearsAgo": "{n} years ago",
     "next": "Next ▶",
-    "previous": "◀ Previous"
+    "previous": "◀ Previous",
+    "menuUnavailable": "This menu is unavailable right now. Please try again later."
   },
   "farewell": {
     "tagline": "Your personal assistant for profiles, settings, stats, and more.",
