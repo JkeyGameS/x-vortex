@@ -113,6 +113,15 @@ sessionTimeoutMinutes: 5,
   chatRateLimitCooldownBehavior: 'silent', // 'silent' | 'polite'
   chatDryRunMaxLogEntries: 500, // cap for data/chatDryRunLog.json
   chatSnippetMaxDepth: 3, // max recursive {snippet:name} expansion depth
+  // Admin-defined custom commands (data/customCommands.json)
+  customCommands: {
+    enabled: true,
+    maxCommands: 200,
+    maxAliasesPerCommand: 5,
+    maxNameLength: 30,
+    maxDescriptionLength: 100,
+    maxTextActionLength: 1000
+  },
   // Message display modes (edit / send_new / delete_send / hybrid)
   messageDisplay: {
     defaultMode: 'hybrid', // 'hybrid' keeps each transition's legacy behavior

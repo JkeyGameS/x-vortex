@@ -294,7 +294,41 @@ sends, confirmations) are unaffected.
 
 ---
 
-## 12. Testing
+## 12. Custom commands
+
+Admins can define user-triggered commands at runtime (no code changes) via
+System Settings → Custom Commands, or the standalone commands `/customcmds`
+(`/cc`), `/addcmd`, `/editcmd`, `/delcmd`, `/listcmds`, `/togglecmd`,
+`/importcmds`, `/exportcmds`.
+
+Storage: `data/customCommands.json`, via `customCommandService`.
+
+**Actions**: `send_text` (reply with fixed text), `open_menu` (open a registry
+menu), `invoke_chat_rule` (run a chat rule and send its reply),
+`forward_to_admin` (report to admins).
+
+**Conflict detection** — a name or alias is rejected if it collides with a
+built-in command, a menu's `standaloneCommand`/alias, or another custom
+command. The wizard shows the conflict and asks for a different name; nothing
+is ever silently overridden. `reservedCommandNames()` returns **built-in**
+names only (custom-vs-custom is detected by the store), which is what lets
+import overwrite or rename an existing custom command.
+
+**Runtime registration**: `registerDynamicCommand` / `unregisterDynamicCommand` /
+`reRegisterAllCustomCommands` in `commandHandler.js` add, remove and rebuild
+the in-memory map, so add / edit / delete / toggle / import take effect
+immediately — no restart. A hand-edited file that gives a command a built-in
+name is skipped at startup with a warning, and the built-in keeps working.
+
+Custom commands appear in `/help` in their own `✨` section, and only when
+enabled, described, and permitted for the reader.
+
+**Chat rules and custom commands are independent**: commands are matched
+first, so `/ping` never falls through to chat-rule matching.
+
+---
+
+## 13. Testing
 
 ```bash
 npm test                # both suites
@@ -310,7 +344,7 @@ conflicts.
 
 ---
 
-## 13. Migration history
+## 14. Migration history
 
 | Phase | Scope |
 |---|---|

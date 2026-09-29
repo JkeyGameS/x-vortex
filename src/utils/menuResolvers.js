@@ -6,6 +6,7 @@ import { hasPermission } from '../services/rolesService.js';
 import settingsService from '../services/settingsService.js';
 import * as messageSettings from '../services/messageSettingsService.js';
 import { MESSAGE_MODES } from '../services/messageSettingsService.js';
+import * as customCommandStore from '../services/customCommandService.js';
 
 /**
  * Suffix resolvers for dynamic option labels: (user, language) => string.
@@ -265,6 +266,19 @@ export const progressResolvers = {};
 
 // Message display summaries (registered eagerly: no cycle risk, the service
 // only reads/writes data/messageSettings.json).
+registerSummaryResolver('customCommandsSummary', (user, language) => {
+  // Read lazily to avoid pulling the store into the renderer's import graph.
+  const svc = customCommandStore;
+  if (!svc) return [];
+  const all = svc.getAllCustomCommands();
+  const enabled = all.filter((c) => c.enabled).length;
+  return [
+    toSmallCaps(t(language || 'en', 'menu.custom_commands.total')) + ': ' + all.length +
+    ' · ' + toSmallCaps(t(language || 'en', 'menu.custom_commands.enabled')) + ': ' + enabled +
+    ' · ' + toSmallCaps(t(language || 'en', 'menu.custom_commands.disabled')) + ': ' + (all.length - enabled)
+  ];
+});
+
 registerSummaryResolver('messageDisplaySummary', (user, language) => {
   const set = messageSettings.getSettings();
   const lines = [];

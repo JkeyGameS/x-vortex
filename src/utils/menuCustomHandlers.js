@@ -485,3 +485,25 @@ export const messageDisplayCustomHandlers = {
   toggle_per_menu_override: togglePerMenuOverride,
   sys_message_display: (context) => reRender(context, 'message_display_admin', 'system_message_display', null)
 };
+
+// ---------------------------------------------------------------------------
+// Custom Commands admin menu. Each row opens a wizard that owns its own input
+// prompts; the dispatcher routes 'custom_command_*' states back to the wizard.
+// ---------------------------------------------------------------------------
+
+const ccWizard = () => import('./customCommandWizard.js');
+
+export const customCommandCustomHandlers = {
+  custom_cmds_list: (context) => ccWizard().then((w) => w.startListWizard(context)),
+  custom_cmds_add: (context) => ccWizard().then((w) => w.startAddWizard(context)),
+  custom_cmds_edit: (context) => ccWizard().then((w) => w.startEditWizard(context)),
+  custom_cmds_delete: (context) => ccWizard().then((w) => w.startDeleteWizard(context)),
+  custom_cmds_toggle: (context) => ccWizard().then((w) => w.startToggleWizard(context)),
+  custom_cmds_impex: (context) => ccWizard().then((w) => w.startImportExport(context)),
+  sys_custom_commands: async (context) => {
+    const { sendMenuById } = await import('./menuSender.js');
+    const chatId = context.chatId || context.sender;
+    const language = context.language || config.defaultLanguage;
+    return sendMenuById('custom_commands', { sock: context.sock, sender: context.sender, chatId, user: context.user || null, language }, 'system_custom_commands', { sessionMenu: 'custom_commands' });
+  }
+};

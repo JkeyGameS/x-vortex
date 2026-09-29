@@ -14,7 +14,8 @@ const PAGE_SIZE = 5;
 // are static and identical across languages.
 const SECTION_META = {
   user: { emoji: '👤', key: 'help.userCommands' },
-  admin: { emoji: '🛡️', key: 'help.adminCommands' }
+  admin: { emoji: '🛡️', key: 'help.adminCommands' },
+  custom: { emoji: '✨', key: 'menu.custom_commands.heading' }
 };
 
 function orderRank(name) {
@@ -35,11 +36,17 @@ function buildEntries(commands, isAdmin) {
     list.push(cmd);
   }
   list.sort((a, b) => orderRank(a.name) - orderRank(b.name));
-  const user = list.filter((c) => !c.adminOnly).map((cmd) => ({ cmd, section: 'user' }));
+  const user = list.filter((c) => !c.adminOnly && !c.isCustomCommand).map((cmd) => ({ cmd, section: 'user' }));
   const admin = isAdmin
-    ? list.filter((c) => c.adminOnly).map((cmd) => ({ cmd, section: 'admin' }))
+    ? list.filter((c) => c.adminOnly && !c.isCustomCommand).map((cmd) => ({ cmd, section: 'admin' }))
     : [];
-  return [...user, ...admin];
+  // Custom commands are their own section: only enabled ones that carry a
+  // description, and adminOnly ones only for admins.
+  const custom = list
+    .filter((c) => c.isCustomCommand && c.enabled && c.description)
+    .filter((c) => (c.adminOnly ? isAdmin : true))
+    .map((cmd) => ({ cmd, section: 'custom' }));
+  return [...user, ...admin, ...custom];
 }
 
 // Localized description; falls back to the hard-coded English description when

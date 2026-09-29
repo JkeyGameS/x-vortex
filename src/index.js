@@ -2810,6 +2810,14 @@ async function startBot() {
         return;
       }
 
+      // Custom Commands wizard: every state owns its own prompts and validation.
+      if (session?.currentMenu && session.currentMenu.startsWith('custom_command')) {
+        if (!isAdminOperator(sender)) return;
+        const { handleCustomCommandWizard } = await import('./utils/customCommandWizard.js');
+        await handleCustomCommandWizard({ sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage }, trimmedText);
+        return;
+      }
+
       // Tutorial menu and its structured submenus.
       if (session?.currentMenu && session.currentMenu.startsWith('tutorial_')) {
         await handleTutorialReply({
