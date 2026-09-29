@@ -4,6 +4,8 @@ import { getSettings as getChatSettings, getIgnoreList } from '../services/chatS
 import { getTypingSettings } from '../services/typingSettingsService.js';
 import { hasPermission } from '../services/rolesService.js';
 import settingsService from '../services/settingsService.js';
+import * as messageSettings from '../services/messageSettingsService.js';
+import { MESSAGE_MODES } from '../services/messageSettingsService.js';
 
 /**
  * Suffix resolvers for dynamic option labels: (user, language) => string.
@@ -48,6 +50,49 @@ function botNotifsSuffix(key, language) {
   const on = n.enabled && n[key];
   return ': ' + toSmallCaps(t(language || 'en', on ? 'common.onFlag' : 'common.offFlag'));
 }
+
+// ---------------------------------------------------------------------------
+// Message display modes. Suffixes show which mode is currently selected, or a
+// lock marker when the admin has disabled user overrides.
+// ---------------------------------------------------------------------------
+
+const MODE_LABEL_KEYS = {
+  edit: 'menu.message_display.edit',
+  send_new: 'menu.message_display.send_new',
+  delete_send: 'menu.message_display.delete_send',
+  hybrid: 'menu.message_display.hybrid'
+};
+
+function currentUserMode(user) {
+  const set = messageSettings.getSettings();
+  const pref = user?.preferences?.messageDisplayMode;
+  if (set.allowUserOverride && pref && MESSAGE_MODES.includes(pref)) return pref;
+  if (set.defaultMode && set.defaultMode !== 'hybrid') return set.defaultMode;
+  return set.defaultMode || 'hybrid';
+}
+
+function modeSuffix(mode, language) {
+  return ': *' + toSmallCaps(t(language || 'en', MODE_LABEL_KEYS[mode] || MODE_LABEL_KEYS.hybrid)) + '*';
+}
+
+for (const _mode of ['edit', 'send_new', 'delete_send', 'hybrid']) {
+  dynamicSuffixResolvers['messageMode_' + _mode + 'State'] = (user, language) => {
+    const set = messageSettings.getSettings();
+    // Locked by admin -> show the lock, never the selection.
+    if (!set.allowUserOverride) return ' 🔒';
+    if (!set.userOverrideRange.includes(_mode)) return ' 🔒';
+    return currentUserMode(user) === _mode ? modeSuffix(_mode, language) : '';
+  };
+}
+
+dynamicSuffixResolvers.messageDisplayAdmin_default_modeState = (user, language) =>
+  modeSuffix(messageSettings.getSettings().defaultMode, language);
+
+dynamicSuffixResolvers.messageDisplayAdmin_user_overrideState = (user, language) =>
+  ': ' + toSmallCaps(t(language || 'en', messageSettings.getSettings().allowUserOverride ? 'common.onFlag' : 'common.offFlag'));
+
+dynamicSuffixResolvers.messageDisplayAdmin_per_menu_overrideState = (user, language) =>
+  ': ' + toSmallCaps(t(language || 'en', messageSettings.getSettings().perMenuOverrideEnabled ? 'common.onFlag' : 'common.offFlag'));
 
 export function registerSuffixResolver(name, fn) {
   if (typeof name !== 'string' || !name || typeof fn !== 'function') {
@@ -211,12 +256,33 @@ function lockSuffix(user, opt) {
 // Card/body/dashboard/summary/progress resolvers are registered by their
 // owning handlers at load time (avoids import cycles: the renderer looks
 // them up by name at render time). Line resolvers return arrays of verbatim
-// lines; progress resolvers return a prefix string ('✅'/'⬜'/'').
+// lines; progress resolvers return a prefix string ('✅'/'⬜'/' '').
 export const cardResolvers = {};
 export const bodyResolvers = {};
 export const dashboardResolvers = {};
 export const summaryResolvers = {};
 export const progressResolvers = {};
+
+// Message display summaries (registered eagerly: no cycle risk, the service
+// only reads/writes data/messageSettings.json).
+registerSummaryResolver('messageDisplaySummary', (user, language) => {
+  const set = messageSettings.getSettings();
+  const lines = [];
+  lines.push(toSmallCaps(t(language || 'en', 'menu.message_display.current')) + ': *' + toSmallCaps(t(language || 'en', MODE_LABEL_KEYS[currentUserMode(user)] || MODE_LABEL_KEYS.hybrid)) + '*');
+  if (!set.allowUserOverride) {
+    lines.push('🔒 ' + toSmallCaps(t(language || 'en', 'menu.message_display.lockedByAdmin')));
+  }
+  return lines;
+});
+
+registerSummaryResolver('messageDisplayAdminSummary', (user, language) => {
+  const set = messageSettings.getSettings();
+  return [
+    toSmallCaps(t(language || 'en', 'menu.message_display_admin.defaultModeLabel')) + ': *' + toSmallCaps(t(language || 'en', MODE_LABEL_KEYS[set.defaultMode] || MODE_LABEL_KEYS.hybrid)) + '*',
+    toSmallCaps(t(language || 'en', 'menu.message_display_admin.userOverrideLabel')) + ': ' + toSmallCaps(t(language || 'en', set.allowUserOverride ? 'common.onFlag' : 'common.offFlag')),
+    toSmallCaps(t(language || 'en', 'menu.message_display_admin.perMenuOverrideLabel')) + ': ' + toSmallCaps(t(language || 'en', set.perMenuOverrideEnabled ? 'common.onFlag' : 'common.offFlag'))
+  ];
+});
 
 export function registerCardResolver(name, fn) {
   if (typeof name !== 'string' || !name || typeof fn !== 'function') {

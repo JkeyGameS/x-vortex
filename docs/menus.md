@@ -256,7 +256,45 @@ values keep working while the registry speaks the new IDs.
 
 ---
 
-## 11. Testing
+## 11. Message display modes
+
+Menu updates can be rendered in four ways, resolved per send by
+`messageSettingsService.resolveMessageMode(definition, user)`:
+
+| Mode | Behavior |
+|---|---|
+| `edit` | Always edit the stored menu message. If the edit fails (message too old), delete and send a new one. |
+| `send_new` | Always send a new message. The previous menu is never edited or deleted. |
+| `delete_send` | Always delete the previous menu, then send a new one. |
+| `hybrid` | Edit while `editCount < messageDisplay.editAttemptsBeforeDelete`, then delete + send. **Default.** |
+
+Precedence: per-menu `messageMode` → user `preferences.messageDisplayMode` →
+global `defaultMode` → the transition's own legacy mode.
+
+`defaultMode: 'hybrid'` is the shipped default and means **"keep each
+transition's legacy behavior"** — `menuConfig` marks many flows as
+always-new or always-delete+send, and a blanket `hybrid` would have silently
+changed back-navigation. Any *other* global default is an explicit admin
+choice and does override those transitions. Transitions flagged `edit_or_new`
+never delete regardless of the resolved mode.
+
+**Menus**
+- `message_display` (user) — under Preferences; sets the user's own mode.
+  Shows 🔒 on every row when an admin disables user overrides.
+- `message_display_admin` (admin) — `/msgdisplay`; global default, user
+  override switch, per-menu override switch.
+
+**Per-menu override**: only `adminPanel` sets `messageMode: 'send_new'`
+(audit-friendly — admins can scroll back through their panels). Add it to a
+definition only where the behavior is genuinely wanted; otherwise the global
+and user settings lose their purpose.
+
+**Legacy compatibility**: flows that never call `sendMenuById` (one-off
+sends, confirmations) are unaffected.
+
+---
+
+## 12. Testing
 
 ```bash
 npm test                # both suites
@@ -272,7 +310,7 @@ conflicts.
 
 ---
 
-## 12. Migration history
+## 13. Migration history
 
 | Phase | Scope |
 |---|---|

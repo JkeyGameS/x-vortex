@@ -2920,6 +2920,37 @@
       "footer": "repondez avec le numero de votre choix.",
       "resultOn": "notifications du bot activees.",
       "resultOff": "notifications du bot desactivees."
+    },
+    "message_display": {
+      "heading": "affichage des messages",
+      "footer": "repondez avec le numero de votre choix.",
+      "current": "actuel",
+      "lockedByAdmin": "ce reglage est gere par un administrateur.",
+      "notAvailable": "ce mode nest pas disponible pour votre compte.",
+      "selected": "mode daffichage defini sur {mode}.",
+      "edit": "modifier",
+      "send_new": "envoyer nouveau",
+      "delete_send": "supprimer + envoyer",
+      "hybrid": "hybride",
+      "d_edit": "met a jour le meme message, garde la discussion propre.",
+      "d_send_new": "garde tous les menus precedents visibles.",
+      "d_delete_send": "supprime l ancien menu, en envoie un nouveau.",
+      "d_hybrid": "modifie deux fois, puis supprime et renvoie."
+    },
+    "message_display_admin": {
+      "heading": "affichage des messages (global)",
+      "footer": "repondez avec le numero de votre choix.",
+      "defaultModeLabel": "mode par defaut",
+      "userOverrideLabel": "choix utilisateur",
+      "perMenuOverrideLabel": "par menu",
+      "default_mode": "definir le mode par defaut",
+      "user_override": "basculer le choix utilisateur",
+      "per_menu_override": "basculer par menu",
+      "defaultSet": "mode par defaut defini sur {mode}.",
+      "userOverrideOn": "les utilisateurs peuvent maintenant choisir leur mode.",
+      "userOverrideOff": "le choix utilisateur est maintenant verrouille.",
+      "perMenuOn": "les surcharges par menu sont actives.",
+      "perMenuOff": "les surcharges par menu sont desactivees."
     }
   },
   "lifecycle": {

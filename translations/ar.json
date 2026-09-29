@@ -2920,6 +2920,37 @@
       "footer": "رد برقم اختيارك.",
       "resultOn": "تم تفعيل إشعارات البوت.",
       "resultOff": "تم تعطيل إشعارات البوت."
+    },
+    "message_display": {
+      "heading": "عرض الرسائل",
+      "footer": "رد برقم اختيارك.",
+      "current": "الحالي",
+      "lockedByAdmin": "هذا الإعداد يديره أحد المشرفين",
+      "notAvailable": "هذا الوضع غير متاح لحسابك",
+      "selected": "تم ضبط وضع العرض على {mode}",
+      "edit": "تحرير",
+      "send_new": "إرسال جديد",
+      "delete_send": "حذف وإرسال",
+      "hybrid": "هجين",
+      "d_edit": "يحدث نفس الرسالة",
+      "d_send_new": "يبقي كل القوائم السابقة",
+      "d_delete_send": "يحذف القديم ويرسل جديدا",
+      "d_hybrid": "يحرر مرتين ثم يحذف"
+    },
+    "message_display_admin": {
+      "heading": "عرض الرسائل (عالمي)",
+      "footer": "رد برقم اختيارك.",
+      "defaultModeLabel": "الوضع الافتراضي",
+      "userOverrideLabel": "تجاوز المستخدم",
+      "perMenuOverrideLabel": "لكل قائمة",
+      "default_mode": "ضبط الوضع الافتراضي",
+      "user_override": "تبديل تجاوز المستخدم",
+      "per_menu_override": "تبديل لكل قائمة",
+      "defaultSet": "تم ضبط الوضع الافتراضي على {mode}",
+      "userOverrideOn": "يمكن للمستخدمين الآن اختيار وضعهم",
+      "userOverrideOff": "تجاوز المستخدم مقفل الآن",
+      "perMenuOn": "تجاوزات القوائم مفعلة الآن",
+      "perMenuOff": "تجاوزات القوائم معطلة الآن"
     }
   },
   "lifecycle": {

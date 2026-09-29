@@ -113,6 +113,14 @@ sessionTimeoutMinutes: 5,
   chatRateLimitCooldownBehavior: 'silent', // 'silent' | 'polite'
   chatDryRunMaxLogEntries: 500, // cap for data/chatDryRunLog.json
   chatSnippetMaxDepth: 3, // max recursive {snippet:name} expansion depth
+  // Message display modes (edit / send_new / delete_send / hybrid)
+  messageDisplay: {
+    defaultMode: 'hybrid', // 'hybrid' keeps each transition's legacy behavior
+    allowUserOverride: true,
+    perMenuOverrideEnabled: true,
+    editAttemptsBeforeDelete: 2, // hybrid: edits before falling back to delete+send
+    editFallbackTimeout: 60000 // treat a menu older than this as "too old to edit"
+  },
   // Bot lifecycle notifications (admin-only: startup / shutdown / crash)
   botNotifications: {
     enabled: true,

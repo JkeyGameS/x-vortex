@@ -2923,6 +2923,37 @@
       "footer": "reply with the number of your choice.",
       "resultOn": "bot notifications turned on.",
       "resultOff": "bot notifications turned off."
+    },
+    "message_display": {
+      "heading": "message display",
+      "footer": "reply with the number of your choice.",
+      "current": "current",
+      "lockedByAdmin": "this setting is managed by an admin.",
+      "notAvailable": "this mode is not available for your account.",
+      "selected": "display mode set to {mode}.",
+      "edit": "edit",
+      "send_new": "send new",
+      "delete_send": "delete + send",
+      "hybrid": "hybrid",
+      "d_edit": "updates the same message, keeps chat clean.",
+      "d_send_new": "keeps all previous menus visible.",
+      "d_delete_send": "removes the old menu, sends a new one.",
+      "d_hybrid": "edits twice, then deletes and sends new."
+    },
+    "message_display_admin": {
+      "heading": "message display (global)",
+      "footer": "reply with the number of your choice.",
+      "defaultModeLabel": "default mode",
+      "userOverrideLabel": "user override",
+      "perMenuOverrideLabel": "per-menu override",
+      "default_mode": "set default mode",
+      "user_override": "toggle user override",
+      "per_menu_override": "toggle per-menu override",
+      "defaultSet": "default mode set to {mode}.",
+      "userOverrideOn": "users can now choose their own display mode.",
+      "userOverrideOff": "user override is now locked.",
+      "perMenuOn": "per-menu overrides are now active.",
+      "perMenuOff": "per-menu overrides are now disabled."
     }
   },
   "lifecycle": {

@@ -856,12 +856,14 @@ async function startBot() {
         faq_stats: 'faq_stats',
         faq_search: 'faq_search',
         chat_snippet_impex: 'snippet_impex',
-        bot_notifications: 'bot_notifications'
+        bot_notifications: 'bot_notifications',
+        message_display: 'message_display',
+        message_display_admin: 'message_display_admin'
       }[session?.currentMenu || ''];
       if (migratedChatFaqId) {
         // Legacy parity: admin-only menus ignore non-admin input entirely.
         // User-facing menus (settings, stats, tutorial, info, feedback) skip this.
-        if (['chat_faq_menu', 'chat_responses_main', 'chat_settings', 'chat_snippets', 'chat_test_panel', 'chat_import_export', 'admin', 'admin_quick_actions', 'broadcast_submenu', 'admin_users', 'system_settings', 'admin_backup', 'logs', 'admin_search', 'admin_scheduled_tasks', 'command_analytics', 'faq_main', 'faq_add', 'faq_view', 'faq_manage', 'faq_import_export', 'faq_stats', 'faq_search', 'chat_snippet_impex', 'bot_notifications'].includes(session?.currentMenu || '')) {
+        if (['chat_faq_menu', 'chat_responses_main', 'chat_settings', 'chat_snippets', 'chat_test_panel', 'chat_import_export', 'admin', 'admin_quick_actions', 'broadcast_submenu', 'admin_users', 'system_settings', 'admin_backup', 'logs', 'admin_search', 'admin_scheduled_tasks', 'command_analytics', 'faq_main', 'faq_add', 'faq_view', 'faq_manage', 'faq_import_export', 'faq_stats', 'faq_search', 'chat_snippet_impex', 'bot_notifications', 'message_display', 'message_display_admin'].includes(session?.currentMenu || '')) {
           if (!isAdminOperator(sender)) return;
         }
         const clusterUser = await getUserByJid(sender);
@@ -934,11 +936,11 @@ async function startBot() {
           return;
         }
         if (clusterResult.kind === 'action') {
-          const { userCustomHandlers, botNotificationCustomHandlers } = await import('./utils/menuCustomHandlers.js');
+          const { userCustomHandlers, botNotificationCustomHandlers, messageDisplayCustomHandlers } = await import('./utils/menuCustomHandlers.js');
           await runMenuAction(clusterResult.action, {
             sock, sender, chatId, pushName, user: clusterUser, language: clusterLang, commands,
             sendMenuFn: async (menuId) => sendMenuById(menuId, { sock, sender, chatId, user: clusterUser, language: clusterLang }),
-            handlers: { ...chatFaqCustomHandlers, ...adminCustomHandlers, ...userCustomHandlers, ...botNotificationCustomHandlers }
+            handlers: { ...chatFaqCustomHandlers, ...adminCustomHandlers, ...userCustomHandlers, ...botNotificationCustomHandlers, ...messageDisplayCustomHandlers }
           });
           return;
         }
@@ -2842,7 +2844,8 @@ async function startBot() {
           tutorial_profile_guide: 'tutorial_profile_guide', tutorial_settings_prefs: 'tutorial_settings_prefs',
           tutorial_self_destruct: 'tutorial_self_destruct', tutorial_feedback: 'tutorial_feedback',
           tutorial_whats_new: 'tutorial_whats_new', info_about: 'info_about', info_version: 'info_version',
-          info_developer: 'info_developer', info_website: 'info_website', bot_notifications: 'bot_notifications'
+          info_developer: 'info_developer', info_website: 'info_website', bot_notifications: 'bot_notifications',
+          message_display: 'message_display', message_display_admin: 'message_display_admin'
         };
         const registryId = REGISTRY_IDS[session.currentMenu];
         if (registryId) {
@@ -3156,6 +3159,9 @@ async function startBot() {
   }
   if (dangling.length) logger.error({ dangling }, '[MENU] definitions reference unregistered menus');
   else logger.info('[MENU] all open: targets resolve');
+  // Load persisted message display settings (creates data/messageSettings.json).
+  const msgSettings = (await import('./services/messageSettingsService.js')).loadSettings();
+  logger.info({ messageDisplay: msgSettings }, '[MSG] display modes loaded');
   logger.info('X-Vortex bot is ready');
 }
 

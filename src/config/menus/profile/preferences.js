@@ -40,6 +40,15 @@ function buildPreferencesOptions() {
       fallbackKey: 'preferences.advancedOptions'
     });
   }
+  // Message display is a real preference for every user, so it is a fixed
+  // trailing row rather than a hidden entry inside the (conditional) Advanced node.
+  mapped.push({
+    number: String(mapped.length + 1),
+    labelKey: 'menu.message_display.heading',
+    emoji: '📩',
+    action: 'open:message_display',
+    fallbackKey: 'menu.message_display.heading'
+  });
   return mapped;
 }
 

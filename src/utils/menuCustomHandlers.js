@@ -386,3 +386,102 @@ export const botNotificationCustomHandlers = {
     );
   }
 };
+
+// ---------------------------------------------------------------------------
+// Message display modes. Users pick their own mode; admins own the global
+// default and the two override switches.
+// ---------------------------------------------------------------------------
+
+const MODE_LABEL_KEYS = {
+  edit: 'menu.message_display.edit',
+  send_new: 'menu.message_display.send_new',
+  delete_send: 'menu.message_display.delete_send',
+  hybrid: 'menu.message_display.hybrid'
+};
+
+async function reRender(context, menuId, transitionKey, resultKey, params) {
+  const { sendMenuById } = await import('./menuSender.js');
+  const chatId = context.chatId || context.sender;
+  const language = context.language || config.defaultLanguage;
+  const user = context.user || null;
+  let resultLine = null;
+  if (resultKey) resultLine = t(language, resultKey, params);
+  return sendMenuById(
+    menuId,
+    { sock: context.sock, sender: context.sender, chatId, user, language },
+    transitionKey,
+    { resultLine, sessionMenu: menuId }
+  );
+}
+
+async function setUserMessageMode(context, mode) {
+  const msg = await import('../services/messageSettingsService.js');
+  const { getUserByJid, updateUser } = await import('../services/userService.js');
+  const set = msg.getSettings();
+  const sender = context.sender;
+  const language = context.language || config.defaultLanguage;
+
+  if (!set.allowUserOverride) {
+    // Admin locked overrides: refuse and explain, do not change anything.
+    return reRender(context, 'message_display', 'message_display', 'menu.message_display.lockedByAdmin');
+  }
+  if (!set.userOverrideRange.includes(mode)) {
+    return reRender(context, 'message_display', 'message_display', 'menu.message_display.notAvailable');
+  }
+  const user = context.user || (await getUserByJid(sender));
+  const next = { ...(user?.preferences || {}), messageDisplayMode: mode };
+  await updateUser(sender, { preferences: next });
+  // Keep the in-memory user fresh so the re-render shows the new selection.
+  if (context.user) context.user.preferences = next;
+  return reRender(context, 'message_display', 'message_display', 'menu.message_display.selected', {
+    mode: toSmallCaps(t(language, MODE_LABEL_KEYS[mode] || MODE_LABEL_KEYS.hybrid))
+  });
+}
+
+async function adminSetDefaultMode(context) {
+  const msg = await import('../services/messageSettingsService.js');
+  const { logAdminAction } = await import('../services/adminLogService.js');
+  const set = msg.getSettings();
+  const language = context.language || config.defaultLanguage;
+  // Cycle edit -> send_new -> delete_send -> hybrid.
+  const order = msg.MESSAGE_MODES;
+  const next = order[(order.indexOf(set.defaultMode) + 1) % order.length];
+  msg.updateSetting('defaultMode', next);
+  logAdminAction(context.sender, 'message_mode_default_changed', next);
+  return reRender(context, 'message_display_admin', 'message_display_admin', 'menu.message_display_admin.defaultSet', {
+    mode: toSmallCaps(t(language, MODE_LABEL_KEYS[next] || MODE_LABEL_KEYS.hybrid))
+  });
+}
+
+async function toggleUserOverride(context) {
+  const msg = await import('../services/messageSettingsService.js');
+  const { logAdminAction } = await import('../services/adminLogService.js');
+  const set = msg.getSettings();
+  const next = !set.allowUserOverride;
+  msg.updateSetting('allowUserOverride', next);
+  logAdminAction(context.sender, 'user_override_toggled', next ? 'on' : 'off');
+  return reRender(context, 'message_display_admin', 'message_display_admin',
+    next ? 'menu.message_display_admin.userOverrideOn' : 'menu.message_display_admin.userOverrideOff');
+}
+
+async function togglePerMenuOverride(context) {
+  const msg = await import('../services/messageSettingsService.js');
+  const { logAdminAction } = await import('../services/adminLogService.js');
+  const set = msg.getSettings();
+  const next = !set.perMenuOverrideEnabled;
+  msg.updateSetting('perMenuOverrideEnabled', next);
+  logAdminAction(context.sender, 'per_menu_override_toggled', next ? 'on' : 'off');
+  return reRender(context, 'message_display_admin', 'message_display_admin',
+    next ? 'menu.message_display_admin.perMenuOn' : 'menu.message_display_admin.perMenuOff');
+}
+
+export const messageDisplayCustomHandlers = {
+  set_user_mode_edit: (context) => setUserMessageMode(context, 'edit'),
+  set_user_mode_send_new: (context) => setUserMessageMode(context, 'send_new'),
+  set_user_mode_delete_send: (context) => setUserMessageMode(context, 'delete_send'),
+  set_user_mode_hybrid: (context) => setUserMessageMode(context, 'hybrid'),
+  set_message_mode_default: adminSetDefaultMode,
+  toggle_user_override: toggleUserOverride,
+  toggle_per_menu_override: togglePerMenuOverride,
+  sys_message_display: (context) => reRender(context, 'message_display_admin', 'system_message_display', null)
+};

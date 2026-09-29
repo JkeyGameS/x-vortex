@@ -2920,6 +2920,37 @@
       "footer": "antworten sie mit der nummer ihrer wahl.",
       "resultOn": "bot-benachrichtigungen aktiviert.",
       "resultOff": "bot-benachrichtigungen deaktiviert."
+    },
+    "message_display": {
+      "heading": "nachrichtenanzeige",
+      "footer": "antworten sie mit der nummer ihrer wahl.",
+      "current": "aktuell",
+      "lockedByAdmin": "diese einstellung wird von einem administrator verwaltet.",
+      "notAvailable": "dieser modus ist fur ihr konto nicht verfugbar.",
+      "selected": "anzeigemodus auf {mode} gesetzt.",
+      "edit": "bearbeiten",
+      "send_new": "neu senden",
+      "delete_send": "loschen + senden",
+      "hybrid": "hybrid",
+      "d_edit": "aktualisiert dieselbe nachricht, haltet den chat sauber.",
+      "d_send_new": "behalt alle vorherigen menus sichtbar.",
+      "d_delete_send": "entfernt das alte menu und sendet ein neues.",
+      "d_hybrid": "bearbeitet zweimal, loscht dann und sendet neu."
+    },
+    "message_display_admin": {
+      "heading": "nachrichtenanzeige (global)",
+      "footer": "antworten sie mit der nummer ihrer wahl.",
+      "defaultModeLabel": "standardmodus",
+      "userOverrideLabel": "benutzer-override",
+      "perMenuOverrideLabel": "pro menu",
+      "default_mode": "standardmodus setzen",
+      "user_override": "benutzer-override umschalten",
+      "per_menu_override": "pro-menu-override umschalten",
+      "defaultSet": "standardmodus auf {mode} gesetzt.",
+      "userOverrideOn": "benutzer konnen jetzt ihren modus wahlen.",
+      "userOverrideOff": "benutzer-override ist jetzt gesperrt.",
+      "perMenuOn": "menu-uberschreibungen sind jetzt aktiv.",
+      "perMenuOff": "menu-uberschreibungen sind jetzt deaktiviert."
     }
   },
   "lifecycle": {

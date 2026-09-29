@@ -5,6 +5,7 @@ import config from '../config/config.js';
 import logger from '../utils/logger.js';
 import sessionManager from '../utils/sessionManager.js';
 import settingsService from '../services/settingsService.js';
+import * as messageDisplayService from '../services/messageSettingsService.js';
 import * as blockedUsers from '../services/blockedUsersService.js';
 import * as templateService from '../services/templateService.js';
 import * as analyticsService from '../services/analyticsService.js';
@@ -4298,6 +4299,7 @@ export async function sendSystemSettingsPanel(context, opts = {}) {
 
 function buildGeneralSettingsMenu(language, resultLine = '') {
   const settings = settingsService.getSettings();
+  const msgMode = messageDisplayService.getSettings().defaultMode || 'hybrid';
   return buildMenu(
     t(language, 'admin.systemSettings.generalTitle'),
     '',
@@ -4307,6 +4309,7 @@ function buildGeneralSettingsMenu(language, resultLine = '') {
       '2. ' + toSmallCaps(t(language, 'admin.systemSettings.optionSleepAnimation')) + ': ' + toSmallCaps(statusText(language, settings.sleepAnimationEnabled)),
       '3. ' + t(language, 'admin.systemSettings.optionBotName'),
       '4. ⌨️ ' + toSmallCaps(t(language, 'admin.systemSettings.optionTyping')) + ': ' + toSmallCaps(statusText(language, settings.typingIndicatorEnabled !== false)),
+      '5. 📩 ' + toSmallCaps(t(language, 'menu.message_display_admin.heading')) + ': ' + toSmallCaps(t(language, msgMode === 'hybrid' ? 'menu.message_display.hybrid' : 'menu.message_display.' + msgMode)),
       '',
       '0. ' + t(language, 'admin.systemSettings.optionBack'),
       '',
@@ -4315,8 +4318,17 @@ function buildGeneralSettingsMenu(language, resultLine = '') {
   );
 }
 
-export async function sendGeneralSettingsPanel(context, opts = {}) {
+/** Opens the config-driven global message-display admin menu. */
+export async function sendMessageByIdForAdmin(context) {
+  const { sendMenuById } = await import('../utils/menuSender.js');
   const sender = context.sender;
+  const chatId = context.chatId || sender;
+  const language = resolveLanguage(sender);
+  const user = await getUserByJid(sender).catch(() => null);
+  return sendMenuById('message_display_admin', { sock: context.sock, sender, chatId, user, language }, 'system_message_display', { sessionMenu: 'message_display_admin' });
+}
+
+export async function sendGeneralSettingsPanel(context, opts = {}) {  const sender = context.sender;
   const chatId = context.chatId || sender;
   const language = resolveLanguage(sender);
 
@@ -4912,8 +4924,11 @@ export async function handleGeneralSettingsReply(context, selectedNumber) {
     case '4':
       await toggleTypingIndicator(context);
       break;
+    case '5':
+      await sendMessageByIdForAdmin(context);
+      break;
     default:
-      await sendText(context.sock, sender, L(language, 'common.invalidChoiceMinMax', { min: 0, max: 4 }));
+      await sendText(context.sock, sender, L(language, 'common.invalidChoiceMinMax', { min: 0, max: 5 }));
       break;
   }
 }

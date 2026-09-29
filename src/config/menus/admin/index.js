@@ -33,6 +33,9 @@ export default {
   fallbackHeadingKey: 'admin.title',
   fallbackFooterKey: 'admin.replyPrompt',
   dashboardResolver: 'adminDashboard',
+  // Audit-friendly: the admin panel always arrives as a new message so admins
+  // can scroll back through their recent panels.
+  messageMode: 'send_new',
   transitionKey: 'admin_panel',
   sessionMenu: 'admin',
   adminOnly: true,

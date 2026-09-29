@@ -2920,6 +2920,37 @@
       "footer": "responda con el numero de su eleccion.",
       "resultOn": "notificaciones del bot activadas.",
       "resultOff": "notificaciones del bot desactivadas."
+    },
+    "message_display": {
+      "heading": "visualizacion de mensajes",
+      "footer": "responda con el numero de su eleccion.",
+      "current": "actual",
+      "lockedByAdmin": "este ajuste lo gestiona un administrador.",
+      "notAvailable": "este modo no esta disponible para su cuenta.",
+      "selected": "modo de visualizacion establecido en {mode}.",
+      "edit": "editar",
+      "send_new": "enviar nuevo",
+      "delete_send": "eliminar + enviar",
+      "hybrid": "hibrido",
+      "d_edit": "actualiza el mismo mensaje, mantiene el chat limpio.",
+      "d_send_new": "mantiene visibles todos los menus anteriores.",
+      "d_delete_send": "elimina el menu anterior y envia uno nuevo.",
+      "d_hybrid": "edita dos veces, luego elimina y envia uno nuevo."
+    },
+    "message_display_admin": {
+      "heading": "visualizacion de mensajes (global)",
+      "footer": "responda con el numero de su eleccion.",
+      "defaultModeLabel": "modo predeterminado",
+      "userOverrideLabel": "anular por usuario",
+      "perMenuOverrideLabel": "por menu",
+      "default_mode": "definir modo predeterminado",
+      "user_override": "alternar anular por usuario",
+      "per_menu_override": "alternar por menu",
+      "defaultSet": "modo predeterminado establecido en {mode}.",
+      "userOverrideOn": "los usuarios ya pueden elegir su modo.",
+      "userOverrideOff": "la anulacion por usuario esta bloqueada.",
+      "perMenuOn": "las anulaciones por menu estan activas.",
+      "perMenuOff": "las anulaciones por menu estan desactivadas."
     }
   },
   "lifecycle": {

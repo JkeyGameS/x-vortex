@@ -24,7 +24,13 @@ export async function sendMenuById(menuId, context, transitionKey, opts = {}) {
     ...(Array.isArray(opts.prefixLines) ? opts.prefixLines : [])
   ];
   const { text } = await renderMenu(menuId, user, language, { sender, chatId, ...opts, prefixLines });
-  await sendMenu({ sock, sender, chatId, text, transitionKey: key, type: opts.type || 'submenuTransition' });
+  // Resolve the display mode (per-menu > user preference > global > transition).
+  let mode = null;
+  try {
+    const { resolveMessageMode } = await import('../services/messageSettingsService.js');
+    mode = resolveMessageMode(definition, user);
+  } catch { /* mode layer is optional; fall back to transition behavior */ }
+  await sendMenu({ sock, sender, chatId, text, transitionKey: key, type: opts.type || 'submenuTransition', mode });
   try {
     if (sender && chatId && sessionManager && typeof sessionManager.setState === 'function') {
       sessionManager.setState(sender, chatId, { currentMenu: sessionState });

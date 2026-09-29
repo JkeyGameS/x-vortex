@@ -8,18 +8,21 @@ import { t } from '../services/localeService.js';
 import { scheduleSelfDestruct } from '../services/selfDestructService.js';
 
 /**
- * Send a menu message according to the transition defined in menuConfig
- * combined with the hybrid edit-vs-delete+send strategy.
+ * Send a menu message according to the transition defined in menuConfig,
+ * optionally overridden by a resolved display mode (messageSettingsService).
  *
- * Modes:
- * - 'edit': try to edit the same message while `editCount < maxEditBeforeSend`.
- *   On success `editCount` is incremented. If the edit fails, or the threshold is
- *   reached, the old message is deleted and a fresh message is sent, and editCount resets to 0.
- * - 'delete_send': always delete the previous menu (if a key exists) and send a new one. Resets editCount.
- * - 'new': always send a new message; never edit/delete the previous menu. Resets editCount.
+ * Display modes (override the transition's hybrid behavior):
+ * - 'edit': always try to edit the stored menu key. On failure, fall back to
+ *   delete + send so the user is never left without a menu.
+ * - 'send_new': always send a new message; never edit or delete the previous menu.
+ * - 'delete_send': always delete the previous menu, then send a new one.
+ * - 'hybrid': the shipped default - edit while `editCount < maxEdit`, then
+ *   delete + send. This matches the pre-feature behavior exactly.
+ *
+ * Transitions flagged 'edit_or_new' keep their legacy never-delete behavior.
  *
  * Stores the new message key as lastMenuKey unless the transition says storeKey: false.
- * @returns {Promise<{ key: object|null, action: 'edited'|'sent' }>}
+ * @returns {Promise<{ key: object|null, action: 'edited'|'sent'|'deleted_sent' }>}
  */
 function deleteAndSend(sock, sender, lastMenuKey, text) {
   if (lastMenuKey) {
@@ -32,7 +35,7 @@ function deleteAndSend(sock, sender, lastMenuKey, text) {
   return sock.sendMessage(sender, { text });
 }
 
-export async function sendMenu({ sock, sender, chatId, text, transitionKey, skipTyping = false, type = 'submenuTransition' }) {
+export async function sendMenu({ sock, sender, chatId, text, transitionKey, skipTyping = false, type = 'submenuTransition', mode = null }) {
   if (!skipTyping && type !== 'silent') {
     try {
       const { showTyping } = await import('./typingHelper.js');
@@ -45,37 +48,63 @@ export async function sendMenu({ sock, sender, chatId, text, transitionKey, skip
   const session = sessionManager.getSession(sender, chatId) || {};
   const lastMenuKey = session.lastMenuKey;
   const editCount = session.editCount || 0;
-  const maxEdit = config.maxEditBeforeSend ?? 2;
+  const maxEdit = config.messageDisplay?.editAttemptsBeforeDelete ?? config.maxEditBeforeSend ?? 2;
+
+  // 'edit_or_new' never deletes; that is load-bearing for a few flows.
+  // NOTE: the legacy transition mode 'edit' means HYBRID (edit twice, then
+  // delete+send) - it is not the new always-edit display mode. Explicit
+  // legacy modes are translated into the new vocabulary; an explicit `mode`
+  // from the settings layer wins as-is.
+  const LEGACY_MODE_MAP = { edit: 'hybrid', new: 'send_new' };
+  const effective = transition.mode === 'edit_or_new'
+    ? 'edit_or_new'
+    : (mode || LEGACY_MODE_MAP[transition.mode] || transition.mode);
 
   let key = null;
   let action = 'sent';
   let nextEditCount = 0;
 
-  if (transition.mode === 'new' || transition.mode === 'delete_send') {
-    const sent = await deleteAndSend(sock, sender, lastMenuKey, text);
+  if (effective === 'send_new') {
+    // Never touch the previous menu message.
+    const sent = await sock.sendMessage(sender, { text });
     key = sent?.key || null;
     await scheduleSelfDestruct(sock, sender, key);
-    if (transition.mode === 'delete_send' && lastMenuKey) action = 'deleted_sent';
-  } else if (transition.mode === 'edit_or_new') {
+  } else if (effective === 'edit' || effective === 'edit_or_new') {
     if (lastMenuKey) {
       try {
         await sock.sendMessage(sender, { text, edit: lastMenuKey });
         key = lastMenuKey;
         await scheduleSelfDestruct(sock, sender, key, false);
         action = 'edited';
+        if (effective === 'edit') nextEditCount = editCount + 1;
       } catch (err) {
-        logger.warn({ err }, 'Menu edit failed, sending new message without deleting the old one');
-        const sent = await sock.sendMessage(sender, { text });
-        key = sent?.key || null;
-        await scheduleSelfDestruct(sock, sender, key);
+        logger.warn({ err }, 'Menu edit failed, sending new message');
+        if (effective === 'edit_or_new') {
+          const sent = await sock.sendMessage(sender, { text });
+          key = sent?.key || null;
+          await scheduleSelfDestruct(sock, sender, key);
+        } else {
+          const sent = await deleteAndSend(sock, sender, lastMenuKey, text);
+          key = sent?.key || null;
+          await scheduleSelfDestruct(sock, sender, key);
+          nextEditCount = 0;
+        }
       }
     } else {
-      const sent = await sock.sendMessage(sender, { text });
+      const sent = effective === 'edit_or_new'
+        ? await sock.sendMessage(sender, { text })
+        : await deleteAndSend(sock, sender, lastMenuKey, text);
       key = sent?.key || null;
       await scheduleSelfDestruct(sock, sender, key);
+      nextEditCount = 0;
     }
+  } else if (effective === 'delete_send') {
+    const sent = await deleteAndSend(sock, sender, lastMenuKey, text);
+    key = sent?.key || null;
+    await scheduleSelfDestruct(sock, sender, key);
+    if (lastMenuKey) action = 'deleted_sent';
   } else {
-    // 'edit' (or any pseudo-edit mode): hybrid edit vs delete+send
+    // 'hybrid' (and any unknown mode): edit while under the threshold, else delete+send.
     if (lastMenuKey && editCount < maxEdit) {
       try {
         await sock.sendMessage(sender, { text, edit: lastMenuKey });
