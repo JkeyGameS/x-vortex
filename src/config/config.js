@@ -113,6 +113,17 @@ sessionTimeoutMinutes: 5,
   chatRateLimitCooldownBehavior: 'silent', // 'silent' | 'polite'
   chatDryRunMaxLogEntries: 500, // cap for data/chatDryRunLog.json
   chatSnippetMaxDepth: 3, // max recursive {snippet:name} expansion depth
+  // Bot lifecycle notifications (admin-only: startup / shutdown / crash)
+  botNotifications: {
+    enabled: true,
+    onStartup: true,
+    onShutdown: true,
+    onCrash: true,
+    crashDetectionWindowMs: 300000, // 5 min — a newer-than-this unclean stop counts as a crash
+    crashSpamWindowMs: 600000, // 10 min — sliding window for the spam threshold
+    crashSpamThreshold: 3, // >= this many crashes in the window -> send the summary instead
+    shutdownTimeoutMs: 3000 // max wait for the shutdown notification before exiting anyway
+  },
   // Add other settings as needed
 };
 

@@ -9,7 +9,8 @@ const OPTS = [
   ['5', 'conversation', 'custom:sys_conversation', 'admin.systemSettings.optionConversation', '💬'],
   ['6', 'updates', 'custom:sys_updates', 'admin.systemSettings.optionUpdates', '📡'],
   ['7', 'data', 'custom:sys_data', 'admin.systemSettings.optionDataManagement', '🧹'],
-  ['8', 'logs', 'custom:sys_logs', 'admin.systemSettings.optionLogs', '❗']
+  ['8', 'logs', 'custom:sys_logs', 'admin.systemSettings.optionLogs', '❗'],
+  ['9', 'bot_notifications', 'custom:sys_bot_notifications', 'admin.systemSettings.optionBotNotifications', '🔔']
 ];
 
 export default {

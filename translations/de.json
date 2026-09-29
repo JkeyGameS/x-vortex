@@ -2909,6 +2909,40 @@
       "heading": "Import / Export",
       "export": "Exportieren",
       "import": "Importieren"
+    },
+    "bot_notifications": {
+      "heading": "bot-benachrichtigungen",
+      "toggleAll": "alle umschalten",
+      "onStartup": "beim start",
+      "onShutdown": "beim beenden",
+      "onCrash": "bei absturz",
+      "current": "aktuell",
+      "footer": "antworten sie mit der nummer ihrer wahl.",
+      "resultOn": "bot-benachrichtigungen aktiviert.",
+      "resultOff": "bot-benachrichtigungen deaktiviert."
     }
+  },
+  "lifecycle": {
+    "onlineTitle": "x-vortex ist online",
+    "shutdownTitle": "bot wird beendet",
+    "crashTitle": "unerwarteter neustart erkannt",
+    "crashBody": "der bot startete nach einem unsauberen herunterfahren neu.",
+    "lastSeen": "zuletzt gesehen",
+    "previousUptime": "vorherige laufzeit",
+    "crashFooter": "pruefen sie das terminal oder die protokolle fuer details.",
+    "repeatedTitle": "wiederholte abstuerze erkannt",
+    "repeatedBody": "der bot startete {count} mal in den letzten {minutes} minuten neu.",
+    "repeatedFooter": "bitte untersuchen.",
+    "uptime": "laufzeit",
+    "lastStart": "letzter start",
+    "reason": "grund",
+    "unknown": "unbekannt",
+    "heading": "bot-benachrichtigungen",
+    "footer": "antworten sie mit der nummer ihrer wahl.",
+    "current": "aktuell",
+    "toggleAll": "alle umschalten",
+    "onStartup": "beim start",
+    "onShutdown": "beim beenden",
+    "onCrash": "bei absturz"
   }
 }

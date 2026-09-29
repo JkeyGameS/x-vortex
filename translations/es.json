@@ -2909,6 +2909,40 @@
       "heading": "Importar / Exportar",
       "export": "Exportar",
       "import": "Importar"
+    },
+    "bot_notifications": {
+      "heading": "notificaciones del bot",
+      "toggleAll": "alternar todo",
+      "onStartup": "al iniciar",
+      "onShutdown": "al detener",
+      "onCrash": "al fallar",
+      "current": "actual",
+      "footer": "responda con el numero de su eleccion.",
+      "resultOn": "notificaciones del bot activadas.",
+      "resultOff": "notificaciones del bot desactivadas."
     }
+  },
+  "lifecycle": {
+    "onlineTitle": "x-vortex esta en linea",
+    "shutdownTitle": "bot detenido",
+    "crashTitle": "reinicio inesperado detectado",
+    "crashBody": "el bot se reinicio tras un cierre incorrecto.",
+    "lastSeen": "visto por ultima vez",
+    "previousUptime": "funcionamiento anterior",
+    "crashFooter": "revise la terminal o los registros para mas detalles.",
+    "repeatedTitle": "fallos repetidos detectados",
+    "repeatedBody": "el bot se ha reiniciado {count} veces en los ultimos {minutes} minutos.",
+    "repeatedFooter": "por favor investigue.",
+    "uptime": "funcionamiento",
+    "lastStart": "ultimo inicio",
+    "reason": "motivo",
+    "unknown": "desconocido",
+    "heading": "notificaciones del bot",
+    "footer": "responda con el numero de su eleccion.",
+    "current": "actual",
+    "toggleAll": "alternar todo",
+    "onStartup": "al iniciar",
+    "onShutdown": "al detener",
+    "onCrash": "al fallar"
   }
 }

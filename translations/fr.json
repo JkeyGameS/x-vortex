@@ -2909,6 +2909,40 @@
       "heading": "Importer / Exporter",
       "export": "Exporter",
       "import": "Importer"
+    },
+    "bot_notifications": {
+      "heading": "notifications du bot",
+      "toggleAll": "tout basculer",
+      "onStartup": "au demarrage",
+      "onShutdown": "a l arret",
+      "onCrash": "en cas de panne",
+      "current": "actuel",
+      "footer": "repondez avec le numero de votre choix.",
+      "resultOn": "notifications du bot activees.",
+      "resultOff": "notifications du bot desactivees."
     }
+  },
+  "lifecycle": {
+    "onlineTitle": "x-vortex est en ligne",
+    "shutdownTitle": "arret du bot",
+    "crashTitle": "redemarrage inattendu detecte",
+    "crashBody": "le bot a redemarre apres un arret anormal.",
+    "lastSeen": "vu la derniere fois",
+    "previousUptime": "fonctionnement precedent",
+    "crashFooter": "consulez le terminal ou les journaux pour plus de details.",
+    "repeatedTitle": "pannes repetees detectees",
+    "repeatedBody": "le bot a redemarre {count} fois pendant les {minutes} dernieres minutes.",
+    "repeatedFooter": "veuillez investiguer.",
+    "uptime": "fonctionnement",
+    "lastStart": "dernier demarrage",
+    "reason": "raison",
+    "unknown": "inconnu",
+    "heading": "notifications du bot",
+    "footer": "repondez avec le numero de votre choix.",
+    "current": "actuel",
+    "toggleAll": "tout basculer",
+    "onStartup": "au demarrage",
+    "onShutdown": "a l arret",
+    "onCrash": "en cas de panne"
   }
 }

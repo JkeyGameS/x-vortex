@@ -7,6 +7,7 @@ import { handleFaqMain } from '../handlers/faqCommand.js';
 import { handleSnippetImpex } from '../handlers/chatCommand.js';
 import config from '../config/config.js';
 import sessionManager from '../utils/sessionManager.js';
+import settingsService from '../services/settingsService.js';
 import { sendText } from '../services/messageService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { t } from '../services/localeService.js';
@@ -310,4 +311,78 @@ export const userCustomHandlers = {
   // Snippet import/export options.
   snip_impex_export: redispatch(handleSnippetImpex, '1'),
   snip_impex_import: redispatch(handleSnippetImpex, '2')
+};
+
+// ---------------------------------------------------------------------------
+// Bot lifecycle notifications (admin-only). Toggles persist through the
+// settings service; each re-renders the menu with a live on/off suffix.
+// ---------------------------------------------------------------------------
+
+const BOT_NOTIF_KEYS = {
+  toggleAll: null,
+  onStartup: 'botNotifyOnStartup',
+  onShutdown: 'botNotifyOnShutdown',
+  onCrash: 'botNotifyOnCrash'
+};
+
+function readBotNotifSettings() {
+  const s = settingsService.getSettings() || {};
+  return {
+    enabled: s.botNotificationsEnabled !== false,
+    onStartup: s.botNotifyOnStartup !== false,
+    onShutdown: s.botNotifyOnShutdown !== false,
+    onCrash: s.botNotifyOnCrash !== false
+  };
+}
+
+async function toggleBotNotifications(context, which) {
+  const { sendMenuById } = await import('./menuSender.js');
+  const { logAdminAction } = await import('../services/adminLogService.js');
+  const sender = context.sender;
+  const chatId = context.chatId || sender;
+  const language = context.language || config.defaultLanguage;
+  const before = readBotNotifSettings();
+
+  const patch = {};
+  let label;
+  if (which === 'toggleAll') {
+    const next = !before.enabled;
+    patch.botNotificationsEnabled = next;
+    label = `bot notifications ${next ? 'on' : 'off'}`;
+  } else {
+    const key = BOT_NOTIF_KEYS[which];
+    const next = !before[which];
+    patch[key] = next;
+    label = `bot notify ${which} ${next ? 'on' : 'off'}`;
+  }
+  settingsService.updateSettings(patch);
+  logAdminAction(sender, 'settings_change', label);
+
+  const stateText = which === 'toggleAll'
+    ? (before.enabled ? 'off' : 'on')
+    : (before[which] ? 'off' : 'on');
+  return sendMenuById(
+    'bot_notifications',
+    { sock: context.sock, sender, chatId, user: context.user || null, language },
+    'bot_notifications',
+    { resultLine: t(language, stateText === 'on' ? 'menu.bot_notifications.resultOn' : 'menu.bot_notifications.resultOff'), sessionMenu: 'bot_notifications' }
+  );
+}
+
+export const botNotificationCustomHandlers = {
+  botnotifs_all: (context) => toggleBotNotifications(context, 'toggleAll'),
+  botnotifs_startup: (context) => toggleBotNotifications(context, 'onStartup'),
+  botnotifs_shutdown: (context) => toggleBotNotifications(context, 'onShutdown'),
+  botnotifs_crash: (context) => toggleBotNotifications(context, 'onCrash'),
+  sys_bot_notifications: async (context) => {
+    const { sendMenuById } = await import('./menuSender.js');
+    const chatId = context.chatId || context.sender;
+    const language = context.language || config.defaultLanguage;
+    return sendMenuById(
+      'bot_notifications',
+      { sock: context.sock, sender: context.sender, chatId, user: context.user || null, language },
+      'system_bot_notifications',
+      { sessionMenu: 'bot_notifications' }
+    );
+  }
 };

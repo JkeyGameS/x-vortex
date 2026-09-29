@@ -380,6 +380,9 @@ function startPeriodicCleanup() {
   }, config.testUserCleanupIntervalMs || 3600000);
 }
 
+// Live socket handle for the lifecycle service's shutdown notification.
+let lifecycleSock = null;
+
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState(config.sessionPath);
 
@@ -389,6 +392,7 @@ async function startBot() {
 
   sessionManager.setSock(sock);
   reportService.setSock(sock);
+  lifecycleSock = sock;
   scheduleService.setSock(sock);
   featureScheduleService.setSock(sock);
   chatNotifyService.setSock(sock);
@@ -435,7 +439,7 @@ async function startBot() {
 
   sock.ev.on('creds.update', saveCreds);
 
-  sock.ev.on('connection.update', (update) => {
+  sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr) {
@@ -450,6 +454,24 @@ async function startBot() {
       }
     } else if (connection === 'open') {
       logger.info('Bot connected successfully');
+      // Lifecycle: mark the boot, detect a previous unclean stop, and notify
+      // admins once per process (guarded so reconnects do not re-notify).
+      const lifecycle = await import('./services/lifecycleService.js');
+      lifecycle.markStartup();
+      const crashInfo = lifecycle.detectPreviousCrash();
+      if (!global.__startupNotified) {
+        global.__startupNotified = true;
+        // Delay so WhatsApp is fully ready before pushing.
+        setTimeout(async () => {
+          try {
+            await lifecycle.notifyAdminsStartup(sock);
+            if (crashInfo.crashed) await lifecycle.notifyAdminsCrash(sock, crashInfo);
+          } catch (err) {
+            // A failed notification must never stop the bot from running.
+            logger.error({ err }, '[LIFECYCLE] startup notification failed');
+          }
+        }, 3000);
+      }
     }
   });
 
@@ -833,12 +855,13 @@ async function startBot() {
         faq_import_export: 'faq_import_export',
         faq_stats: 'faq_stats',
         faq_search: 'faq_search',
-        chat_snippet_impex: 'snippet_impex'
+        chat_snippet_impex: 'snippet_impex',
+        bot_notifications: 'bot_notifications'
       }[session?.currentMenu || ''];
       if (migratedChatFaqId) {
         // Legacy parity: admin-only menus ignore non-admin input entirely.
         // User-facing menus (settings, stats, tutorial, info, feedback) skip this.
-        if (['chat_faq_menu', 'chat_responses_main', 'chat_settings', 'chat_snippets', 'chat_test_panel', 'chat_import_export', 'admin', 'admin_quick_actions', 'broadcast_submenu', 'admin_users', 'system_settings', 'admin_backup', 'logs', 'admin_search', 'admin_scheduled_tasks', 'command_analytics', 'faq_main', 'faq_add', 'faq_view', 'faq_manage', 'faq_import_export', 'faq_stats', 'faq_search', 'chat_snippet_impex'].includes(session?.currentMenu || '')) {
+        if (['chat_faq_menu', 'chat_responses_main', 'chat_settings', 'chat_snippets', 'chat_test_panel', 'chat_import_export', 'admin', 'admin_quick_actions', 'broadcast_submenu', 'admin_users', 'system_settings', 'admin_backup', 'logs', 'admin_search', 'admin_scheduled_tasks', 'command_analytics', 'faq_main', 'faq_add', 'faq_view', 'faq_manage', 'faq_import_export', 'faq_stats', 'faq_search', 'chat_snippet_impex', 'bot_notifications'].includes(session?.currentMenu || '')) {
           if (!isAdminOperator(sender)) return;
         }
         const clusterUser = await getUserByJid(sender);
@@ -911,11 +934,11 @@ async function startBot() {
           return;
         }
         if (clusterResult.kind === 'action') {
-          const { userCustomHandlers } = await import('./utils/menuCustomHandlers.js');
+          const { userCustomHandlers, botNotificationCustomHandlers } = await import('./utils/menuCustomHandlers.js');
           await runMenuAction(clusterResult.action, {
             sock, sender, chatId, pushName, user: clusterUser, language: clusterLang, commands,
             sendMenuFn: async (menuId) => sendMenuById(menuId, { sock, sender, chatId, user: clusterUser, language: clusterLang }),
-            handlers: { ...chatFaqCustomHandlers, ...adminCustomHandlers, ...userCustomHandlers }
+            handlers: { ...chatFaqCustomHandlers, ...adminCustomHandlers, ...userCustomHandlers, ...botNotificationCustomHandlers }
           });
           return;
         }
@@ -2819,7 +2842,7 @@ async function startBot() {
           tutorial_profile_guide: 'tutorial_profile_guide', tutorial_settings_prefs: 'tutorial_settings_prefs',
           tutorial_self_destruct: 'tutorial_self_destruct', tutorial_feedback: 'tutorial_feedback',
           tutorial_whats_new: 'tutorial_whats_new', info_about: 'info_about', info_version: 'info_version',
-          info_developer: 'info_developer', info_website: 'info_website'
+          info_developer: 'info_developer', info_website: 'info_website', bot_notifications: 'bot_notifications'
         };
         const registryId = REGISTRY_IDS[session.currentMenu];
         if (registryId) {
@@ -3138,15 +3161,13 @@ async function startBot() {
 
 startPeriodicCleanup();
 
-// Clear report timers on shutdown (avoid memory leaks)
-process.on('SIGINT', () => {
-  reportService.shutdown();
-  process.exit(0);
-});
-process.on('SIGTERM', () => {
-  reportService.shutdown();
-  process.exit(0);
-});
+// Clear report timers on shutdown and notify admins. The lifecycle service
+// owns the SIGINT/SIGTERM handlers, the double-fire guard and the 3s timeout;
+// it is installed once and reads the live socket through this holder.
+{
+  const lifecycle = await import('./services/lifecycleService.js');
+  lifecycle.installSignalHandlers(() => lifecycleSock);
+}
 
 // Handle startup errors
 startBot().catch(err => {

@@ -18,8 +18,36 @@ export const dynamicSuffixResolvers = {
   announcementsState: (user, language) => {
     const on = user?.preferences?.announcements ? true : false;
     return ': ' + toSmallCaps(t(language || 'en', on ? 'common.onFlag' : 'common.offFlag'));
-  }
+  },
+  // Bot lifecycle notification toggles (admin menu).
+  botNotifsAllState: (user, language) => {
+    const n = readBotNotifs();
+    return ': ' + toSmallCaps(t(language || 'en', n.enabled !== false ? 'common.onFlag' : 'common.offFlag'));
+  },
+  botNotifs_onStartupState: (user, language) => botNotifsSuffix('onStartup', language),
+  botNotifs_onShutdownState: (user, language) => botNotifsSuffix('onShutdown', language),
+  botNotifs_onCrashState: (user, language) => botNotifsSuffix('onCrash', language)
 };
+
+/**
+ * Bot notification state is stored in the settings service so admins can toggle
+ * it from the menu and it survives restarts. `enabled` is the master switch.
+ */
+function readBotNotifs() {
+  const s = settingsService.getSettings() || {};
+  return {
+    enabled: s.botNotificationsEnabled !== false,
+    onStartup: s.botNotifyOnStartup !== false,
+    onShutdown: s.botNotifyOnShutdown !== false,
+    onCrash: s.botNotifyOnCrash !== false
+  };
+}
+
+function botNotifsSuffix(key, language) {
+  const n = readBotNotifs();
+  const on = n.enabled && n[key];
+  return ': ' + toSmallCaps(t(language || 'en', on ? 'common.onFlag' : 'common.offFlag'));
+}
 
 export function registerSuffixResolver(name, fn) {
   if (typeof name !== 'string' || !name || typeof fn !== 'function') {

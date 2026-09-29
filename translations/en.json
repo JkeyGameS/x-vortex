@@ -2912,6 +2912,40 @@
       "heading": "Import / Export",
       "export": "Export Snippets",
       "import": "Import Snippets"
+    },
+    "bot_notifications": {
+      "heading": "bot notifications",
+      "toggleAll": "toggle all",
+      "onStartup": "on startup",
+      "onShutdown": "on shutdown",
+      "onCrash": "on crash",
+      "current": "current",
+      "footer": "reply with the number of your choice.",
+      "resultOn": "bot notifications turned on.",
+      "resultOff": "bot notifications turned off."
     }
+  },
+  "lifecycle": {
+    "onlineTitle": "x-vortex is online",
+    "shutdownTitle": "bot stopping",
+    "crashTitle": "unexpected restart detected",
+    "crashBody": "the bot restarted after an unclean shutdown.",
+    "lastSeen": "last seen",
+    "previousUptime": "previous uptime",
+    "crashFooter": "check the terminal or logs for details.",
+    "repeatedTitle": "repeated crashes detected",
+    "repeatedBody": "the bot has restarted {count} times in the last {minutes} minutes.",
+    "repeatedFooter": "please investigate.",
+    "uptime": "uptime",
+    "lastStart": "last start",
+    "reason": "reason",
+    "unknown": "unknown",
+    "heading": "bot notifications",
+    "footer": "reply with the number of your choice.",
+    "current": "current",
+    "toggleAll": "toggle all",
+    "onStartup": "on startup",
+    "onShutdown": "on shutdown",
+    "onCrash": "on crash"
   }
 }

@@ -2909,6 +2909,40 @@
       "heading": "استيراد / تصدير",
       "export": "تصدير",
       "import": "استيراد"
+    },
+    "bot_notifications": {
+      "heading": "إشعارات البوت",
+      "toggleAll": "تبديل الكل",
+      "onStartup": "عند البدء",
+      "onShutdown": "عند التوقف",
+      "onCrash": "عند التعطل",
+      "current": "الحالي",
+      "footer": "رد برقم اختيارك.",
+      "resultOn": "تم تفعيل إشعارات البوت.",
+      "resultOff": "تم تعطيل إشعارات البوت."
     }
+  },
+  "lifecycle": {
+    "onlineTitle": "x-vortex متصل",
+    "shutdownTitle": "البوت يتوقف",
+    "crashTitle": "تم اكتشاف إعادة تشغيل غير متوقعة",
+    "crashBody": "أعاد البوت التشغيل بعد إغلاق غير نظيف.",
+    "lastSeen": "آخر ظهور",
+    "previousUptime": "مدة التشغيل السابقة",
+    "crashFooter": "تحقق من الطرفية أو السجلات لمزيد من التفاصيل.",
+    "repeatedTitle": "تم اكتشاف أعطال متكررة",
+    "repeatedBody": "أعاد البوت التشغيل {count} مرات خلال آخر {minutes} دقيقة.",
+    "repeatedFooter": "يرجى التحقيق.",
+    "uptime": "مدة التشغيل",
+    "lastStart": "آخر بدء",
+    "reason": "السبب",
+    "unknown": "غير معروف",
+    "heading": "إشعارات البوت",
+    "footer": "رد برقم اختيارك.",
+    "current": "الحالي",
+    "toggleAll": "تبديل الكل",
+    "onStartup": "عند البدء",
+    "onShutdown": "عند التوقف",
+    "onCrash": "عند التعطل"
   }
 }
