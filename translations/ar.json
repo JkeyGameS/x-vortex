@@ -2763,6 +2763,7 @@
       "data": "إدارة البيانات",
       "logs": "السجلات",
       "bot_notifications": "إشعارات البوت",
+      "custom_commands": "اوامر مخصصة",
       "footer": "أجب برقم خيارك."
     },
     "backup_restore": {

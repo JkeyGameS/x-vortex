@@ -2766,6 +2766,7 @@
       "data": "Data Management",
       "logs": "Logs",
       "bot_notifications": "Bot Notifications",
+      "custom_commands": "Custom Commands",
       "footer": "Reply with the number of your choice."
     },
     "backup_restore": {

@@ -2763,6 +2763,7 @@
       "data": "Gestion des données",
       "logs": "Journaux",
       "bot_notifications": "Notifications du bot",
+      "custom_commands": "Commandes personnalisees",
       "footer": "Répondez avec le numéro de votre choix."
     },
     "backup_restore": {

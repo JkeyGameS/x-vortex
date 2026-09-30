@@ -2763,6 +2763,7 @@
       "data": "Datenverwaltung",
       "logs": "Protokolle",
       "bot_notifications": "Bot-Benachrichtigungen",
+      "custom_commands": "Eigene Befehle",
       "footer": "Antworte mit der Nummer deiner Wahl."
     },
     "backup_restore": {
