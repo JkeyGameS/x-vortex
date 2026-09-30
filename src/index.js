@@ -36,8 +36,6 @@ import {
   handleTemplatePreview,
   handleTemplateEdit,
   handleTemplateDeleteList,
-  handleBackupRestoreReply,
-  handleSystemSettingsReply,
   handleGeneralSettingsReply,
   handleAdminAccessReply,
   handleAdminAccessAddInput,
@@ -903,13 +901,22 @@ async function startBot() {
           await handleScheduledTasksReply({ sock, sender, chatId, pushName }, trimmedText);
           return;
         }
-        // Inline help interceptor (mirrors the legacy branch below): '9' in
-        // help-listed menus (and '10' in system_settings) shows help even
-        // when a same-numbered option exists.
-        if ((['admin_users', 'admin_backup', 'admin_logs'].includes(legacyMenu) && trimmedText === '9')
-          || (legacyMenu === 'system_settings' && (trimmedText === '9' || trimmedText === '10'))) {
-          await showHelpFor({ sender, chatId }, legacyMenu);
-          return;
+        // Inline help fallback. Only fires when the current menu definition has
+        // NO option with this number — otherwise a real option (e.g. system
+        // settings 9/10, user management 9/10) would be shadowed by help.
+        if (trimmedText === '9' || trimmedText === '10') {
+          const { getMenu: getRegisteredMenu } = await import('./config/menus/registry.js');
+          const def = getRegisteredMenu(migratedChatFaqId);
+          let hasOption = false;
+          if (def && typeof def.dynamicOptions === 'function') {
+            try { hasOption = (def.dynamicOptions() || []).some((o) => String(o.number) === trimmedText); } catch { hasOption = false; }
+          } else if (Array.isArray(def?.options)) {
+            hasOption = def.options.some((o) => String(o.number) === trimmedText);
+          }
+          if (!hasOption) {
+            await showHelpFor({ sender, chatId }, legacyMenu);
+            return;
+          }
         }
         const clusterResult = resolveMenuOption(migratedChatFaqId, trimmedText, clusterUser, clusterLang);
         if (clusterResult.kind === 'back') {
@@ -937,11 +944,11 @@ async function startBot() {
           return;
         }
         if (clusterResult.kind === 'action') {
-          const { userCustomHandlers, botNotificationCustomHandlers, messageDisplayCustomHandlers } = await import('./utils/menuCustomHandlers.js');
+          const { userCustomHandlers, botNotificationCustomHandlers, messageDisplayCustomHandlers, customCommandCustomHandlers } = await import('./utils/menuCustomHandlers.js');
           await runMenuAction(clusterResult.action, {
             sock, sender, chatId, pushName, user: clusterUser, language: clusterLang, commands,
             sendMenuFn: async (menuId) => sendMenuById(menuId, { sock, sender, chatId, user: clusterUser, language: clusterLang }),
-            handlers: { ...chatFaqCustomHandlers, ...adminCustomHandlers, ...userCustomHandlers, ...botNotificationCustomHandlers, ...messageDisplayCustomHandlers }
+            handlers: { ...chatFaqCustomHandlers, ...adminCustomHandlers, ...userCustomHandlers, ...botNotificationCustomHandlers, ...messageDisplayCustomHandlers, ...customCommandCustomHandlers }
           });
           return;
         }
@@ -1398,41 +1405,33 @@ async function startBot() {
         return;
       }
 
-      // Admin backup & restore submenu reply
-      if (session?.currentMenu === 'backup_restore') {
-        if (/^[0-2]$/.test(trimmedText)) {
-          await handleBackupRestoreReply({ sock, sender, chatId, pushName }, trimmedText);
-        } else {
-          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: 2 }));
-        }
-        return;
-      }
+      // Admin backup & restore submenu reply.
+      // NOTE: the backup menu sets sessionMenu 'admin_backup', which is handled
+      // by the migrated cluster branch before reaching here. This 'backup_restore'
+      // branch was unreachable and advertised max 2 for a 3-option menu.
 
       // Admin system settings submenu reply
-      if (session?.currentMenu === 'system_settings') {
-        if (/^[0-8]$/.test(trimmedText)) {
-          await handleSystemSettingsReply({ sock, sender, chatId, pushName }, trimmedText);
-        } else {
-          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: 8 }));
-        }
-        return;
-      }
+      // NOTE: currentMenu === 'system_settings' is handled earlier by the migrated
+      // cluster branch (it returns before reaching here), so there is no legacy
+      // switch for it any more — options come from the menu definition.
 
       // Grouped system settings submenus reply
       if (session?.currentMenu === 'general_settings') {
-        if (/^[0-3]$/.test(trimmedText)) {
+        // Mirror the rendered menu: 5 options + back (option 5 = Message Display).
+        if (/^[0-5]$/.test(trimmedText)) {
           await handleGeneralSettingsReply({ sock, sender, chatId, pushName }, trimmedText);
         } else {
-          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: 3 }));
+          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: 5 }));
         }
         return;
       }
 
       if (session?.currentMenu === 'admin_access') {
-        if (/^[0-3]$/.test(trimmedText)) {
+        // Mirror the rendered menu: 4 options + back (option 4 = Admin Management).
+        if (/^[0-4]$/.test(trimmedText)) {
           await handleAdminAccessReply({ sock, sender, chatId, pushName }, trimmedText);
         } else {
-          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: 3 }));
+          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: 4 }));
         }
         return;
       }
