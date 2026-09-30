@@ -701,7 +701,8 @@
       "optionTyping": "مؤشر الكتابة",
       "typingOn": "تم تفعيل المؤشر.",
       "typingOff": "تم تعطيل المؤشر.",
-      "optionCustomCommands": "اوامر مخصصة"
+      "optionCustomCommands": "اوامر مخصصة",
+      "optionBotNotifications": "إشعارات البوت"
     },
     "optionAnalytics": "تحليل الأوامر",
     "stats": {
@@ -2761,6 +2762,7 @@
       "updates": "التحقق من التحديثات",
       "data": "إدارة البيانات",
       "logs": "السجلات",
+      "bot_notifications": "إشعارات البوت",
       "footer": "أجب برقم خيارك."
     },
     "backup_restore": {

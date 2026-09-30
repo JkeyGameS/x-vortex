@@ -701,7 +701,8 @@
       "optionTyping": "Indicador de escritura",
       "typingOn": "Indicador activado.",
       "typingOff": "Indicador desactivado.",
-      "optionCustomCommands": "comandos personalizados"
+      "optionCustomCommands": "comandos personalizados",
+      "optionBotNotifications": "Notificaciones del bot"
     },
     "optionAnalytics": "Análisis de comandos",
     "stats": {
@@ -2761,6 +2762,7 @@
       "updates": "Comprobar actualizaciones",
       "data": "Gestión de datos",
       "logs": "Registros",
+      "bot_notifications": "Notificaciones del bot",
       "footer": "Responde con el número de tu elección."
     },
     "backup_restore": {

@@ -704,7 +704,8 @@
       "optionTyping": "Typing Indicator",
       "typingOn": "Typing indicator enabled.",
       "typingOff": "Typing indicator disabled.",
-      "optionCustomCommands": "custom commands"
+      "optionCustomCommands": "custom commands",
+      "optionBotNotifications": "Bot Notifications"
     },
     "optionAnalytics": "Command Analytics",
     "stats": {
@@ -2764,6 +2765,7 @@
       "updates": "Check Updates",
       "data": "Data Management",
       "logs": "Logs",
+      "bot_notifications": "Bot Notifications",
       "footer": "Reply with the number of your choice."
     },
     "backup_restore": {

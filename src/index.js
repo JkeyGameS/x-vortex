@@ -454,11 +454,12 @@ async function startBot() {
       }
     } else if (connection === 'open') {
       logger.info('Bot connected successfully');
-      // Lifecycle: mark the boot, detect a previous unclean stop, and notify
-      // admins once per process (guarded so reconnects do not re-notify).
+      // Lifecycle: detect a previous unclean stop BEFORE marking this boot,
+      // otherwise markStartup() overwrites lastStartedAt and every fresh
+      // start would look like a crash.
       const lifecycle = await import('./services/lifecycleService.js');
-      lifecycle.markStartup();
       const crashInfo = lifecycle.detectPreviousCrash();
+      lifecycle.markStartup();
       if (!global.__startupNotified) {
         global.__startupNotified = true;
         // Delay so WhatsApp is fully ready before pushing.

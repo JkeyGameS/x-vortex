@@ -701,7 +701,8 @@
       "optionTyping": "Schreibanzeige",
       "typingOn": "Schreibanzeige aktiviert.",
       "typingOff": "Schreibanzeige deaktiviert.",
-      "optionCustomCommands": "eigene befehle"
+      "optionCustomCommands": "eigene befehle",
+      "optionBotNotifications": "Bot-Benachrichtigungen"
     },
     "optionAnalytics": "Befehlsanalyse",
     "stats": {
@@ -2761,6 +2762,7 @@
       "updates": "Updates prüfen",
       "data": "Datenverwaltung",
       "logs": "Protokolle",
+      "bot_notifications": "Bot-Benachrichtigungen",
       "footer": "Antworte mit der Nummer deiner Wahl."
     },
     "backup_restore": {

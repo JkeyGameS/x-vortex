@@ -198,7 +198,8 @@ export async function handleWizardInput(context, text) {
   const { sender, chatId, language } = ctxInfo(context);
   const session = sessionManager.getSession(sender, chatId) || {};
   const menu = session.currentMenu;
-  const draft = { ...(session.pendingData?.cc || {}) };
+  // The draft IS the pendingData payload (see prompt()).
+  const draft = { ...(session.pendingData && typeof session.pendingData === 'object' ? session.pendingData : {}) };
   const raw = String(text || '').trim();
 
   // 0 = cancel out of any wizard step.
@@ -420,7 +421,8 @@ async function pickCommand(context, mode, titleKey) {
   const all = svc.getAllCustomCommands().sort((a, b) => a.name.localeCompare(b.name));
   if (!all.length) return openMain(context, L(language, 'menu.custom_commands.noneYet'));
   const items = all.map((c) => ({ id: c.name, line: `${c.enabled ? '🟢' : '🔴'} /${c.name} — ${c.description || L(language, 'menu.custom_commands.noDescription')}` }));
-  return promptPicker(context, { pickKind: mode, page: 0, mode }, items, titleKey, 'menu.custom_commands.pickHint');
+  // pickKind uses the 'command_<mode>' convention that handleWizardInput routes on.
+  return promptPicker(context, { pickKind: 'command_' + mode, page: 0, mode }, items, titleKey, 'menu.custom_commands.pickHint');
 }
 
 export function startListWizard(context) { return listCommands(context); }

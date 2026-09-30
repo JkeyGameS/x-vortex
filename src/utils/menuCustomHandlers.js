@@ -70,7 +70,7 @@ import {
   showUnmatchedList,
   showCleanupSuggestions
 } from '../handlers/chatCommand.js';
-import { sendFaqMainPanel } from '../handlers/faqCommand.js';
+import { sendFaqMainPanel, handleFaqAddMenu, handleFaqViewMenu, handleFaqManageMenu, handleFaqImportExportMenu, handleFaqStatsPanel } from '../handlers/faqCommand.js';
 
 function languageOf(sender) {
   const user = getUserByJidSync(sender);
@@ -203,6 +203,51 @@ export const chatFaqCustomHandlers = {
   ie_import_analytics: async (context) => promptAnalyticsImport(context)
 };
 
+// FAQ submenu options. These menus are currently intercepted by a dedicated
+// legacy branch in index.js (which dispatches the raw input straight to the
+// FAQ handler), so these entries are not on the live path today. They are
+// registered anyway so every `custom:` name a definition declares actually
+// resolves — otherwise removing that legacy branch would silently break the
+// whole FAQ submenu. The option numbers match the legacy handler's cases 1..N.
+const faqSub = (fn, input) => async (context) => fn(context, input);
+
+Object.assign(chatFaqCustomHandlers, {
+  // faq_add
+  faq_add_quick: faqSub(handleFaqAddMenu, '1'),
+  faq_add_advanced: faqSub(handleFaqAddMenu, '2'),
+  faq_add_template: faqSub(handleFaqAddMenu, '3'),
+  faq_add_bulk: faqSub(handleFaqAddMenu, '4'),
+  faq_add_unmatched: faqSub(handleFaqAddMenu, '5'),
+  faq_add_duplicate: faqSub(handleFaqAddMenu, '6'),
+  faq_add_resume: faqSub(handleFaqAddMenu, '7'),
+  faq_add_example: faqSub(handleFaqAddMenu, '8'),
+  faq_add_multilang: faqSub(handleFaqAddMenu, '9'),
+  // faq_view
+  faq_view_all: faqSub(handleFaqViewMenu, '1'),
+  faq_view_lang: faqSub(handleFaqViewMenu, '2'),
+  faq_view_category: faqSub(handleFaqViewMenu, '3'),
+  faq_view_enabled: faqSub(handleFaqViewMenu, '4'),
+  faq_view_disabled: faqSub(handleFaqViewMenu, '5'),
+  faq_view_drafts: faqSub(handleFaqViewMenu, '6'),
+  faq_view_recent: faqSub(handleFaqViewMenu, '7'),
+  faq_view_favorites: faqSub(handleFaqViewMenu, '8'),
+  // faq_manage
+  faq_manage_edit: faqSub(handleFaqManageMenu, '1'),
+  faq_manage_delete: faqSub(handleFaqManageMenu, '2'),
+  faq_manage_toggle: faqSub(handleFaqManageMenu, '3'),
+  faq_manage_duplicate: faqSub(handleFaqManageMenu, '4'),
+  faq_manage_enable_all: faqSub(handleFaqManageMenu, '5'),
+  faq_manage_disable_all: faqSub(handleFaqManageMenu, '6'),
+  faq_manage_bulk: faqSub(handleFaqManageMenu, '7'),
+  // faq_import_export
+  faq_ie_export: faqSub(handleFaqImportExportMenu, '1'),
+  faq_ie_import: faqSub(handleFaqImportExportMenu, '2'),
+  faq_ie_csv: faqSub(handleFaqImportExportMenu, '3'),
+  faq_ie_snapshots: faqSub(handleFaqImportExportMenu, '4'),
+  // faq_stats
+  faq_stats_dashboard: faqSub(handleFaqStatsPanel, '1')
+});
+
 // ---------------------------------------------------------------------------
 // Admin cluster (Phase 6). Re-dispatch through legacy reply handlers so
 // permission gates, locks, confirmations, and sub-flows behave identically.
@@ -273,6 +318,20 @@ export const adminCustomHandlers = {
 // ---------------------------------------------------------------------------
 
 export const userCustomHandlers = {
+  // Settings menu option 9 (help). Currently handled by the dedicated
+  // `session.currentMenu === 'settings'` branch in index.js; registered here
+  // so the declared `custom:` name resolves if that branch is ever removed.
+  settings_help: async (context) => {
+    const sender = context.sender;
+    const chatId = context.chatId || sender;
+    const { getUserByJid } = await import('../services/userService.js');
+    const user = await getUserByJid(sender);
+    const language = user?.language || config.defaultLanguage;
+    const { buildMenuHelp } = await import('../utils/menuHelp.js');
+    const { sendMenu } = await import('../utils/messageHelper.js');
+    sessionManager.setState(sender, chatId, { currentMenu: 'help', helpFrom: 'settings' });
+    await sendMenu({ sock: context.sock, sender, chatId, text: buildMenuHelp('settings', language), transitionKey: 'help_show' });
+  },
   // Statistics options (legacy gates/flows preserved).
   stats_my: redispatch(handleStatsReply, '1'),
   stats_top_commands: redispatch(handleStatsReply, '2'),

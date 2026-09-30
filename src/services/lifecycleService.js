@@ -126,7 +126,9 @@ function pruneCrashes(list) {
 export function detectPreviousCrash() {
   const windowMs = cfg().crashDetectionWindowMs || 300000;
   if (!fs.existsSync(LAST_SHUTDOWN)) {
-    // Never ran before, or state lost: not a crash.
+    // No shutdown record at all. `lastStartedAt` then describes the PREVIOUS
+    // run (markStartup must run after this check), so a recent one means the
+    // bot was killed; anything older, or a never-started bot, is not a crash.
     const uptime = readJson(UPTIME_FILE, DEFAULT_UPTIME);
     if (!uptime.lastStartedAt) return { crashed: false };
     const prev = new Date(uptime.lastStartedAt).getTime();

@@ -701,7 +701,8 @@
       "optionTyping": "Indicateur de frappe",
       "typingOn": "Indicateur activé.",
       "typingOff": "Indicateur désactivé.",
-      "optionCustomCommands": "commandes personnalisees"
+      "optionCustomCommands": "commandes personnalisees",
+      "optionBotNotifications": "Notifications du bot"
     },
     "optionAnalytics": "Analyse des commandes",
     "stats": {
@@ -2761,6 +2762,7 @@
       "updates": "Vérifier les mises à jour",
       "data": "Gestion des données",
       "logs": "Journaux",
+      "bot_notifications": "Notifications du bot",
       "footer": "Répondez avec le numéro de votre choix."
     },
     "backup_restore": {
