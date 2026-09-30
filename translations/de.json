@@ -21,7 +21,26 @@
     "languageGerman": "Deutsch 🇩🇪",
     "languageSpanish": "Español 🇪🇸",
     "languageArabic": "العربية 🇸🇦",
-    "languageSet": "Sprache auf {language} festgelegt ✅"
+    "languageSet": "Sprache auf {language} festgelegt ✅",
+    "languageNameEnglish": "Englisch",
+    "languageNameFrench": "Französisch",
+    "languageNameGerman": "Deutsch",
+    "languageNameSpanish": "Spanisch",
+    "languageNameArabic": "Arabisch",
+    "langDetectHello": "Hallo! Ich habe erkannt, dass die Sprache deines Geräts *{language}* ist.",
+    "langDetectQuestion": "Möchtest du, dass ich sie als deine Sprache verwende?",
+    "langDetectYes": "Ja, {language} verwenden",
+    "langDetectChoose": "Andere Sprache wählen",
+    "langDetectPrompt": "Antworte mit einer Zahl oder tippe *ja* oder *nein*.",
+    "langUnsupportedNotice": "Die Sprache deines Geräts (*{raw}*) wird noch nicht unterstützt.",
+    "langUnsupportedPlease": "Bitte wähle eine der folgenden Sprachen:",
+    "langRetry1": "Entschuldigung, das habe ich nicht verstanden. Bitte antworte *ja* oder *nein*.",
+    "langRetry2": "Ich habe nur *ja* oder *nein* verstanden. Kannst du es noch einmal versuchen?",
+    "langRetry3": "Das klang nicht nach *ja* oder *nein*. Noch ein Versuch?",
+    "langCooldownTitle": "Komm später wieder",
+    "langCooldownBody": "Du hast zu viele unverständliche Antworten geschickt.\nIch bin in *{minutes}* Minuten wieder da.",
+    "langWelcomeBackTitle": "Willkommen zurück!",
+    "langWelcomeBackBody": "Lass uns noch einmal versuchen."
   },
   "info": {
     "cmd": "Befehle",
@@ -2923,7 +2942,9 @@
       "current": "aktuell",
       "footer": "antworten sie mit der nummer ihrer wahl.",
       "resultOn": "bot-benachrichtigungen aktiviert.",
-      "resultOff": "bot-benachrichtigungen deaktiviert."
+      "resultOff": "bot-benachrichtigungen deaktiviert.",
+      "onNewUser": "bei neuem nutzer",
+      "onOnboardingComplete": "bei abschluss"
     },
     "message_display": {
       "heading": "nachrichtenanzeige",

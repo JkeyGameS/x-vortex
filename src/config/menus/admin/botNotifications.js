@@ -5,7 +5,9 @@ const OPTS = [
   ['1', 'toggleAll', 'custom:botnotifs_all', '🔛'],
   ['2', 'onStartup', 'custom:botnotifs_startup', '🟢'],
   ['3', 'onShutdown', 'custom:botnotifs_shutdown', '🛑'],
-  ['4', 'onCrash', 'custom:botnotifs_crash', '⚠️']
+  ['4', 'onCrash', 'custom:botnotifs_crash', '⚠️'],
+  ['5', 'onNewUser', 'custom:botnotifs_new_user', '🆕'],
+  ['6', 'onOnboardingComplete', 'custom:botnotifs_onboarding_complete', '✅']
 ];
 
 export default {

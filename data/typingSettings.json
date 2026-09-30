@@ -1,0 +1,18 @@
+{
+  "globalEnabled": true,
+  "allowUserOverride": true,
+  "readReceiptsEnabled": true,
+  "defaults": {
+    "mode": "adaptive",
+    "delayMs": 600,
+    "typingType": "composing",
+    "readReceipts": true,
+    "targeting": {
+      "mainMenu": true,
+      "submenuTransition": true,
+      "chatReply": true,
+      "confirmation": false,
+      "error": false
+    }
+  }
+}

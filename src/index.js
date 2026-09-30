@@ -452,6 +452,17 @@ async function startBot() {
       }
     } else if (connection === 'open') {
       logger.info('Bot connected successfully');
+      // Device locale/platform for first-time language onboarding. Baileys only
+      // sends node.userAgent on connect, so it is captured here for later use.
+      {
+        const ua = update?.node?.userAgent;
+        if (ua?.localeLanguageIso6391 || ua?.os) {
+          const onboard = await import('./handlers/languageOnboardingHandler.js');
+          onboard.recordDeviceLocale(ua.localeLanguageIso6391);
+          onboard.recordDevicePlatform(ua.platform, ua.os);
+          logger.info({ locale: onboard.getDeviceLocale(), platform: onboard.getDevicePlatform() }, '[ONBOARD] device info captured');
+        }
+      }
       // Lifecycle: detect a previous unclean stop BEFORE marking this boot,
       // otherwise markStartup() overwrites lastStartedAt and every fresh
       // start would look like a crash.
@@ -665,6 +676,19 @@ async function startBot() {
       const userInfo = await getUserByJid(sender);
       const language = userInfo?.language || config.defaultLanguage;
       const tr = (key, params) => toSmallCaps(t(language, key, params));
+
+      // Smart first-time language onboarding owns the reply while active and
+      // outranks every other flow, commands included (A8/C2). Also the silent
+      // cooldown lock. Returns true when the message was consumed.
+      {
+        const { handleLanguageOnboardingGate } = await import('./handlers/languageOnboardingHandler.js');
+        const consumed = await handleLanguageOnboardingGate(
+          { sock, sender, chatId, pushName, text, deviceLocale: msg?.deviceLocale },
+          session,
+          userInfo
+        );
+        if (consumed) return;
+      }
 
       if (isCommand && session?.currentMenu === 'language_selection' && !userInfo?.language) {
         await sendText(sock, sender, tr('conversation.languageGate'));

@@ -11,7 +11,8 @@
     "test:menuCommands": "node tests/menuCommands.test.mjs",
     "test:menuGates": "node tests/menuGates.test.mjs",
     "test:preferencesRouting": "node tests/preferencesRouting.test.mjs",
-    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs",
+    "test:languageOnboarding": "node tests/languageOnboarding.test.mjs",
+    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs",
     "audit:menus": "node src/scripts/auditMenus.js"
   },
   "keywords": [],

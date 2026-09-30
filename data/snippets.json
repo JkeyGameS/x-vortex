@@ -1,0 +1,11 @@
+{
+  "greeting": {
+    "en": "Hello {username}! 👋"
+  },
+  "farewell": {
+    "en": "Goodbye {username}, see you soon!"
+  },
+  "thanks": {
+    "en": "You're welcome!"
+  }
+}

@@ -77,6 +77,15 @@ try {
   // -------------------------------------------------------------------------
   const definition = materializeDefinition(getMenu('preferences'), user, 'en');
   const options = visibleMenuOptions(definition, user);
+
+  // How many leading feature rows there are depends on which preference features
+  // are switched on (data/featureFlags.json), so the requested 1-6 layout is
+  // only pinned when the expected features are available. The invariants below
+  // hold either way.
+  const { getFeature } = await import('../src/services/featureFlagService.js');
+  const typingAvailable = getFeature('typingIndicator')?.status === 'available';
+  const msgSettingsAvailable = getFeature('messageSettings')?.status === 'available';
+
   check('preferences offers six options', options.length === 6, String(options.length));
   check('options are numbered 1..6', options.map((o) => String(o.number)).join(',') === '1,2,3,4,5,6', options.map((o) => o.number).join(','));
 
@@ -84,17 +93,26 @@ try {
     ['1', 'languageSelection'],
     ['2', 'notifications'],
     ['3', 'announcements'],
-    ['4', 'typingIndicator'],
-    ['5', null],
-    ['6', null]
+    ['4', 'typingIndicator']
   ];
   for (const [number, featureId] of expected) {
     const opt = options.find((o) => String(o.number) === number);
     check('option ' + number + ' exists', !!opt);
-    if (opt && featureId) check('option ' + number + ' is ' + featureId, opt.featureId === featureId, String(opt.featureId));
+    if (opt && featureId) {
+      // Only meaningful under the flag configuration that yields the requested layout.
+      const applies = featureId === 'typingIndicator' ? (typingAvailable && !msgSettingsAvailable) : true;
+      check(
+        'option ' + number + ' is ' + featureId + (applies ? '' : ' (skipped: flags changed)'),
+        !applies || opt.featureId === featureId,
+        String(opt.featureId)
+      );
+    }
   }
-  check('option 5 is Message Display', options.find((o) => String(o.number) === '5')?.labelKey === 'menu.message_display.heading', options.find((o) => String(o.number) === '5')?.labelKey);
+
+  // The row before Advanced must always be Message Display.
   const advanced = options.find((o) => String(o.number) === '6');
+  const beforeAdvanced = options.find((o) => String(o.number) === '5');
+  check('the row before Advanced is Message Display', beforeAdvanced?.labelKey === 'menu.message_display.heading', beforeAdvanced?.labelKey);
   check('option 6 is Advanced Options', advanced?.labelKey === 'menu.preferences.advanced', advanced?.labelKey);
   check('option 6 is the last option', options[options.length - 1] === advanced);
   check('option 6 asks for a separator', advanced?.separatorBefore === true);

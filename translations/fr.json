@@ -21,7 +21,26 @@
     "languageGerman": "Deutsch 🇩🇪",
     "languageSpanish": "Español 🇪🇸",
     "languageArabic": "العربية 🇸🇦",
-    "languageSet": "Langue définie sur {language} ✅"
+    "languageSet": "Langue définie sur {language} ✅",
+    "languageNameEnglish": "anglais",
+    "languageNameFrench": "français",
+    "languageNameGerman": "allemand",
+    "languageNameSpanish": "espagnol",
+    "languageNameArabic": "arabe",
+    "langDetectHello": "Bonjour ! J'ai détecté que la langue de votre appareil est *{language}*.",
+    "langDetectQuestion": "Voulez-vous que je l'utilise comme votre langue ?",
+    "langDetectYes": "Oui, utiliser {language}",
+    "langDetectChoose": "Choisir une autre langue",
+    "langDetectPrompt": "Répondez avec un numéro ou tapez *oui* ou *non*.",
+    "langUnsupportedNotice": "La langue de votre appareil (*{raw}*) n'est pas encore prise en charge.",
+    "langUnsupportedPlease": "Veuillez choisir une des langues suivantes :",
+    "langRetry1": "Désolé, je n'ai pas compris. Répondez *oui* ou *non*.",
+    "langRetry2": "J'ai seulement compris *oui* ou *non*. Pouvez-vous réessayer ?",
+    "langRetry3": "Cela ne ressemblait pas à *oui* ou *non*. Une dernière tentative ?",
+    "langCooldownTitle": "Revenez plus tard",
+    "langCooldownBody": "Vous avez envoyé trop de réponses incompréhensibles.\nJe serai à nouveau disponible dans *{minutes}* minutes.",
+    "langWelcomeBackTitle": "Content de vous revoir !",
+    "langWelcomeBackBody": "Réessayons."
   },
   "info": {
     "cmd": "commandes",
@@ -2923,7 +2942,9 @@
       "current": "actuel",
       "footer": "repondez avec le numero de votre choix.",
       "resultOn": "notifications du bot activees.",
-      "resultOff": "notifications du bot desactivees."
+      "resultOff": "notifications du bot desactivees.",
+      "onNewUser": "nouvel utilisateur",
+      "onOnboardingComplete": "fin de configuration"
     },
     "message_display": {
       "heading": "affichage des messages",

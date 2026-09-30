@@ -1,0 +1,508 @@
+{
+  "profile_pack": {
+    "version": 1,
+    "nameKey": "faqtemplates.profilePack",
+    "emoji": "👤",
+    "category": "profile",
+    "multi": false,
+    "tags": [
+      "profile",
+      "account",
+      "essential"
+    ],
+    "entries": [
+      {
+        "question": "How do I edit my profile?",
+        "answer": "Open Profile from the main menu, then choose Edit.",
+        "answerVariants": [],
+        "keywords": [
+          "profile",
+          "edit",
+          "change"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "What is my ID?",
+        "answer": "Your ID is shown at the top of your profile page.",
+        "answerVariants": [],
+        "keywords": [
+          "id",
+          "profile",
+          "who"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "How do I change my username?",
+        "answer": "Open Profile, tap Edit, then enter a new username and save.",
+        "answerVariants": [],
+        "keywords": [
+          "username",
+          "change",
+          "name"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  },
+  "settings_pack": {
+    "version": 1,
+    "nameKey": "faqtemplates.settingsPack",
+    "emoji": "⚙️",
+    "category": "settings",
+    "multi": false,
+    "tags": [
+      "settings",
+      "preferences",
+      "essential"
+    ],
+    "entries": [
+      {
+        "question": "What are Preferences?",
+        "answer": "Preferences let you customize notifications, language and privacy.",
+        "answerVariants": [],
+        "keywords": [
+          "preferences",
+          "settings"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "How do I disable notifications?",
+        "answer": "Go to Preferences, then Notifications, and turn them off.",
+        "answerVariants": [],
+        "keywords": [
+          "notifications",
+          "disable",
+          "off"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "How do I change language?",
+        "answer": "Go to Preferences, then Language Selection, and pick a language.",
+        "answerVariants": [],
+        "keywords": [
+          "language",
+          "change",
+          "idioma",
+          "langue",
+          "sprache"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  },
+  "privacy_pack": {
+    "version": 1,
+    "nameKey": "faqtemplates.privacyPack",
+    "emoji": "🔐",
+    "category": "privacy",
+    "multi": false,
+    "tags": [
+      "privacy",
+      "safety"
+    ],
+    "entries": [
+      {
+        "question": "Who can see my profile?",
+        "answer": "Only people you interact with can see your public profile info.",
+        "answerVariants": [],
+        "keywords": [
+          "profile",
+          "see",
+          "privacy",
+          "visible"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "How do I block a user?",
+        "answer": "Open the user menu and choose Block, then confirm.",
+        "answerVariants": [],
+        "keywords": [
+          "block",
+          "user",
+          "spam"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  },
+  "selfdestruct_pack": {
+    "version": 1,
+    "nameKey": "faqtemplates.selfdestructPack",
+    "emoji": "💬",
+    "category": "chat_messaging",
+    "multi": false,
+    "tags": [
+      "messages",
+      "privacy",
+      "disappearing"
+    ],
+    "entries": [
+      {
+        "question": "How do I make messages disappear?",
+        "answer": "Enable self-destruct in the chat settings and set a timer.",
+        "answerVariants": [],
+        "keywords": [
+          "disappear",
+          "self-destruct",
+          "timer",
+          "messages"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "What is native disappearing?",
+        "answer": "Native disappearing uses the built-in timer of the messaging app.",
+        "answerVariants": [],
+        "keywords": [
+          "native",
+          "disappearing",
+          "timer"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  },
+  "help_pack": {
+    "version": 1,
+    "nameKey": "faqtemplates.helpPack",
+    "emoji": "🆘",
+    "category": "help_support",
+    "multi": false,
+    "featured": true,
+    "tags": [
+      "help",
+      "essential",
+      "support"
+    ],
+    "entries": [
+      {
+        "question": "What can you do?",
+        "answer": "I can chat, answer questions from the knowledge base, and run commands. Try /help.",
+        "answerVariants": [],
+        "keywords": [
+          "what",
+          "can",
+          "do",
+          "help",
+          "commands"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "How do I use this bot?",
+        "answer": "Just send me a message. Use /help to see everything I can do.",
+        "answerVariants": [],
+        "keywords": [
+          "use",
+          "how",
+          "start",
+          "bot"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "How do I contact support?",
+        "answer": "Use the Feedback menu to reach the support team.",
+        "answerVariants": [],
+        "keywords": [
+          "support",
+          "contact",
+          "help"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  },
+  "feedback_pack": {
+    "version": 1,
+    "nameKey": "faqtemplates.feedbackPack",
+    "emoji": "⭐",
+    "category": "help_support",
+    "multi": false,
+    "tags": [
+      "feedback",
+      "rating"
+    ],
+    "entries": [
+      {
+        "question": "How do I rate the bot?",
+        "answer": "Open the Feedback menu and choose Rate to leave a rating.",
+        "answerVariants": [],
+        "keywords": [
+          "rate",
+          "rating",
+          "feedback",
+          "stars"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "How do I report a bug?",
+        "answer": "Open the Feedback menu, choose Report a Bug, and describe the issue.",
+        "answerVariants": [],
+        "keywords": [
+          "bug",
+          "report",
+          "error",
+          "issue"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  },
+  "bot_info_pack": {
+    "version": 1,
+    "nameKey": "faqtemplates.botInfoPack",
+    "emoji": "🤖",
+    "category": "bot_info",
+    "multi": false,
+    "featured": true,
+    "tags": [
+      "bot",
+      "info"
+    ],
+    "entries": [
+      {
+        "question": "Who made you?",
+        "answer": "I was built by the X-Vortex team.",
+        "answerVariants": [],
+        "keywords": [
+          "who",
+          "made",
+          "creator",
+          "created"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "What is X-Vortex?",
+        "answer": "X-Vortex is a friendly assistant bot for chatting and quick answers.",
+        "answerVariants": [],
+        "keywords": [
+          "x-vortex",
+          "what",
+          "bot"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  },
+  "fun_pack": {
+    "version": 1,
+    "nameKey": "faqtemplates.funPack",
+    "emoji": "🎉",
+    "category": "fun_extras",
+    "multi": false,
+    "tags": [
+      "fun",
+      "humor"
+    ],
+    "entries": [
+      {
+        "question": "Tell me a joke",
+        "answer": "Why did the bot go to school? To improve its neural-netiquette!",
+        "answerVariants": [],
+        "keywords": [
+          "joke",
+          "funny",
+          "laugh"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "What's your favorite color?",
+        "answer": "Electric blue — the color of a fresh chat bubble.",
+        "answerVariants": [],
+        "keywords": [
+          "favorite",
+          "color",
+          "colour"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  },
+  "multilang_basics": {
+    "version": 1,
+    "nameKey": "faqtemplates.multilangBasics",
+    "emoji": "🌍",
+    "category": "help_support",
+    "multi": true,
+    "featured": true,
+    "tags": [
+      "multilingual",
+      "essential",
+      "onboarding"
+    ],
+    "entries": [
+      {
+        "question": "How do I use this bot?",
+        "answer": "Just send me a message. Use /help to see everything I can do.",
+        "answerVariants": [],
+        "keywords": [
+          "use",
+          "how",
+          "start"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "Comment utiliser ce bot ?",
+        "answer": "Envoyez-moi simplement un message. Tapez /help pour tout voir.",
+        "answerVariants": [],
+        "keywords": [
+          "utiliser",
+          "comment",
+          "bot"
+        ],
+        "language": "fr",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "Wie benutze ich diesen Bot?",
+        "answer": "Schick mir einfach eine Nachricht. Tippe /help für alles.",
+        "answerVariants": [],
+        "keywords": [
+          "benutzen",
+          "wie",
+          "bot"
+        ],
+        "language": "de",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "¿Cómo uso este bot?",
+        "answer": "Solo envíame un mensaje. Escribe /help para verlo todo.",
+        "answerVariants": [],
+        "keywords": [
+          "usar",
+          "cómo",
+          "bot"
+        ],
+        "language": "es",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "كيف أستخدم هذا البوت؟",
+        "answer": "فقط أرسل لي رسالة. اكتب /help لرؤية كل شيء.",
+        "answerVariants": [],
+        "keywords": [
+          "استخدام",
+          "كيف",
+          "بوت"
+        ],
+        "language": "ar",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "How do I change language?",
+        "answer": "Go to Preferences, then Language Selection.",
+        "answerVariants": [],
+        "keywords": [
+          "language",
+          "change"
+        ],
+        "language": "en",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "Comment changer de langue ?",
+        "answer": "Allez dans Préférences, puis Sélection de la langue.",
+        "answerVariants": [],
+        "keywords": [
+          "langue",
+          "changer"
+        ],
+        "language": "fr",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "Wie ändere ich die Sprache?",
+        "answer": "Gehe zu Einstellungen, dann Sprachauswahl.",
+        "answerVariants": [],
+        "keywords": [
+          "sprache",
+          "ändern"
+        ],
+        "language": "de",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "¿Cómo cambio el idioma?",
+        "answer": "Ve a Preferencias, luego Selección de idioma.",
+        "answerVariants": [],
+        "keywords": [
+          "idioma",
+          "cambiar"
+        ],
+        "language": "es",
+        "category": null,
+        "priority": 1
+      },
+      {
+        "question": "كيف أغير اللغة؟",
+        "answer": "اذهب إلى التفضيلات، ثم اختيار اللغة.",
+        "answerVariants": [],
+        "keywords": [
+          "اللغة",
+          "تغيير"
+        ],
+        "language": "ar",
+        "category": null,
+        "priority": 1
+      }
+    ]
+  }
+}

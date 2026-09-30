@@ -1,0 +1,1139 @@
+{
+  "127531067904055@lid": {
+    "jid": "127531067904055@lid",
+    "name": "BAMBA _ 𝕏",
+    "isTest": false,
+    "username": "adminuser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-04T00:05:43.168Z",
+    "lastUpdated": "2026-09-30T10:31:21.689Z",
+    "lastActive": "2026-09-30T10:03:08.962Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": false,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "selfDestruct": {
+        "enabled": false,
+        "durationSeconds": 0,
+        "remainingCount": 0,
+        "always": false
+      },
+      "nativeDisappearing": 0,
+      "tutorialProgress": {
+        "gettingStarted": true,
+        "usefulCommands": true,
+        "profileGuide": true,
+        "settingsPrefs": true,
+        "selfDestruct": true,
+        "feedback": true,
+        "quickTips": true,
+        "whatNew": true
+      },
+      "typing": {
+        "mode": "on",
+        "delayMs": 1000,
+        "typingType": "composing",
+        "readReceipts": false,
+        "targeting": {
+          "mainMenu": false,
+          "submenuTransitions": false,
+          "chatReplies": true,
+          "confirmations": false,
+          "errors": false
+        }
+      },
+      "messageDisplayMode": "hybrid"
+    },
+    "stats": {
+      "messagesSent": 2948,
+      "commandsUsed": 581,
+      "recentCommandTimestamps": [
+        1790246352190,
+        1790246355626,
+        1790246370967,
+        1790246584998,
+        1790246588111,
+        1790246839224,
+        1790252867415,
+        1790253029929,
+        1790253033050,
+        1790254214310,
+        1790256977105,
+        1790266145503,
+        1790266149477,
+        1790267165231,
+        1790267168586,
+        1790267363577,
+        1790267366696,
+        1790374266970,
+        1790374270367,
+        1790374744285,
+        1790375036208,
+        1790375039329,
+        1790376120987,
+        1790377004593,
+        1790380619061,
+        1790380621982,
+        1790380713044,
+        1790380977320,
+        1790405853196,
+        1790406051498,
+        1790406051731,
+        1790406065665,
+        1790406065848,
+        1790406120447,
+        1790406120795,
+        1790407907321,
+        1790407907874,
+        1790532650272,
+        1790532651820,
+        1790532678239,
+        1790532679681,
+        1790532701360,
+        1790532725461,
+        1790532775700,
+        1790532838069,
+        1790532852814,
+        1790532868682,
+        1790532868940,
+        1790532891580,
+        1790532891766,
+        1790532915080,
+        1790533750536,
+        1790533750836,
+        1790547335542,
+        1790547336005,
+        1790547371320,
+        1790547371485,
+        1790547591915,
+        1790547666226,
+        1790547666762,
+        1790547721827,
+        1790547938519,
+        1790547938660,
+        1790547970652,
+        1790548001178,
+        1790548004302,
+        1790548014540,
+        1790548015529,
+        1790548084749,
+        1790548084892,
+        1790548100533,
+        1790548100675,
+        1790548113882,
+        1790548114103,
+        1790548322382,
+        1790548322915,
+        1790615629219,
+        1790615629710,
+        1790615658296,
+        1790615683085,
+        1790615683543,
+        1790615758365,
+        1790615758558,
+        1790619028618,
+        1790619029488,
+        1790693495482,
+        1790693497355,
+        1790698299555,
+        1790698301091,
+        1790698368426,
+        1790703262282,
+        1790708219269,
+        1790708220318,
+        1790708253070,
+        1790756751502,
+        1790756753018,
+        1790756779917,
+        1790762553534,
+        1790762554031,
+        1790762564035
+      ],
+      "commandCounts": {
+        "start": 352,
+        "try": 13,
+        "lang": 7,
+        "profile": 37,
+        "features": 63,
+        "preferences": 11,
+        "broadcast": 1,
+        "info": 1,
+        "feedback": 12,
+        "admin": 77,
+        "feedback-ad": 4,
+        "health": 1,
+        "editprofile": 1,
+        "analytics": 1
+      },
+      "lastCommand": "admin",
+      "lastCommandTime": "2026-09-30T10:02:44.035Z",
+      "points": 0,
+      "successCommands": 241,
+      "featureUsage": {
+        "profile": 54,
+        "preferences": 27,
+        "profileEditing": 12,
+        "statistics": 7
+      },
+      "recentCommands": [
+        {
+          "command": "admin",
+          "timestamp": "2026-09-30T10:02:44.035Z"
+        },
+        {
+          "command": "start",
+          "timestamp": "2026-09-30T10:02:34.031Z"
+        },
+        {
+          "command": "start",
+          "timestamp": "2026-09-30T10:02:33.534Z"
+        },
+        {
+          "command": "admin",
+          "timestamp": "2026-09-30T08:26:19.917Z"
+        },
+        {
+          "command": "start",
+          "timestamp": "2026-09-30T08:25:53.018Z"
+        },
+        {
+          "command": "start",
+          "timestamp": "2026-09-30T08:25:51.502Z"
+        },
+        {
+          "command": "admin",
+          "timestamp": "2026-09-29T18:57:33.070Z"
+        },
+        {
+          "command": "start",
+          "timestamp": "2026-09-29T18:57:00.318Z"
+        },
+        {
+          "command": "start",
+          "timestamp": "2026-09-29T18:56:59.269Z"
+        },
+        {
+          "command": "admin",
+          "timestamp": "2026-09-29T17:34:22.282Z"
+        }
+      ]
+    },
+    "chatReplyHistory": {
+      "mu5r4iqf-gwwz5r": [
+        "Hi, sup?",
+        "Hi, sup?",
+        "Hi, sup?"
+      ],
+      "mu5tavzg-jn9npf": [
+        "Hey, how are you?",
+        "Hey, how are you?",
+        "Hey, how are you?"
+      ],
+      "muhj1uj4-3zxlv3": [
+        "I'm doing great, {username}! How about you? 😊"
+      ],
+      "mu5r5ou3-je0ga2": [
+        "Hi, sup?",
+        "Hi, sup?"
+      ]
+    }
+  },
+  "p5a@s.whatsapp.net": {
+    "jid": "p5a@s.whatsapp.net",
+    "name": "Tester",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-25T16:42:13.171Z",
+    "lastUpdated": "2026-09-25T16:42:13.175Z",
+    "lastActive": "2026-09-25T16:42:13.172Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "dbg4@s.whatsapp.net": {
+    "jid": "dbg4@s.whatsapp.net",
+    "name": "T",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": null,
+    "timezone": "UTC",
+    "joined": "2026-09-25T16:50:59.445Z",
+    "lastUpdated": "2026-09-25T16:53:33.667Z",
+    "lastActive": "2026-09-25T16:50:59.446Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "replyStyle": "formal"
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "dbg4b@s.whatsapp.net": {
+    "jid": "dbg4b@s.whatsapp.net",
+    "name": "T",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": null,
+    "timezone": "UTC",
+    "joined": "2026-09-25T16:55:21.029Z",
+    "lastUpdated": "2026-09-25T22:05:22.789Z",
+    "lastActive": "2026-09-25T16:55:21.041Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "replyStyle": "formal"
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p9dbg@s.whatsapp.net": {
+    "jid": "p9dbg@s.whatsapp.net",
+    "name": "Dbg",
+    "isTest": false,
+    "username": "dbguser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T08:14:49.516Z",
+    "lastUpdated": "2026-09-26T08:14:54.617Z",
+    "lastActive": "2026-09-26T08:14:49.517Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {},
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p9dbg2@s.whatsapp.net": {
+    "jid": "p9dbg2@s.whatsapp.net",
+    "name": "D",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": null,
+    "timezone": "UTC",
+    "joined": "2026-09-26T08:15:20.991Z",
+    "lastUpdated": "2026-09-26T08:15:21.010Z",
+    "lastActive": "2026-09-26T08:15:20.993Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {},
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p10reg@s.whatsapp.net": {
+    "jid": "p10reg@s.whatsapp.net",
+    "name": "Reg",
+    "isTest": false,
+    "username": "reguser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T08:30:48.855Z",
+    "lastUpdated": "2026-09-27T15:15:24.836Z",
+    "lastActive": "2026-09-26T08:30:48.856Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0,
+      "featureUsage": {
+        "profile": 18,
+        "profileEditing": 15,
+        "preferences": 15,
+        "statistics": 15
+      }
+    }
+  },
+  "p10d@s.whatsapp.net": {
+    "jid": "p10d@s.whatsapp.net",
+    "name": "Reg",
+    "isTest": false,
+    "username": "reguser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T08:52:39.402Z",
+    "lastUpdated": "2026-09-26T08:55:18.618Z",
+    "lastActive": "2026-09-26T08:52:39.403Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0,
+      "featureUsage": {
+        "profile": 4
+      }
+    }
+  },
+  "p10e@s.whatsapp.net": {
+    "jid": "p10e@s.whatsapp.net",
+    "name": "E",
+    "isTest": false,
+    "username": "euser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T08:56:27.916Z",
+    "lastUpdated": "2026-09-26T08:56:27.930Z",
+    "lastActive": "2026-09-26T08:56:27.917Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p10f@s.whatsapp.net": {
+    "jid": "p10f@s.whatsapp.net",
+    "name": "F",
+    "isTest": false,
+    "username": "fuser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T08:57:25.778Z",
+    "lastUpdated": "2026-09-26T08:57:25.792Z",
+    "lastActive": "2026-09-26T08:57:25.779Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0,
+      "featureUsage": {
+        "profileEditing": 1
+      }
+    }
+  },
+  "p10g@s.whatsapp.net": {
+    "jid": "p10g@s.whatsapp.net",
+    "name": "G",
+    "isTest": false,
+    "username": "guser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T09:01:46.218Z",
+    "lastUpdated": "2026-09-26T09:01:46.223Z",
+    "lastActive": "2026-09-26T09:01:46.219Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0,
+      "featureUsage": {
+        "profileEditing": 1
+      }
+    }
+  },
+  "p10h@s.whatsapp.net": {
+    "jid": "p10h@s.whatsapp.net",
+    "name": "H",
+    "isTest": false,
+    "username": "huser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T09:02:47.720Z",
+    "lastUpdated": "2026-09-26T09:02:47.735Z",
+    "lastActive": "2026-09-26T09:02:47.727Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0,
+      "featureUsage": {
+        "profile": 2
+      }
+    }
+  },
+  "p11d@s.whatsapp.net": {
+    "jid": "p11d@s.whatsapp.net",
+    "name": "Reg",
+    "isTest": false,
+    "username": "reguser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T12:36:14.038Z",
+    "lastUpdated": "2026-09-26T12:36:14.048Z",
+    "lastActive": "2026-09-26T12:36:14.039Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0,
+      "featureUsage": {
+        "profile": 2
+      }
+    }
+  },
+  "p1a@s.whatsapp.net": {
+    "jid": "p1a@s.whatsapp.net",
+    "name": "Tester",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": null,
+    "timezone": "UTC",
+    "joined": "2026-09-26T12:42:53.406Z",
+    "lastUpdated": "2026-09-26T12:53:00.040Z",
+    "lastActive": "2026-09-26T12:42:53.407Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p1b@s.whatsapp.net": {
+    "jid": "p1b@s.whatsapp.net",
+    "name": "Tester",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": null,
+    "timezone": "UTC",
+    "joined": "2026-09-26T12:42:53.434Z",
+    "lastUpdated": "2026-09-26T12:53:00.091Z",
+    "lastActive": "2026-09-26T12:42:53.434Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p1c@s.whatsapp.net": {
+    "jid": "p1c@s.whatsapp.net",
+    "name": "Tester",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": null,
+    "timezone": "UTC",
+    "joined": "2026-09-26T12:42:54.264Z",
+    "lastUpdated": "2026-09-26T12:53:00.140Z",
+    "lastActive": "2026-09-26T12:42:54.264Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p13u@s.whatsapp.net": {
+    "jid": "p13u@s.whatsapp.net",
+    "name": "U",
+    "isTest": false,
+    "username": "testuser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-26T15:27:40.292Z",
+    "lastUpdated": "2026-09-27T15:11:14.899Z",
+    "lastActive": "2026-09-26T15:27:40.293Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": true,
+        "usefulCommands": true,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": true,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p13d@s.whatsapp.net": {
+    "jid": "p13d@s.whatsapp.net",
+    "name": "D",
+    "isTest": false,
+    "username": "duser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-27T09:06:22.519Z",
+    "lastUpdated": "2026-09-27T09:06:22.766Z",
+    "lastActive": "2026-09-27T09:06:22.519Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p13e@s.whatsapp.net": {
+    "jid": "p13e@s.whatsapp.net",
+    "name": "E",
+    "isTest": false,
+    "username": "euser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-27T09:10:41.231Z",
+    "lastUpdated": "2026-09-27T09:10:41.241Z",
+    "lastActive": "2026-09-27T09:10:41.232Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "p9reg@s.whatsapp.net": {
+    "jid": "p9reg@s.whatsapp.net",
+    "name": "Reg",
+    "isTest": false,
+    "username": "reguser",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-27T15:15:01.651Z",
+    "lastUpdated": "2026-09-27T15:27:08.292Z",
+    "lastActive": "2026-09-27T15:15:01.652Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "cc-user@s.whatsapp.net": {
+    "jid": "cc-user@s.whatsapp.net",
+    "name": "User",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-29T17:34:47.869Z",
+    "lastUpdated": "2026-09-29T17:41:22.282Z",
+    "lastActive": "2026-09-29T17:34:47.869Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {
+      "mumyqk5v-5rv6wu": [
+        "Hello there!"
+      ]
+    },
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "audit-user@s.whatsapp.net": {
+    "jid": "audit-user@s.whatsapp.net",
+    "name": "User",
+    "isTest": false,
+    "username": null,
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-09-29T22:00:45.181Z",
+    "lastUpdated": "2026-09-29T22:00:45.204Z",
+    "lastActive": "2026-09-29T22:00:45.181Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 0,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  }
+}

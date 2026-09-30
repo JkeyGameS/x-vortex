@@ -1,4 +1,30 @@
-node_modules
-data
-session
+# Dependencies
+node_modules/
+
+# Environment
 .env
+.env.local
+
+# WhatsApp session / credentials
+session/
+auth/
+data/session/
+
+# Data files that may contain user info or exports
+data/exports/
+data/snapshots/
+data/trash/
+data/*.log
+data/backup-*.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

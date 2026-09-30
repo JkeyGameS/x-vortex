@@ -4,6 +4,7 @@ import { getSettings as getChatSettings, getIgnoreList } from '../services/chatS
 import { getTypingSettings } from '../services/typingSettingsService.js';
 import { hasPermission } from '../services/rolesService.js';
 import settingsService from '../services/settingsService.js';
+import { readBotNotifyToggles } from '../config/notificationToggles.js';
 import * as messageSettings from '../services/messageSettingsService.js';
 import { MESSAGE_MODES } from '../services/messageSettingsService.js';
 import * as customCommandStore from '../services/customCommandService.js';
@@ -29,21 +30,17 @@ export const dynamicSuffixResolvers = {
   },
   botNotifs_onStartupState: (user, language) => botNotifsSuffix('onStartup', language),
   botNotifs_onShutdownState: (user, language) => botNotifsSuffix('onShutdown', language),
-  botNotifs_onCrashState: (user, language) => botNotifsSuffix('onCrash', language)
+  botNotifs_onCrashState: (user, language) => botNotifsSuffix('onCrash', language),
+  botNotifs_onNewUserState: (user, language) => botNotifsSuffix('onNewUser', language),
+  botNotifs_onOnboardingCompleteState: (user, language) => botNotifsSuffix('onOnboardingComplete', language)
 };
 
 /**
- * Bot notification state is stored in the settings service so admins can toggle
- * it from the menu and it survives restarts. `enabled` is the master switch.
+ * Bot notification state is read from the canonical toggle table so the menu
+ * suffix and the senders can never disagree about what is on.
  */
 function readBotNotifs() {
-  const s = settingsService.getSettings() || {};
-  return {
-    enabled: s.botNotificationsEnabled !== false,
-    onStartup: s.botNotifyOnStartup !== false,
-    onShutdown: s.botNotifyOnShutdown !== false,
-    onCrash: s.botNotifyOnCrash !== false
-  };
+  return readBotNotifyToggles();
 }
 
 function botNotifsSuffix(key, language) {

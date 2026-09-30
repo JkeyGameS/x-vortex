@@ -21,7 +21,26 @@
     "languageGerman": "Deutsch 🇩🇪",
     "languageSpanish": "Español 🇪🇸",
     "languageArabic": "العربية 🇸🇦",
-    "languageSet": "Idioma establecido en {language} ✅"
+    "languageSet": "Idioma establecido en {language} ✅",
+    "languageNameEnglish": "inglés",
+    "languageNameFrench": "francés",
+    "languageNameGerman": "alemán",
+    "languageNameSpanish": "español",
+    "languageNameArabic": "árabe",
+    "langDetectHello": "¡Hola! He detectado que el idioma de tu dispositivo es *{language}*.",
+    "langDetectQuestion": "¿Quieres que lo use como tu idioma?",
+    "langDetectYes": "Sí, usar {language}",
+    "langDetectChoose": "Elegir otro idioma",
+    "langDetectPrompt": "Responde con un número o escribe *sí* o *no*.",
+    "langUnsupportedNotice": "El idioma de tu dispositivo (*{raw}*) todavía no es compatible.",
+    "langUnsupportedPlease": "Elige uno de los siguientes:",
+    "langRetry1": "Lo siento, no lo entendí. Responde *sí* o *no*.",
+    "langRetry2": "Solo entendí *sí* o *no*. ¿Puedes intentarlo de nuevo?",
+    "langRetry3": "Eso no parecía un *sí* ni un *no*. ¿Un intento más?",
+    "langCooldownTitle": "Vuelve más tarde",
+    "langCooldownBody": "Has enviado demasiadas respuestas incomprensibles.\nVolveré a estar aquí en *{minutes}* minutos.",
+    "langWelcomeBackTitle": "¡Bienvenido de nuevo!",
+    "langWelcomeBackBody": "Intentémoslo de nuevo."
   },
   "info": {
     "cmd": "Comandos",
@@ -2923,7 +2942,9 @@
       "current": "actual",
       "footer": "responda con el numero de su eleccion.",
       "resultOn": "notificaciones del bot activadas.",
-      "resultOff": "notificaciones del bot desactivadas."
+      "resultOff": "notificaciones del bot desactivadas.",
+      "onNewUser": "nuevo usuario",
+      "onOnboardingComplete": "fin de configuración"
     },
     "message_display": {
       "heading": "visualizacion de mensajes",

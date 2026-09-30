@@ -1,0 +1,702 @@
+[
+  {
+    "command": "start",
+    "durationMs": 1021,
+    "timestamp": "2026-09-17T14:46:36.076Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 947,
+    "timestamp": "2026-09-17T15:09:03.715Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 157,
+    "timestamp": "2026-09-17T15:12:19.079Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 427,
+    "timestamp": "2026-09-17T16:14:29.510Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 372,
+    "timestamp": "2026-09-17T16:28:57.283Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 122,
+    "timestamp": "2026-09-17T16:34:44.786Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 1342,
+    "timestamp": "2026-09-17T16:38:03.750Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 2583,
+    "timestamp": "2026-09-17T16:38:36.213Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 531,
+    "timestamp": "2026-09-17T17:29:22.823Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 1711,
+    "timestamp": "2026-09-17T17:32:03.442Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 18333,
+    "timestamp": "2026-09-17T17:37:38.502Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 2749,
+    "timestamp": "2026-09-17T17:37:40.167Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 620,
+    "timestamp": "2026-09-17T17:38:52.210Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 468,
+    "timestamp": "2026-09-17T17:44:41.014Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 359,
+    "timestamp": "2026-09-17T17:45:14.123Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 416,
+    "timestamp": "2026-09-18T11:02:08.179Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 980,
+    "timestamp": "2026-09-18T11:02:51.459Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 698,
+    "timestamp": "2026-09-18T11:35:18.925Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 369,
+    "timestamp": "2026-09-18T12:33:46.852Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 549,
+    "timestamp": "2026-09-18T12:34:53.659Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 566,
+    "timestamp": "2026-09-18T12:35:54.381Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 499,
+    "timestamp": "2026-09-18T14:36:37.569Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 195,
+    "timestamp": "2026-09-18T14:41:32.593Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 1545,
+    "timestamp": "2026-09-18T14:45:15.807Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 144,
+    "timestamp": "2026-09-18T14:48:46.943Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 377,
+    "timestamp": "2026-09-18T14:54:00.417Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 137,
+    "timestamp": "2026-09-18T14:56:10.109Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 146,
+    "timestamp": "2026-09-18T14:56:47.654Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 187,
+    "timestamp": "2026-09-18T15:02:39.426Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 455,
+    "timestamp": "2026-09-18T15:28:53.700Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 69,
+    "timestamp": "2026-09-18T15:29:48.321Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 945,
+    "timestamp": "2026-09-18T15:31:42.456Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 258,
+    "timestamp": "2026-09-18T15:32:07.867Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 415,
+    "timestamp": "2026-09-18T16:03:22.975Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 490,
+    "timestamp": "2026-09-18T16:04:16.708Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 1472,
+    "timestamp": "2026-09-18T16:07:08.074Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 101,
+    "timestamp": "2026-09-18T16:16:07.447Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 104,
+    "timestamp": "2026-09-18T16:16:47.178Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 81,
+    "timestamp": "2026-09-18T16:26:19.861Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 92,
+    "timestamp": "2026-09-18T16:31:13.477Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 77,
+    "timestamp": "2026-09-18T16:32:10.784Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 458,
+    "timestamp": "2026-09-18T17:18:08.153Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 454,
+    "timestamp": "2026-09-18T17:39:09.443Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 189,
+    "timestamp": "2026-09-18T17:40:57.307Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 173,
+    "timestamp": "2026-09-18T17:41:16.252Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 762,
+    "timestamp": "2026-09-18T17:45:45.997Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 350,
+    "timestamp": "2026-09-18T19:05:11.093Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 1315,
+    "timestamp": "2026-09-22T17:04:25.312Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 666,
+    "timestamp": "2026-09-22T17:30:13.597Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3446,
+    "timestamp": "2026-09-24T10:39:15.630Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 3149,
+    "timestamp": "2026-09-24T10:39:30.982Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3117,
+    "timestamp": "2026-09-24T10:43:08.113Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 3253,
+    "timestamp": "2026-09-24T10:47:19.243Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 3484,
+    "timestamp": "2026-09-24T12:27:47.424Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3127,
+    "timestamp": "2026-09-24T12:30:33.053Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 4405,
+    "timestamp": "2026-09-24T12:50:14.323Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 3135,
+    "timestamp": "2026-09-24T13:36:17.117Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 4044,
+    "timestamp": "2026-09-24T16:09:09.497Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3364,
+    "timestamp": "2026-09-24T16:26:08.593Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3126,
+    "timestamp": "2026-09-24T16:29:26.699Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3409,
+    "timestamp": "2026-09-25T22:11:10.371Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 3311,
+    "timestamp": "2026-09-25T22:19:04.306Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3126,
+    "timestamp": "2026-09-25T22:23:59.332Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 3368,
+    "timestamp": "2026-09-25T22:42:00.990Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 3342,
+    "timestamp": "2026-09-25T22:56:44.600Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3027,
+    "timestamp": "2026-09-25T23:57:02.080Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 2699,
+    "timestamp": "2026-09-25T23:58:33.053Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 2630,
+    "timestamp": "2026-09-26T00:02:57.332Z"
+  },
+  {
+    "command": "preferences",
+    "durationMs": 3461,
+    "timestamp": "2026-09-26T06:57:33.199Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 243,
+    "timestamp": "2026-09-26T07:00:51.735Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 189,
+    "timestamp": "2026-09-26T07:01:05.852Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 520,
+    "timestamp": "2026-09-26T07:02:00.799Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 574,
+    "timestamp": "2026-09-26T07:31:47.890Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 1558,
+    "timestamp": "2026-09-27T18:10:51.827Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 1449,
+    "timestamp": "2026-09-27T18:11:19.685Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 2405,
+    "timestamp": "2026-09-27T18:11:41.366Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 4332,
+    "timestamp": "2026-09-27T18:12:05.464Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 532,
+    "timestamp": "2026-09-27T18:12:55.703Z"
+  },
+  {
+    "command": "preferences",
+    "durationMs": 69,
+    "timestamp": "2026-09-27T18:13:58.074Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 147,
+    "timestamp": "2026-09-27T18:14:12.819Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 266,
+    "timestamp": "2026-09-27T18:14:28.946Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 194,
+    "timestamp": "2026-09-27T18:14:51.772Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 183,
+    "timestamp": "2026-09-27T18:15:15.086Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 305,
+    "timestamp": "2026-09-27T18:29:10.839Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 470,
+    "timestamp": "2026-09-27T22:15:36.013Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 175,
+    "timestamp": "2026-09-27T22:16:11.493Z"
+  },
+  {
+    "command": "analytics",
+    "durationMs": 954,
+    "timestamp": "2026-09-27T22:19:51.919Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 543,
+    "timestamp": "2026-09-27T22:21:06.767Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 3439,
+    "timestamp": "2026-09-27T22:22:01.831Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 147,
+    "timestamp": "2026-09-27T22:25:38.664Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 1158,
+    "timestamp": "2026-09-27T22:26:10.664Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 3130,
+    "timestamp": "2026-09-27T22:26:44.306Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 994,
+    "timestamp": "2026-09-27T22:26:55.533Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 149,
+    "timestamp": "2026-09-27T22:28:04.896Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 151,
+    "timestamp": "2026-09-27T22:28:20.679Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 230,
+    "timestamp": "2026-09-27T22:28:34.110Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 540,
+    "timestamp": "2026-09-27T22:32:02.920Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 499,
+    "timestamp": "2026-09-28T17:13:49.715Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 330,
+    "timestamp": "2026-09-28T17:14:18.308Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 465,
+    "timestamp": "2026-09-28T17:14:43.547Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 204,
+    "timestamp": "2026-09-28T17:15:58.567Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 887,
+    "timestamp": "2026-09-28T18:10:29.498Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 1978,
+    "timestamp": "2026-09-29T14:51:37.419Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 2255,
+    "timestamp": "2026-09-29T16:11:41.649Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 389,
+    "timestamp": "2026-09-29T16:12:48.475Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 1662,
+    "timestamp": "2026-09-29T17:34:22.434Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 1164,
+    "timestamp": "2026-09-29T18:57:00.390Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 841,
+    "timestamp": "2026-09-29T18:57:33.281Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 1631,
+    "timestamp": "2026-09-30T08:25:53.084Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 500,
+    "timestamp": "2026-09-30T08:26:19.946Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 504,
+    "timestamp": "2026-09-30T10:02:34.035Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 123,
+    "timestamp": "2026-09-30T10:02:44.043Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 649,
+    "timestamp": "2026-09-30T10:48:49.073Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 1003,
+    "timestamp": "2026-09-30T10:49:04.050Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 1100,
+    "timestamp": "2026-09-30T10:49:37.351Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 230,
+    "timestamp": "2026-09-30T10:52:31.099Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 596,
+    "timestamp": "2026-09-30T10:55:37.187Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 603,
+    "timestamp": "2026-09-30T10:55:37.373Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 214,
+    "timestamp": "2026-09-30T10:55:57.269Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 716,
+    "timestamp": "2026-09-30T10:56:22.717Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 297,
+    "timestamp": "2026-09-30T13:08:53.510Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 322,
+    "timestamp": "2026-09-30T13:18:37.092Z"
+  },
+  {
+    "command": "test-new",
+    "durationMs": 11084,
+    "timestamp": "2026-09-30T14:38:30.346Z"
+  },
+  {
+    "command": "test",
+    "durationMs": 710,
+    "timestamp": "2026-09-30T14:38:34.221Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 544,
+    "timestamp": "2026-09-30T14:39:50.164Z"
+  },
+  {
+    "command": "try",
+    "durationMs": 8854,
+    "timestamp": "2026-09-30T14:44:41.204Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 21992,
+    "timestamp": "2026-09-30T14:58:30.505Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 116,
+    "timestamp": "2026-09-30T15:04:15.620Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 114,
+    "timestamp": "2026-09-30T15:06:50.201Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 88,
+    "timestamp": "2026-09-30T15:07:36.958Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 98,
+    "timestamp": "2026-09-30T15:07:58.181Z"
+  },
+  {
+    "command": "profile",
+    "durationMs": 207,
+    "timestamp": "2026-09-30T15:08:53.475Z"
+  },
+  {
+    "command": "admin",
+    "durationMs": 110,
+    "timestamp": "2026-09-30T15:09:38.036Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 62,
+    "timestamp": "2026-09-30T15:10:46.810Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 154,
+    "timestamp": "2026-09-30T15:18:53.826Z"
+  },
+  {
+    "command": "test",
+    "durationMs": 772,
+    "timestamp": "2026-09-30T15:21:32.916Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 1428,
+    "timestamp": "2026-09-30T17:26:18.354Z"
+  },
+  {
+    "command": "test",
+    "durationMs": 172,
+    "timestamp": "2026-09-30T17:26:37.477Z"
+  },
+  {
+    "command": "try",
+    "durationMs": 7000,
+    "timestamp": "2026-09-30T17:27:07.440Z"
+  },
+  {
+    "command": "start",
+    "durationMs": 216,
+    "timestamp": "2026-09-30T17:29:52.711Z"
+  }
+]

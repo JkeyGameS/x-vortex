@@ -6,6 +6,7 @@ import { t } from './localeService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { sendText } from './messageService.js';
 import { logAdminAction } from './adminLogService.js';
+import { isBotNotifyEnabled } from '../config/notificationToggles.js';
 import logger from '../utils/logger.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -165,10 +166,11 @@ export function recordCrash() {
   };
 }
 
+// Reads the persisted toggles (data/settings.json), not the static config: the
+// admin menu writes the toggles there, so reading config made every toggle a
+// no-op. config values remain the fallback for keys never written yet.
 function enabled(key) {
-  const c = cfg();
-  if (c.enabled === false) return false;
-  return c[key] !== false;
+  return isBotNotifyEnabled(key);
 }
 
 // ---------------------------------------------------------------------------

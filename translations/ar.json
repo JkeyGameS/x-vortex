@@ -21,7 +21,26 @@
     "languageGerman": "Deutsch 🇩🇪",
     "languageSpanish": "Español 🇪🇸",
     "languageArabic": "العربية 🇸🇦",
-    "languageSet": "تم تعيين اللغة إلى {language} ✅"
+    "languageSet": "تم تعيين اللغة إلى {language} ✅",
+    "languageNameEnglish": "الإنجليزية",
+    "languageNameFrench": "الفرنسية",
+    "languageNameGerman": "الألمانية",
+    "languageNameSpanish": "الإسبانية",
+    "languageNameArabic": "العربية",
+    "langDetectHello": "مرحبًا! اكتشفت أن لغة جهازك هي *{language}*.",
+    "langDetectQuestion": "هل تريد أن أستخدمها كلغة لك؟",
+    "langDetectYes": "نعم، استخدم {language}",
+    "langDetectChoose": "اختر لغة مختلفة",
+    "langDetectPrompt": "أجب برقم أو اكتب *نعم* أو *لا*.",
+    "langUnsupportedNotice": "لغة جهازك (*{raw}*) غير مدعومة بعد.",
+    "langUnsupportedPlease": "يرجى اختيار واحدة من التالي:",
+    "langRetry1": "آسف، لم أفهم ذلك. من فضلك أجب *نعم* أو *لا*.",
+    "langRetry2": "لقد فهمت فقط *نعم* أو *لا*. هل يمكنك المحاولة مرة أخرى؟",
+    "langRetry3": "لم يبدو ذلك *نعم* أو *لا*. محاولة أخيرة؟",
+    "langCooldownTitle": "الرجاء العودة لاحقًا",
+    "langCooldownBody": "لقد أرسلت ردودًا غير واضحة كثيرة.\nسأكون هنا مرة أخرى خلال *{minutes}* دقائق.",
+    "langWelcomeBackTitle": "مرحبًا بعودتك!",
+    "langWelcomeBackBody": "لنحاول مرة أخرى."
   },
   "info": {
     "cmd": "الأوامر",
@@ -2923,7 +2942,9 @@
       "current": "الحالي",
       "footer": "رد برقم اختيارك.",
       "resultOn": "تم تفعيل إشعارات البوت.",
-      "resultOff": "تم تعطيل إشعارات البوت."
+      "resultOff": "تم تعطيل إشعارات البوت.",
+      "onNewUser": "مستخدم جديد",
+      "onOnboardingComplete": "إتمام الإعداد"
     },
     "message_display": {
       "heading": "عرض الرسائل",

@@ -136,6 +136,11 @@ sessionTimeoutMinutes: 5,
     onStartup: true,
     onShutdown: true,
     onCrash: true,
+    // Startup notification stayed suppressed by a leftover data/settings.json
+    // value from earlier test runs; pre-9/30 backups had no botNotify* keys, so
+    // the intended default is on.
+    onNewUser: true, // notify admins when a new user appears
+    onOnboardingComplete: true, // notify admins when a user finishes language onboarding
     crashDetectionWindowMs: 300000, // 5 min — a newer-than-this unclean stop counts as a crash
     crashSpamWindowMs: 600000, // 10 min — sliding window for the spam threshold
     crashSpamThreshold: 3, // >= this many crashes in the window -> send the summary instead

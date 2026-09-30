@@ -1,0 +1,326 @@
+{
+  "profileEditing": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "profileName": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "profileUsername": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "profileBio": {
+    "status": "unavailable",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "profileTimezone": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "profilePicture": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "profileCountry": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "profileBirthday": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "languageSelection": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "notifications": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "announcements": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "messageSettings": {
+    "status": "unavailable",
+    "marker": "⛔️",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "inlineHelp": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "replyStyle": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "responseDelay": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "replyEmojis": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "progressBars": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "textStyle": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "dailyDigest": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "timezoneAutoDetect": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "privacy": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "greetingResponse": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "typingIndicator": {
+    "status": "available",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "helpPrompt": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "friendlyTone": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "shareProfile": {
+    "status": "coming_soon",
+    "marker": "🔅",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "copyMyId": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "preferences": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "statistics": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "tutorial": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "info": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "help": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "adminPanel": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "feedback": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "chatResponses": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  },
+  "faq": {
+    "status": "available",
+    "marker": "",
+    "messages": {
+      "unavailable": null,
+      "notifyPrompt": null,
+      "info": null
+    }
+  }
+}

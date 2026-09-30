@@ -8,6 +8,7 @@ import { handleSnippetImpex } from '../handlers/chatCommand.js';
 import config from '../config/config.js';
 import sessionManager from '../utils/sessionManager.js';
 import settingsService from '../services/settingsService.js';
+import { readBotNotifyToggles } from '../config/notificationToggles.js';
 import { sendText } from '../services/messageService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { t } from '../services/localeService.js';
@@ -390,20 +391,16 @@ export const userCustomHandlers = {
 // ---------------------------------------------------------------------------
 
 const BOT_NOTIF_KEYS = {
-  toggleAll: null,
+  toggleAll: 'botNotificationsEnabled',
   onStartup: 'botNotifyOnStartup',
   onShutdown: 'botNotifyOnShutdown',
-  onCrash: 'botNotifyOnCrash'
+  onCrash: 'botNotifyOnCrash',
+  onNewUser: 'botNotifyOnNewUser',
+  onOnboardingComplete: 'botNotifyOnOnboardingComplete'
 };
 
 function readBotNotifSettings() {
-  const s = settingsService.getSettings() || {};
-  return {
-    enabled: s.botNotificationsEnabled !== false,
-    onStartup: s.botNotifyOnStartup !== false,
-    onShutdown: s.botNotifyOnShutdown !== false,
-    onCrash: s.botNotifyOnCrash !== false
-  };
+  return readBotNotifyToggles();
 }
 
 async function toggleBotNotifications(context, which) {
@@ -445,6 +442,8 @@ export const botNotificationCustomHandlers = {
   botnotifs_startup: (context) => toggleBotNotifications(context, 'onStartup'),
   botnotifs_shutdown: (context) => toggleBotNotifications(context, 'onShutdown'),
   botnotifs_crash: (context) => toggleBotNotifications(context, 'onCrash'),
+  botnotifs_new_user: (context) => toggleBotNotifications(context, 'onNewUser'),
+  botnotifs_onboarding_complete: (context) => toggleBotNotifications(context, 'onOnboardingComplete'),
   sys_bot_notifications: async (context) => {
     const { sendMenuById } = await import('./menuSender.js');
     const chatId = context.chatId || context.sender;

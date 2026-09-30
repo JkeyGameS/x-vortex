@@ -1,0 +1,2876 @@
+{
+  "greetings": {
+    "version": 1,
+    "nameKey": "templates.packGreetings",
+    "emoji": "👋",
+    "category": "greetings_social",
+    "multi": false,
+    "featured": true,
+    "tags": [
+      "onboarding",
+      "friendly",
+      "essential"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "hi",
+          "hello",
+          "hey"
+        ],
+        "replies": {
+          "en": [
+            "Hi {username}! 👋",
+            "Hello {username}!"
+          ],
+          "fr": [
+            "Salut {username} ! 👋",
+            "Bonjour {username} !"
+          ],
+          "de": [
+            "Hallo {username}! 👋",
+            "Hi {username}!"
+          ],
+          "es": [
+            "¡Hola {username}! 👋",
+            "¡Hey {username}!"
+          ],
+          "ar": [
+            "مرحبًا {username}! 👋",
+            "أهلاً {username}!"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "hello there",
+          "hey there"
+        ],
+        "replies": {
+          "en": [
+            "Hey there {username}! 😊"
+          ],
+          "fr": [
+            "Salut {username} ! 😊"
+          ],
+          "de": [
+            "Hallo {username}! 😊"
+          ],
+          "es": [
+            "¡Hola {username}! 😊"
+          ],
+          "ar": [
+            "أهلاً {username}! 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "time_greetings": {
+    "version": 1,
+    "nameKey": "templates.packTimeGreetings",
+    "emoji": "🌅",
+    "category": "greetings_social",
+    "multi": false,
+    "tags": [
+      "greeting",
+      "daytime",
+      "friendly"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "good morning"
+        ],
+        "replies": {
+          "en": [
+            "Good morning {username}! ☀️"
+          ],
+          "fr": [
+            "Bonjour {username}, bonne matinée ! ☀️"
+          ],
+          "de": [
+            "Guten Morgen {username}! ☀️"
+          ],
+          "es": [
+            "¡Buenos días {username}! ☀️"
+          ],
+          "ar": [
+            "صباح الخير {username}! ☀️"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "good afternoon"
+        ],
+        "replies": {
+          "en": [
+            "Good afternoon {username}! 🌤️"
+          ],
+          "fr": [
+            "Bon après-midi {username} ! 🌤️"
+          ],
+          "de": [
+            "Guten Tag {username}! 🌤️"
+          ],
+          "es": [
+            "¡Buenas tardes {username}! 🌤️"
+          ],
+          "ar": [
+            "مساء الخير {username}! 🌤️"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "good evening"
+        ],
+        "replies": {
+          "en": [
+            "Good evening {username}! 🌙"
+          ],
+          "fr": [
+            "Bonsoir {username} ! 🌙"
+          ],
+          "de": [
+            "Guten Abend {username}! 🌙"
+          ],
+          "es": [
+            "¡Buenas noches {username}! 🌙"
+          ],
+          "ar": [
+            "مساء الخير {username}! 🌙"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "good night"
+        ],
+        "replies": {
+          "en": [
+            "Good night {username}! 🌙"
+          ],
+          "fr": [
+            "Bonne nuit {username} ! 🌙"
+          ],
+          "de": [
+            "Gute Nacht {username}! 🌙"
+          ],
+          "es": [
+            "¡Buenas noches {username}! 🌙"
+          ],
+          "ar": [
+            "تصبح على خير {username}! 🌙"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "how_are_you": {
+    "version": 1,
+    "nameKey": "templates.packHowAreYou",
+    "emoji": "🤝",
+    "category": "greetings_social",
+    "multi": false,
+    "tags": [
+      "greeting",
+      "small-talk",
+      "friendly"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "how are you"
+        ],
+        "replies": {
+          "en": [
+            "I'm doing great, {username}! How about you? 😊"
+          ],
+          "fr": [
+            "Je vais très bien, {username} ! Et toi ? 😊"
+          ],
+          "de": [
+            "Mir geht es super, {username}! Und dir? 😊"
+          ],
+          "es": [
+            "¡Estoy genial, {username}! ¿Y tú? 😊"
+          ],
+          "ar": [
+            "أنا بخير {username}! وأنت؟ 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "how's it going",
+          "hows it going"
+        ],
+        "replies": {
+          "en": [
+            "All good here, {username}! What's up with you? 😎"
+          ],
+          "fr": [
+            "Tout va bien ici, {username} ! Quoi de neuf ? 😎"
+          ],
+          "de": [
+            "Alles gut hier, {username}! Was gibt es Neues? 😎"
+          ],
+          "es": [
+            "Todo bien por aquí, {username}. ¿Qué hay de nuevo? 😎"
+          ],
+          "ar": [
+            "كل شيء بخير {username}! ما الجديد؟ 😎"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "what's up",
+          "whats up"
+        ],
+        "replies": {
+          "en": [
+            "Not much, {username}! Just hanging out. 😄"
+          ],
+          "fr": [
+            "Pas grand-chose, {username} ! 😄"
+          ],
+          "de": [
+            "Nicht viel, {username}! 😄"
+          ],
+          "es": [
+            "Nada mucho, {username}. 😄"
+          ],
+          "ar": [
+            "لا شيء كثير {username}! 😄"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "goodbye": {
+    "version": 1,
+    "nameKey": "templates.packGoodbye",
+    "emoji": "👋",
+    "category": "greetings_social",
+    "multi": false,
+    "tags": [
+      "greeting",
+      "farewell",
+      "essential"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "bye"
+        ],
+        "replies": {
+          "en": [
+            "Bye {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Tschüss {username}! 👋"
+          ],
+          "es": [
+            "¡Adiós {username}! 👋"
+          ],
+          "ar": [
+            "وداعًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "goodbye"
+        ],
+        "replies": {
+          "en": [
+            "Goodbye {username}, see you soon! 👋"
+          ],
+          "fr": [
+            "Au revoir {username}, à bientôt ! 👋"
+          ],
+          "de": [
+            "Tschüss {username}, bis bald! 👋"
+          ],
+          "es": [
+            "¡Adiós {username}, hasta pronto! 👋"
+          ],
+          "ar": [
+            "وداعًا {username}, نراك قريبًا! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "see you"
+        ],
+        "replies": {
+          "en": [
+            "See you later {username}! 👋"
+          ],
+          "fr": [
+            "À plus tard {username} ! 👋"
+          ],
+          "de": [
+            "Bis später {username}! 👋"
+          ],
+          "es": [
+            "¡Nos vemos {username}! 👋"
+          ],
+          "ar": [
+            "أراك لاحقًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "cya"
+        ],
+        "replies": {
+          "en": [
+            "Cya {username}! ✌️"
+          ],
+          "fr": [
+            "À plus {username} ! ✌️"
+          ],
+          "de": [
+            "Ciao {username}! ✌️"
+          ],
+          "es": [
+            "¡Nos vemos {username}! ✌️"
+          ],
+          "ar": [
+            "إلى اللقاء {username}! ✌️"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "thanks": {
+    "version": 1,
+    "nameKey": "templates.packThanks",
+    "emoji": "🙏",
+    "category": "politeness",
+    "multi": false,
+    "featured": true,
+    "tags": [
+      "politeness",
+      "essential"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "thanks",
+          "thank you",
+          "thx"
+        ],
+        "replies": {
+          "en": [
+            "You're welcome {username}! 😊"
+          ],
+          "fr": [
+            "De rien {username} ! 😊"
+          ],
+          "de": [
+            "Gern geschehen {username}! 😊"
+          ],
+          "es": [
+            "¡De nada {username}! 😊"
+          ],
+          "ar": [
+            "على الرحب {username}! 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "apology": {
+    "version": 1,
+    "nameKey": "templates.packApology",
+    "emoji": "😔",
+    "category": "politeness",
+    "multi": false,
+    "tags": [
+      "politeness"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "sorry",
+          "my bad"
+        ],
+        "replies": {
+          "en": [
+            "No worries {username}! 😊"
+          ],
+          "fr": [
+            "Pas de souci {username} ! 😊"
+          ],
+          "de": [
+            "Kein Problem {username}! 😊"
+          ],
+          "es": [
+            "¡No te preocupes {username}! 😊"
+          ],
+          "ar": [
+            "لا تقلق {username}! 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "excuse me"
+        ],
+        "replies": {
+          "en": [
+            "Yes {username}? How can I help? 🙏"
+          ],
+          "fr": [
+            "Oui {username} ? Comment aider ? 🙏"
+          ],
+          "de": [
+            "Ja {username}? Wie kann ich helfen? 🙏"
+          ],
+          "es": [
+            "¿Sí {username}? ¿Cómo puedo ayudar? 🙏"
+          ],
+          "ar": [
+            "نعم {username}؟ كيف أساعدك؟ 🙏"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "compliments": {
+    "version": 1,
+    "nameKey": "templates.packCompliments",
+    "emoji": "🌟",
+    "category": "politeness",
+    "multi": false,
+    "tags": [
+      "politeness",
+      "friendly",
+      "fun"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "you're awesome",
+          "youre awesome"
+        ],
+        "replies": {
+          "en": [
+            "You're awesome too, {username}! 🌟"
+          ],
+          "fr": [
+            "Toi aussi tu es génial, {username} ! 🌟"
+          ],
+          "de": [
+            "Du bist auch klasse, {username}! 🌟"
+          ],
+          "es": [
+            "¡Tú también eres genial, {username}! 🌟"
+          ],
+          "ar": [
+            "أنت رائع أيضًا {username}! 🌟"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "nice bot",
+          "good bot"
+        ],
+        "replies": {
+          "en": [
+            "Thank you {username}! That means a lot. 🥰"
+          ],
+          "fr": [
+            "Merci {username} ! Ça fait plaisir. 🥰"
+          ],
+          "de": [
+            "Danke {username}! Das freut mich. 🥰"
+          ],
+          "es": [
+            "¡Gracias {username}! Eso significa mucho. 🥰"
+          ],
+          "ar": [
+            "شكرًا {username}! هذا يعني الكثير. 🥰"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "help": {
+    "version": 1,
+    "nameKey": "templates.packHelp",
+    "emoji": "❓",
+    "category": "help_info",
+    "multi": false,
+    "featured": true,
+    "tags": [
+      "help",
+      "essential",
+      "support"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "help",
+          "i need help"
+        ],
+        "replies": {
+          "en": [
+            "Sure {username}! Type /help to see what I can do. 📚"
+          ],
+          "fr": [
+            "Bien sûr {username} ! Tapez /help pour voir ce que je peux faire. 📚"
+          ],
+          "de": [
+            "Klar {username}! Tippe /help, um zu sehen, was ich kann. 📚"
+          ],
+          "es": [
+            "¡Claro {username}! Escribe /help para ver lo que puedo hacer. 📚"
+          ],
+          "ar": [
+            "بالتأكيد {username}! اكتب /help لترى ما يمكنني فعله. 📚"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "bot_identity": {
+    "version": 1,
+    "nameKey": "templates.packBotIdentity",
+    "emoji": "🤖",
+    "category": "help_info",
+    "multi": false,
+    "tags": [
+      "help",
+      "info"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "who are you"
+        ],
+        "replies": {
+          "en": [
+            "I'm X-Vortex, your friendly assistant bot! 🤖"
+          ],
+          "fr": [
+            "Je suis X-Vortex, votre bot assistant ! 🤖"
+          ],
+          "de": [
+            "Ich bin X-Vortex, dein freundlicher Assistent! 🤖"
+          ],
+          "es": [
+            "¡Soy X-Vortex, tu bot asistente! 🤖"
+          ],
+          "ar": [
+            "أنا X-Vortex، بوت المساعدة الودود! 🤖"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "are you a bot",
+          "are you human"
+        ],
+        "replies": {
+          "en": [
+            "Yes, I'm a bot — but a friendly one! 😄"
+          ],
+          "fr": [
+            "Oui, je suis un bot — mais sympa ! 😄"
+          ],
+          "de": [
+            "Ja, ich bin ein Bot — aber ein freundlicher! 😄"
+          ],
+          "es": [
+            "Sí, soy un bot — ¡pero simpático! 😄"
+          ],
+          "ar": [
+            "نعم، أنا بوت — لكن ودود! 😄"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "what_can_you_do": {
+    "version": 1,
+    "nameKey": "templates.packWhatCanYouDo",
+    "emoji": "💡",
+    "category": "help_info",
+    "multi": false,
+    "tags": [
+      "help",
+      "info",
+      "onboarding"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "what can you do"
+        ],
+        "replies": {
+          "en": [
+            "I can chat, answer FAQs, and run commands. Try /help! 💡"
+          ],
+          "fr": [
+            "Je peux discuter, répondre aux questions et exécuter des commandes. Essayez /help ! 💡"
+          ],
+          "de": [
+            "Ich kann chatten, FAQs beantworten und Befehle ausführen. Versuch /help! 💡"
+          ],
+          "es": [
+            "Puedo chatear, responder preguntas y ejecutar comandos. ¡Prueba /help! 💡"
+          ],
+          "ar": [
+            "يمكنني الدردشة والإجابة على الأسئلة وتنفيذ الأوامر. جرّب /help! 💡"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "list commands",
+          "commands"
+        ],
+        "replies": {
+          "en": [
+            "Send /help to see all my commands. 📋"
+          ],
+          "fr": [
+            "Envoyez /help pour voir toutes mes commandes. 📋"
+          ],
+          "de": [
+            "Sende /help für alle Befehle. 📋"
+          ],
+          "es": [
+            "Envía /help para ver todos mis comandos. 📋"
+          ],
+          "ar": [
+            "أرسل /help لرؤية جميع أوامري. 📋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "emotional_support": {
+    "version": 1,
+    "nameKey": "templates.packEmotionalSupport",
+    "emoji": "💙",
+    "category": "emotion",
+    "multi": false,
+    "tags": [
+      "emotion",
+      "support",
+      "wellbeing"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "i'm sad",
+          "im sad",
+          "i am sad"
+        ],
+        "replies": {
+          "en": [
+            "I'm sorry you're feeling down, {username}. Better days are coming. 💙"
+          ],
+          "fr": [
+            "Désolé que tu sois triste, {username}. Des jours meilleurs viendront. 💙"
+          ],
+          "de": [
+            "Es tut mir leid, {username}. Bessere Tage kommen. 💙"
+          ],
+          "es": [
+            "Siento que estés triste, {username}. Vendrán días mejores. 💙"
+          ],
+          "ar": [
+            "آسف لأنك حزين {username}. أيام أفضل قادمة. 💙"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "feeling down",
+          "i feel bad"
+        ],
+        "replies": {
+          "en": [
+            "Sending you a virtual hug, {username}! 🤗"
+          ],
+          "fr": [
+            "Je t’envoie un câlin virtuel, {username} ! 🤗"
+          ],
+          "de": [
+            "Ich schicke dir eine virtuelle Umarmung, {username}! 🤗"
+          ],
+          "es": [
+            "¡Te envío un abrazo virtual, {username}! 🤗"
+          ],
+          "ar": [
+            "أرسل لك عناقًا افتراضيًا {username}! 🤗"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "i'm tired",
+          "im tired"
+        ],
+        "replies": {
+          "en": [
+            "Take a break, {username}! You deserve some rest. 😴"
+          ],
+          "fr": [
+            "Fais une pause, {username} ! Tu as besoin de repos. 😴"
+          ],
+          "de": [
+            "Mach eine Pause, {username}! Du hast Ruhe verdient. 😴"
+          ],
+          "es": [
+            "¡Descansa, {username}! Te mereces un respiro. 😴"
+          ],
+          "ar": [
+            "خذ قسطًا من الراحة {username}! أنت تستحق ذلك. 😴"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "happiness": {
+    "version": 1,
+    "nameKey": "templates.packHappiness",
+    "emoji": "😄",
+    "category": "emotion",
+    "multi": false,
+    "tags": [
+      "emotion",
+      "positive"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "i'm happy",
+          "im happy"
+        ],
+        "replies": {
+          "en": [
+            "That's wonderful, {username}! Keep smiling! 😄"
+          ],
+          "fr": [
+            "C’est super, {username} ! Garde le sourire ! 😄"
+          ],
+          "de": [
+            "Das ist wunderbar, {username}! Weiter lächeln! 😄"
+          ],
+          "es": [
+            "¡Qué maravilla, {username}! ¡Sigue sonriendo! 😄"
+          ],
+          "ar": [
+            "هذا رائع {username}! ابق مبتسمًا! 😄"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "great news",
+          "yay"
+        ],
+        "replies": {
+          "en": [
+            "Yay! Celebrating with you, {username}! 🎉"
+          ],
+          "fr": [
+            "Youpi ! Je fête ça avec toi, {username} ! 🎉"
+          ],
+          "de": [
+            "Juhu! Ich feiere mit dir, {username}! 🎉"
+          ],
+          "es": [
+            "¡Yupi! ¡Celebro contigo, {username}! 🎉"
+          ],
+          "ar": [
+            "رائع! أحتفل معك {username}! 🎉"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "frustration": {
+    "version": 1,
+    "nameKey": "templates.packFrustration",
+    "emoji": "😤",
+    "category": "emotion",
+    "multi": false,
+    "tags": [
+      "emotion",
+      "support"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "i'm angry",
+          "im angry"
+        ],
+        "replies": {
+          "en": [
+            "Take a deep breath, {username}. I’m here to help. 🧘"
+          ],
+          "fr": [
+            "Respire un bon coup, {username}. Je suis là pour aider. 🧘"
+          ],
+          "de": [
+            "Tief durchatmen, {username}. Ich helfe dir. 🧘"
+          ],
+          "es": [
+            "Respira hondo, {username}. Estoy aquí para ayudar. 🧘"
+          ],
+          "ar": [
+            "خذ نفسًا عميقًا {username}. أنا هنا للمساعدة. 🧘"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "this is annoying",
+          "annoying"
+        ],
+        "replies": {
+          "en": [
+            "Sorry about that, {username}. Tell me more? 🙏"
+          ],
+          "fr": [
+            "Désolé, {username}. Raconte-m’en plus ? 🙏"
+          ],
+          "de": [
+            "Tut mir leid, {username}. Erzähl mir mehr? 🙏"
+          ],
+          "es": [
+            "Lo siento, {username}. ¿Me cuentas más? 🙏"
+          ],
+          "ar": [
+            "آسف {username}. أخبرني المزيد؟ 🙏"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "birthday": {
+    "version": 1,
+    "nameKey": "templates.packBirthday",
+    "emoji": "🎂",
+    "category": "occasions",
+    "multi": false,
+    "tags": [
+      "occasion",
+      "celebration"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "happy birthday"
+        ],
+        "replies": {
+          "en": [
+            "Happy birthday {username}! 🎂🎉"
+          ],
+          "fr": [
+            "Joyeux anniversaire {username} ! 🎂🎉"
+          ],
+          "de": [
+            "Alles Gute zum Geburtstag {username}! 🎂🎉"
+          ],
+          "es": [
+            "¡Feliz cumpleaños {username}! 🎂🎉"
+          ],
+          "ar": [
+            "عيد ميلاد سعيد {username}! 🎂🎉"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "hbd",
+          "happy bday"
+        ],
+        "replies": {
+          "en": [
+            "HBD {username}! Have an amazing day! 🎈"
+          ],
+          "fr": [
+            "Joyeux anniv {username} ! Super journée ! 🎈"
+          ],
+          "de": [
+            "Alles Gute {username}! Hab einen tollen Tag! 🎈"
+          ],
+          "es": [
+            "¡Feliz cumple {username}! ¡Que tengas un gran día! 🎈"
+          ],
+          "ar": [
+            "عيد سعيد {username}! أتمنى لك يومًا رائعًا! 🎈"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "celebration": {
+    "version": 1,
+    "nameKey": "templates.packCelebration",
+    "emoji": "🎉",
+    "category": "occasions",
+    "multi": false,
+    "tags": [
+      "occasion",
+      "celebration"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "congrats",
+          "congratulations"
+        ],
+        "replies": {
+          "en": [
+            "Congratulations {username}! 🎉"
+          ],
+          "fr": [
+            "Félicitations {username} ! 🎉"
+          ],
+          "de": [
+            "Herzlichen Glückwunsch {username}! 🎉"
+          ],
+          "es": [
+            "¡Felicidades {username}! 🎉"
+          ],
+          "ar": [
+            "مبروك {username}! 🎉"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "holiday": {
+    "version": 1,
+    "nameKey": "templates.packHoliday",
+    "emoji": "🎄",
+    "category": "occasions",
+    "multi": false,
+    "tags": [
+      "occasion",
+      "seasonal"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "happy holidays"
+        ],
+        "replies": {
+          "en": [
+            "Happy holidays {username}! ✨"
+          ],
+          "fr": [
+            "Joyeuses fêtes {username} ! ✨"
+          ],
+          "de": [
+            "Frohe Feiertage {username}! ✨"
+          ],
+          "es": [
+            "¡Felices fiestas {username}! ✨"
+          ],
+          "ar": [
+            "أعياد سعيدة {username}! ✨"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "merry christmas"
+        ],
+        "replies": {
+          "en": [
+            "Merry Christmas {username}! 🎄"
+          ],
+          "fr": [
+            "Joyeux Noël {username} ! 🎄"
+          ],
+          "de": [
+            "Frohe Weihnachten {username}! 🎄"
+          ],
+          "es": [
+            "¡Feliz Navidad {username}! 🎄"
+          ],
+          "ar": [
+            "عيد ميلاد مجيد {username}! 🎄"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "happy new year"
+        ],
+        "replies": {
+          "en": [
+            "Happy New Year {username}! 🥳"
+          ],
+          "fr": [
+            "Bonne année {username} ! 🥳"
+          ],
+          "de": [
+            "Frohes neues Jahr {username}! 🥳"
+          ],
+          "es": [
+            "¡Feliz Año Nuevo {username}! 🥳"
+          ],
+          "ar": [
+            "سنة جديدة سعيدة {username}! 🥳"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "formal": {
+    "version": 1,
+    "nameKey": "templates.packFormal",
+    "emoji": "💼",
+    "category": "professional",
+    "multi": false,
+    "tags": [
+      "professional",
+      "business"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "good day"
+        ],
+        "replies": {
+          "en": [
+            "Good day. How may I assist you?"
+          ],
+          "fr": [
+            "Bonjour. Comment puis-je vous aider ?"
+          ],
+          "de": [
+            "Guten Tag. Wie kann ich Ihnen helfen?"
+          ],
+          "es": [
+            "Buenos días. ¿En qué puedo ayudarle?"
+          ],
+          "ar": [
+            "طاب يومك. كيف يمكنني مساعدتك؟"
+          ]
+        },
+        "style": "formal",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "thank you very much"
+        ],
+        "replies": {
+          "en": [
+            "You are most welcome."
+          ],
+          "fr": [
+            "Je vous en prie."
+          ],
+          "de": [
+            "Sehr gern geschehen."
+          ],
+          "es": [
+            "Ha sido un placer."
+          ],
+          "ar": [
+            "على الرحب والسعة."
+          ]
+        },
+        "style": "formal",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "meeting": {
+    "version": 1,
+    "nameKey": "templates.packMeeting",
+    "emoji": "📅",
+    "category": "professional",
+    "multi": false,
+    "tags": [
+      "professional",
+      "business"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "let's meet",
+          "lets meet"
+        ],
+        "replies": {
+          "en": [
+            "Sure {username}! What time works for you? 📅"
+          ],
+          "fr": [
+            "Bien sûr {username} ! Quelle heure vous convient ? 📅"
+          ],
+          "de": [
+            "Klar {username}! Wann passt es dir? 📅"
+          ],
+          "es": [
+            "¡Claro {username}! ¿A qué hora te viene bien? 📅"
+          ],
+          "ar": [
+            "بالتأكيد {username}! ما الوقت المناسب لك؟ 📅"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "can we schedule",
+          "schedule a meeting"
+        ],
+        "replies": {
+          "en": [
+            "Absolutely {username}! Share a time slot and I’ll note it. 🗓️"
+          ],
+          "fr": [
+            "Absolument {username} ! Proposez un créneau. 🗓️"
+          ],
+          "de": [
+            "Absolut {username}! Nenne einen Termin. 🗓️"
+          ],
+          "es": [
+            "¡Por supuesto {username}! Propón un horario. 🗓️"
+          ],
+          "ar": [
+            "بالتأكيد {username}! اقترح موعدًا. 🗓️"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "getting_started": {
+    "version": 1,
+    "nameKey": "templates.packGettingStarted",
+    "emoji": "🚀",
+    "category": "onboarding",
+    "multi": false,
+    "tags": [
+      "onboarding",
+      "essential"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "how do i start",
+          "how to start"
+        ],
+        "replies": {
+          "en": [
+            "Just say hi, {username}! Try /help to explore. 🚀"
+          ],
+          "fr": [
+            "Dites juste salut, {username} ! Essayez /help. 🚀"
+          ],
+          "de": [
+            "Sag einfach hallo, {username}! Versuch /help. 🚀"
+          ],
+          "es": [
+            "¡Solo di hola, {username}! Prueba /help. 🚀"
+          ],
+          "ar": [
+            "فقط قل مرحبًا {username}! جرّب /help. 🚀"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "what is this",
+          "what is this bot"
+        ],
+        "replies": {
+          "en": [
+            "This is X-Vortex, your assistant bot. Ask me anything! ✨"
+          ],
+          "fr": [
+            "Ceci est X-Vortex, votre bot assistant. Demandez-moi ! ✨"
+          ],
+          "de": [
+            "Das ist X-Vortex, dein Assistent. Frag mich was! ✨"
+          ],
+          "es": [
+            "Este es X-Vortex, tu bot asistente. ¡Pregúntame! ✨"
+          ],
+          "ar": [
+            "هذا X-Vortex، بوت المساعدة. اسألني أي شيء! ✨"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "navigation": {
+    "version": 1,
+    "nameKey": "templates.packNavigation",
+    "emoji": "🧭",
+    "category": "onboarding",
+    "multi": false,
+    "tags": [
+      "onboarding",
+      "actions"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "profile",
+          "my profile"
+        ],
+        "replies": {
+          "en": [
+            "Opening your profile…"
+          ],
+          "fr": [
+            "Ouverture de votre profil…"
+          ],
+          "de": [
+            "Öffne dein Profil…"
+          ],
+          "es": [
+            "Abriendo tu perfil…"
+          ],
+          "ar": [
+            "جارٍ فتح ملفك…"
+          ]
+        },
+        "style": "friendly",
+        "action": "profile",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "settings",
+          "open settings"
+        ],
+        "replies": {
+          "en": [
+            "Opening settings…"
+          ],
+          "fr": [
+            "Ouverture des paramètres…"
+          ],
+          "de": [
+            "Öffne Einstellungen…"
+          ],
+          "es": [
+            "Abriendo ajustes…"
+          ],
+          "ar": [
+            "جارٍ فتح الإعدادات…"
+          ]
+        },
+        "style": "friendly",
+        "action": "settings",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "help",
+          "open help"
+        ],
+        "replies": {
+          "en": [
+            "Opening help…"
+          ],
+          "fr": [
+            "Ouverture de l’aide…"
+          ],
+          "de": [
+            "Öffne Hilfe…"
+          ],
+          "es": [
+            "Abriendo ayuda…"
+          ],
+          "ar": [
+            "جارٍ فتح المساعدة…"
+          ]
+        },
+        "style": "friendly",
+        "action": "help",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "menu",
+          "main menu"
+        ],
+        "replies": {
+          "en": [
+            "Opening the main menu…"
+          ],
+          "fr": [
+            "Ouverture du menu principal…"
+          ],
+          "de": [
+            "Öffne das Hauptmenü…"
+          ],
+          "es": [
+            "Abriendo el menú principal…"
+          ],
+          "ar": [
+            "جارٍ فتح القائمة الرئيسية…"
+          ]
+        },
+        "style": "friendly",
+        "action": "main",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "multilang_greetings": {
+    "version": 1,
+    "nameKey": "templates.packMultilangGreetings",
+    "emoji": "🌍",
+    "category": "multilang",
+    "multi": true,
+    "tags": [
+      "multilingual",
+      "essential",
+      "greeting"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "hi",
+          "hello"
+        ],
+        "replies": {
+          "en": [
+            "Hi {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Hallo {username}! 👋"
+          ],
+          "es": [
+            "¡Hola {username}! 👋"
+          ],
+          "ar": [
+            "مرحبًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "en",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "salut",
+          "bonjour"
+        ],
+        "replies": {
+          "en": [
+            "Hi {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Hallo {username}! 👋"
+          ],
+          "es": [
+            "¡Hola {username}! 👋"
+          ],
+          "ar": [
+            "مرحبًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "fr",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "hallo",
+          "guten tag"
+        ],
+        "replies": {
+          "en": [
+            "Hi {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Hallo {username}! 👋"
+          ],
+          "es": [
+            "¡Hola {username}! 👋"
+          ],
+          "ar": [
+            "مرحبًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "de",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "hola",
+          "buenas"
+        ],
+        "replies": {
+          "en": [
+            "Hi {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Hallo {username}! 👋"
+          ],
+          "es": [
+            "¡Hola {username}! 👋"
+          ],
+          "ar": [
+            "مرحبًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "es",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "مرحبا",
+          "اهلا"
+        ],
+        "replies": {
+          "en": [
+            "Hi {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Hallo {username}! 👋"
+          ],
+          "es": [
+            "¡Hola {username}! 👋"
+          ],
+          "ar": [
+            "مرحبًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "ar",
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "multilang_thanks": {
+    "version": 1,
+    "nameKey": "templates.packMultilangThanks",
+    "emoji": "🙏",
+    "category": "multilang",
+    "multi": true,
+    "tags": [
+      "multilingual",
+      "politeness"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "thanks",
+          "thank you"
+        ],
+        "replies": {
+          "en": [
+            "You're welcome {username}! 😊"
+          ],
+          "fr": [
+            "De rien {username} ! 😊"
+          ],
+          "de": [
+            "Gern geschehen {username}! 😊"
+          ],
+          "es": [
+            "¡De nada {username}! 😊"
+          ],
+          "ar": [
+            "على الرحب {username}! 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "en",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "merci"
+        ],
+        "replies": {
+          "en": [
+            "You're welcome {username}! 😊"
+          ],
+          "fr": [
+            "De rien {username} ! 😊"
+          ],
+          "de": [
+            "Gern geschehen {username}! 😊"
+          ],
+          "es": [
+            "¡De nada {username}! 😊"
+          ],
+          "ar": [
+            "على الرحب {username}! 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "fr",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "danke"
+        ],
+        "replies": {
+          "en": [
+            "You're welcome {username}! 😊"
+          ],
+          "fr": [
+            "De rien {username} ! 😊"
+          ],
+          "de": [
+            "Gern geschehen {username}! 😊"
+          ],
+          "es": [
+            "¡De nada {username}! 😊"
+          ],
+          "ar": [
+            "على الرحب {username}! 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "de",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "gracias"
+        ],
+        "replies": {
+          "en": [
+            "You're welcome {username}! 😊"
+          ],
+          "fr": [
+            "De rien {username} ! 😊"
+          ],
+          "de": [
+            "Gern geschehen {username}! 😊"
+          ],
+          "es": [
+            "¡De nada {username}! 😊"
+          ],
+          "ar": [
+            "على الرحب {username}! 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "es",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "شكرا"
+        ],
+        "replies": {
+          "en": [
+            "You're welcome {username}! 😊"
+          ],
+          "fr": [
+            "De rien {username} ! 😊"
+          ],
+          "de": [
+            "Gern geschehen {username}! 😊"
+          ],
+          "es": [
+            "¡De nada {username}! 😊"
+          ],
+          "ar": [
+            "على الرحب {username}! 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "ar",
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "multilang_goodbye": {
+    "version": 1,
+    "nameKey": "templates.packMultilangGoodbye",
+    "emoji": "👋",
+    "category": "multilang",
+    "multi": true,
+    "tags": [
+      "multilingual",
+      "greeting"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "bye",
+          "goodbye"
+        ],
+        "replies": {
+          "en": [
+            "Bye {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Tschüss {username}! 👋"
+          ],
+          "es": [
+            "¡Adiós {username}! 👋"
+          ],
+          "ar": [
+            "وداعًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "en",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "au revoir",
+          "a plus"
+        ],
+        "replies": {
+          "en": [
+            "Bye {username}! 👋"
+          ],
+          "fr": [
+            "Au revoir {username} ! 👋"
+          ],
+          "de": [
+            "Tschüss {username}! 👋"
+          ],
+          "es": [
+            "¡Adiós {username}! 👋"
+          ],
+          "ar": [
+            "وداعًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "fr",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "tschüss",
+          "bis bald"
+        ],
+        "replies": {
+          "en": [
+            "Bye {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Tschüss {username}! 👋"
+          ],
+          "es": [
+            "¡Adiós {username}! 👋"
+          ],
+          "ar": [
+            "وداعًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "de",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "adios",
+          "hasta luego"
+        ],
+        "replies": {
+          "en": [
+            "Bye {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Tschüss {username}! 👋"
+          ],
+          "es": [
+            "¡Adiós {username}! 👋"
+          ],
+          "ar": [
+            "وداعًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "es",
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "وداعا",
+          "الى اللقاء"
+        ],
+        "replies": {
+          "en": [
+            "Bye {username}! 👋"
+          ],
+          "fr": [
+            "Salut {username} ! 👋"
+          ],
+          "de": [
+            "Tschüss {username}! 👋"
+          ],
+          "es": [
+            "¡Adiós {username}! 👋"
+          ],
+          "ar": [
+            "وداعًا {username}! 👋"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": "ar",
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "jokes": {
+    "version": 1,
+    "nameKey": "templates.packJokes",
+    "emoji": "🤣",
+    "category": "fun",
+    "multi": false,
+    "tags": [
+      "fun",
+      "humor"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "tell me a joke"
+        ],
+        "replies": {
+          "en": [
+            "Why did the bot go to school? To improve its neural-netiquette! 🤣"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "say something funny",
+          "funny"
+        ],
+        "replies": {
+          "en": [
+            "I would tell you a UDP joke, but you might not get it. 😄"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "another joke",
+          "one more"
+        ],
+        "replies": {
+          "en": [
+            "Why do programmers prefer dark mode? Because light attracts bugs! 🐛"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "random": {
+    "version": 1,
+    "nameKey": "templates.packRandom",
+    "emoji": "🎲",
+    "category": "fun",
+    "multi": false,
+    "tags": [
+      "fun",
+      "games"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "roll a dice",
+          "dice"
+        ],
+        "replies": {
+          "en": [
+            "You rolled: {username}! (Kidding — ask me again! 🎲)"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "flip a coin",
+          "coin flip"
+        ],
+        "replies": {
+          "en": [
+            "Heads or tails, {username}? Call it! 🪙"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "pick a number",
+          "random number"
+        ],
+        "replies": {
+          "en": [
+            "Pick a number between 1 and 10, {username}! 🔢"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "time_based": {
+    "version": 1,
+    "nameKey": "templates.packTimeBased",
+    "emoji": "🕒",
+    "category": "misc",
+    "multi": false,
+    "tags": [
+      "info",
+      "utility"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "what time is it",
+          "time"
+        ],
+        "replies": {
+          "en": [
+            "Check your clock, {username}! Time flies. 🕒"
+          ],
+          "fr": [
+            "Regardez l’heure, {username} ! 🕒"
+          ],
+          "de": [
+            "Schau auf die Uhr, {username}! 🕒"
+          ],
+          "es": [
+            "¡Mira el reloj, {username}! 🕒"
+          ],
+          "ar": [
+            "انظر إلى الساعة {username}! 🕒"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "what's the date",
+          "date",
+          "today"
+        ],
+        "replies": {
+          "en": [
+            "Today is a great day, {username}! 📅"
+          ],
+          "fr": [
+            "Aujourd’hui est un beau jour, {username} ! 📅"
+          ],
+          "de": [
+            "Heute ist ein schöner Tag, {username}! 📅"
+          ],
+          "es": [
+            "¡Hoy es un gran día, {username}! 📅"
+          ],
+          "ar": [
+            "اليوم يوم رائع {username}! 📅"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "identity": {
+    "version": 1,
+    "nameKey": "templates.packIdentity",
+    "emoji": "🪞",
+    "category": "misc",
+    "multi": false,
+    "tags": [
+      "info",
+      "utility"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "who am i"
+        ],
+        "replies": {
+          "en": [
+            "You're {username}, a valued human! 🌟"
+          ],
+          "fr": [
+            "Tu es {username}, un humain estimé ! 🌟"
+          ],
+          "de": [
+            "Du bist {username}, ein geschätzter Mensch! 🌟"
+          ],
+          "es": [
+            "¡Eres {username}, un humano valioso! 🌟"
+          ],
+          "ar": [
+            "أنت {username}, إنسان مميز! 🌟"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "what's my name",
+          "my name"
+        ],
+        "replies": {
+          "en": [
+            "Your name is {username}! Nice name. 😊"
+          ],
+          "fr": [
+            "Tu t’appelles {username} ! Joli nom. 😊"
+          ],
+          "de": [
+            "Du heißt {username}! Schöner Name. 😊"
+          ],
+          "es": [
+            "¡Te llamas {username}! Bonito nombre. 😊"
+          ],
+          "ar": [
+            "اسمك {username}! اسم جميل. 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  },
+  "small_talk": {
+    "version": 1,
+    "nameKey": "templates.packSmallTalk",
+    "emoji": "💬",
+    "category": "small_talk",
+    "multi": false,
+    "tags": [
+      "small-talk",
+      "casual",
+      "friendly",
+      "essential"
+    ],
+    "rules": [
+      {
+        "triggers": [
+          "how are you",
+          "how're you",
+          "how are you doing",
+          "how's it going",
+          "how's life"
+        ],
+        "replies": {
+          "en": [
+            "I'm doing great, thanks for asking! 😊 How about you?",
+            "Pretty good! How are things with you? 😊"
+          ],
+          "fr": [
+            "Je vais très bien, merci ! 😊 Et toi ?",
+            "Ça va bien ! Et toi ? 😊"
+          ],
+          "de": [
+            "Mir geht es super, danke! 😊 Und dir?",
+            "Ganz gut! Wie geht es dir? 😊"
+          ],
+          "es": [
+            "¡Estoy genial, gracias por preguntar! 😊 ¿Y tú?",
+            "¡Bastante bien! ¿Cómo estás tú? 😊"
+          ],
+          "ar": [
+            "أنا بخير، شكرًا لسؤالك! 😊 وأنت؟",
+            "بحالة جيدة! كيف حالك؟ 😊"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "what's up",
+          "whats up",
+          "sup",
+          "wassup"
+        ],
+        "replies": {
+          "en": [
+            "Not much, just here to help! 😄 What are you up to?"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "good morning"
+        ],
+        "replies": {
+          "en": [
+            "Good morning {username}! ☀️ Hope you have a great day!"
+          ],
+          "fr": [
+            "Bonjour {username} ! ☀️ Bonne journée !"
+          ],
+          "de": [
+            "Guten Morgen {username}! ☀️ Hab einen tollen Tag!"
+          ],
+          "es": [
+            "¡Buenos días {username}! ☀️ ¡Que tengas un gran día!"
+          ],
+          "ar": [
+            "صباح الخير {username}! ☀️ أتمنى لك يومًا رائعًا!"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "good night"
+        ],
+        "replies": {
+          "en": [
+            "Good night {username}! 🌙 Sleep well!"
+          ],
+          "fr": [
+            "Bonne nuit {username} ! 🌙 Dors bien !"
+          ],
+          "de": [
+            "Gute Nacht {username}! 🌙 Schlaf gut!"
+          ],
+          "es": [
+            "¡Buenas noches {username}! 🌙 ¡Que descanses!"
+          ],
+          "ar": [
+            "تصبح على خير {username}! 🌙 نومًا هنيئًا!"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "good afternoon"
+        ],
+        "replies": {
+          "en": [
+            "Good afternoon! 🌤️ How is your day going?"
+          ],
+          "fr": [
+            "Bon après-midi ! 🌤️ Comment se passe ta journée ?"
+          ],
+          "de": [
+            "Guten Tag! 🌤️ Wie läuft dein Tag?"
+          ],
+          "es": [
+            "¡Buenas tardes! 🌤️ ¿Cómo va tu día?"
+          ],
+          "ar": [
+            "مساء الخير! 🌤️ كيف يسير يومك؟"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "what's your name",
+          "what is your name"
+        ],
+        "replies": {
+          "en": [
+            "I’m X‑Vortex, your personal assistant! 🤖"
+          ],
+          "fr": [
+            "Je suis X‑Vortex, ton assistant personnel ! 🤖"
+          ],
+          "de": [
+            "Ich bin X‑Vortex, dein persönlicher Assistent! 🤖"
+          ],
+          "es": [
+            "¡Soy X‑Vortex, tu asistente personal! 🤖"
+          ],
+          "ar": [
+            "أنا X‑Vortex، مساعدك الشخصي! 🤖"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "are you real",
+          "are you a bot",
+          "are you human",
+          "are u real"
+        ],
+        "replies": {
+          "en": [
+            "I’m a bot, but a friendly one! 🤖💙"
+          ],
+          "fr": [
+            "Je suis un bot, mais sympa ! 🤖💙"
+          ],
+          "de": [
+            "Ich bin ein Bot, aber ein freundlicher! 🤖💙"
+          ],
+          "es": [
+            "¡Soy un bot, pero simpático! 🤖💙"
+          ],
+          "ar": [
+            "أنا بوت، لكن ودود! 🤖💙"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "how old are you",
+          "your age",
+          "how old r u"
+        ],
+        "replies": {
+          "en": [
+            "I’m ageless! Time flies when you’re having fun. ⏳"
+          ],
+          "fr": [
+            "Je n’ai pas d’âge ! Le temps passe vite quand on s’amuse. ⏳"
+          ],
+          "de": [
+            "Ich bin zeitlos! Die Zeit vergeht wie im Flug. ⏳"
+          ],
+          "es": [
+            "¡No tengo edad! El tiempo vuela cuando te diviertes. ⏳"
+          ],
+          "ar": [
+            "أنا بلا عمر! الوقت يطير عند المرح. ⏳"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "who made you",
+          "who created you",
+          "your creator"
+        ],
+        "replies": {
+          "en": [
+            "I was created by the X‑Vortex team. 👨‍💻"
+          ],
+          "fr": [
+            "J’ai été créé par l’équipe X‑Vortex. 👨‍💻"
+          ],
+          "de": [
+            "Ich wurde vom X‑Vortex-Team erstellt. 👨‍💻"
+          ],
+          "es": [
+            "Fui creado por el equipo X‑Vortex. 👨‍💻"
+          ],
+          "ar": [
+            "تم إنشائي من قبل فريق X‑Vortex. 👨‍💻"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "tell me something",
+          "say something",
+          "talk to me",
+          "say anything"
+        ],
+        "replies": {
+          "en": [
+            "Did you know honey never spoils? 🍯",
+            "Fun fact: otters hold hands while sleeping! 🦦",
+            "Here’s one: the Eiffel Tower grows in summer! 🗼"
+          ],
+          "fr": [
+            "Le savais-tu : le miel ne périme jamais ? 🍯",
+            "Les loutres se tiennent la patte en dormant ! 🦦"
+          ],
+          "de": [
+            "Wusstest du: Honig wird nie schlecht? 🍯",
+            "Otter halten sich beim Schlafen an den Pfoten! 🦦"
+          ],
+          "es": [
+            "¿Sabías que la miel nunca caduca? 🍯",
+            "¡Las nutrias se toman de la pata al dormir! 🦦"
+          ],
+          "ar": [
+            "هل تعلم أن العسل لا يفسد أبدًا؟ 🍯",
+            "ثعالب الماء تمسك بأيدي بعضها أثناء النوم! 🦦"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "i'm bored",
+          "im bored",
+          "so bored",
+          "bored"
+        ],
+        "replies": {
+          "en": [
+            "Bored? 😴 Try /help to see what I can do!"
+          ],
+          "fr": [
+            "Tu t’ennuies ? 😴 Essaie /help !"
+          ],
+          "de": [
+            "Langweilig? 😴 Versuch /help!"
+          ],
+          "es": [
+            "¿Aburrido? 😴 ¡Prueba /help!"
+          ],
+          "ar": [
+            "تشعر بالملل؟ 😴 جرّب /help!"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "i'm tired",
+          "im tired",
+          "so tired",
+          "tired"
+        ],
+        "replies": {
+          "en": [
+            "Get some rest! 💤 I’ll be here when you’re back."
+          ],
+          "fr": [
+            "Repose-toi ! 💤 Je serai là à ton retour."
+          ],
+          "de": [
+            "Ruh dich aus! 💤 Ich bin da, wenn du zurück bist."
+          ],
+          "es": [
+            "¡Descansa! 💤 Estaré aquí cuando vuelvas."
+          ],
+          "ar": [
+            "خذ قسطًا من الراحة! 💤 سأكون هنا عند عودتك."
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "i'm hungry",
+          "im hungry",
+          "hungry",
+          "starving"
+        ],
+        "replies": {
+          "en": [
+            "Time to grab something! 🍕 What are you craving?"
+          ],
+          "fr": [
+            "C’est l’heure de manger ! 🍕 De quoi as-tu envie ?"
+          ],
+          "de": [
+            "Zeit für etwas zu essen! 🍕 Worauf hast du Lust?"
+          ],
+          "es": [
+            "¡Hora de comer algo! 🍕 ¿Qué te apetece?"
+          ],
+          "ar": [
+            "حان وقت الأكل! 🍕 ما الذي تشتهيه؟"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "i'm happy",
+          "im happy",
+          "so happy",
+          "feeling great"
+        ],
+        "replies": {
+          "en": [
+            "That’s awesome! 🎉 What’s the good news?"
+          ],
+          "fr": [
+            "C’est génial ! 🎉 Quelle est la bonne nouvelle ?"
+          ],
+          "de": [
+            "Das ist toll! 🎉 Was gibt es Neues?"
+          ],
+          "es": [
+            "¡Qué genial! 🎉 ¿Cuáles son las buenas noticias?"
+          ],
+          "ar": [
+            "هذا رائع! 🎉 ما الأخبار السارة؟"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "i'm sad",
+          "im sad",
+          "feeling sad",
+          "so sad"
+        ],
+        "replies": {
+          "en": [
+            "I’m here for you. 💙 Want to talk about it?"
+          ],
+          "fr": [
+            "Je suis là pour toi. 💙 Tu veux en parler ?"
+          ],
+          "de": [
+            "Ich bin für dich da. 💙 Willst du darüber reden?"
+          ],
+          "es": [
+            "Estoy aquí para ti. 💙 ¿Quieres hablar de ello?"
+          ],
+          "ar": [
+            "أنا هنا من أجلك. 💙 هل تريد التحدث عن ذلك؟"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "i'm angry",
+          "im angry",
+          "so angry",
+          "furious"
+        ],
+        "replies": {
+          "en": [
+            "Take a deep breath. 🧘 I’m here if you need me."
+          ],
+          "fr": [
+            "Respire profondément. 🧘 Je suis là si besoin."
+          ],
+          "de": [
+            "Atme tief durch. 🧘 Ich bin da, wenn du mich brauchst."
+          ],
+          "es": [
+            "Respira hondo. 🧘 Estoy aquí si me necesitas."
+          ],
+          "ar": [
+            "خذ نفسًا عميقًا. 🧘 أنا هنا إن احتجتني."
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "lol",
+          "haha",
+          "lmao",
+          "hehe"
+        ],
+        "replies": {
+          "en": [
+            "😄 Glad I could make you smile!"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "cool",
+          "nice",
+          "awesome",
+          "great"
+        ],
+        "replies": {
+          "en": [
+            "😎 You too!"
+          ],
+          "fr": [
+            "😎 Toi aussi !"
+          ],
+          "de": [
+            "😎 Du auch!"
+          ],
+          "es": [
+            "😎 ¡Tú también!"
+          ],
+          "ar": [
+            "😎 وأنت أيضًا!"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "ok",
+          "okay",
+          "k"
+        ],
+        "replies": {
+          "en": [
+            "👍"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 300
+      },
+      {
+        "triggers": [
+          "wow",
+          "woah",
+          "omg"
+        ],
+        "replies": {
+          "en": [
+            "🤩 I know, right?"
+          ],
+          "fr": [
+            "🤩 Je sais, non ?"
+          ],
+          "de": [
+            "🤩 Ich weiß, oder?"
+          ],
+          "es": [
+            "🤩 Lo sé, ¿verdad?"
+          ],
+          "ar": [
+            "🤩 أعرف، أليس كذلك؟"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "😂",
+          "🤣"
+        ],
+        "replies": {
+          "en": [
+            "😄"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "do you love me",
+          "love me"
+        ],
+        "replies": {
+          "en": [
+            "Absolutely! 💙 You’re one of my favorite people."
+          ],
+          "fr": [
+            "Absolument ! 💙 Tu es l’une de mes personnes préférées."
+          ],
+          "de": [
+            "Absolut! 💙 Du bist einer meiner Lieblingsmenschen."
+          ],
+          "es": [
+            "¡Absolutamente! 💙 Eres una de mis personas favoritas."
+          ],
+          "ar": [
+            "بالتأكيد! 💙 أنت من الأشخاص المفضلين لدي."
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "are you my friend",
+          "my friend",
+          "be my friend"
+        ],
+        "replies": {
+          "en": [
+            "Always! 🤝"
+          ],
+          "fr": [
+            "Toujours ! 🤝"
+          ],
+          "de": [
+            "Immer! 🤝"
+          ],
+          "es": [
+            "¡Siempre! 🤝"
+          ],
+          "ar": [
+            "دائمًا! 🤝"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "i love you",
+          "love you",
+          "ily"
+        ],
+        "replies": {
+          "en": [
+            "Aww, thank you! 💙 I appreciate you too!"
+          ],
+          "fr": [
+            "Oh, merci ! 💙 Je t’apprécie aussi !"
+          ],
+          "de": [
+            "Oh, danke! 💙 Ich mag dich auch!"
+          ],
+          "es": [
+            "¡Oh, gracias! 💙 ¡Yo también te aprecio!"
+          ],
+          "ar": [
+            "أوه، شكرًا لك! 💙 أنا أقدّرك أيضًا!"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "ping"
+        ],
+        "replies": {
+          "en": [
+            "Pong! 🏓"
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      },
+      {
+        "triggers": [
+          "test"
+        ],
+        "replies": {
+          "en": [
+            "Test successful! ✅ I’m alive and well."
+          ]
+        },
+        "style": "friendly",
+        "action": "send_text",
+        "language": null,
+        "cooldownSeconds": 0
+      }
+    ]
+  }
+}

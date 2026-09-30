@@ -1,0 +1,42 @@
+[
+  {
+    "id": "profile",
+    "nameKey": "faq.catProfile",
+    "emoji": "👤"
+  },
+  {
+    "id": "settings",
+    "nameKey": "faq.catSettings",
+    "emoji": "⚙️"
+  },
+  {
+    "id": "privacy",
+    "nameKey": "faq.catPrivacy",
+    "emoji": "🔐"
+  },
+  {
+    "id": "chat_messaging",
+    "nameKey": "faq.catChatMessaging",
+    "emoji": "💬"
+  },
+  {
+    "id": "help_support",
+    "nameKey": "faq.catHelpSupport",
+    "emoji": "🆘"
+  },
+  {
+    "id": "bot_info",
+    "nameKey": "faq.catBotInfo",
+    "emoji": "🤖"
+  },
+  {
+    "id": "fun_extras",
+    "nameKey": "faq.catFunExtras",
+    "emoji": "🎉"
+  },
+  {
+    "id": "misc",
+    "nameKey": "faq.catMisc",
+    "emoji": "🔧"
+  }
+]

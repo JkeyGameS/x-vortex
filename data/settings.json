@@ -1,0 +1,13 @@
+{
+  "maintenanceMode": false,
+  "reportsEnabled": true,
+  "adminNotificationsEnabled": true,
+  "adminPanelLocked": false,
+  "emergencyBroadcastsDisabled": false,
+  "sessionSaveEnabled": true,
+  "sleepAnimationEnabled": true,
+  "typingIndicatorEnabled": true,
+  "botName": "X‑Vortex",
+  "conversationEnabled": true,
+  "conversationDisabledUntil": null
+}

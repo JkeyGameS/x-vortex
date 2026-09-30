@@ -1,0 +1,115 @@
+[
+  {
+    "id": "mu5r4iqf-gwwz5r",
+    "triggers": [
+      "hi"
+    ],
+    "triggerExact": false,
+    "replies": [
+      "Hi, sup?"
+    ],
+    "language": "en",
+    "priority": 2,
+    "style": "friendly",
+    "emojisEnabled": true,
+    "enabled": true,
+    "createdAt": "2026-09-17T16:36:11.607Z",
+    "updatedAt": "2026-09-24T19:18:05.823Z",
+    "createdBy": "127531067904055@lid",
+    "status": "active"
+  },
+  {
+    "id": "mu5r5ou3-je0ga2",
+    "triggers": [
+      "hi"
+    ],
+    "triggerExact": false,
+    "replies": [
+      "Hi, sup?"
+    ],
+    "language": "all",
+    "priority": 2,
+    "style": "friendly",
+    "emojisEnabled": true,
+    "enabled": true,
+    "createdAt": "2026-09-17T16:37:06.171Z",
+    "updatedAt": "2026-09-17T17:36:03.710Z",
+    "createdBy": "127531067904055@lid"
+  },
+  {
+    "id": "mu5tavzg-jn9npf",
+    "triggers": [
+      "hello",
+      "hi",
+      "hey",
+      "helo"
+    ],
+    "triggerExact": false,
+    "replies": [
+      "Hey, how are you?"
+    ],
+    "language": "all",
+    "priority": 1,
+    "style": "friendly",
+    "emojisEnabled": true,
+    "enabled": true,
+    "action": "send_text",
+    "cooldownSeconds": 0,
+    "activeFrom": null,
+    "activeTo": null,
+    "createdAt": "2026-09-17T17:37:07.947Z",
+    "updatedAt": "2026-09-17T17:37:07.947Z",
+    "createdBy": "127531067904055@lid"
+  },
+  {
+    "id": "muh6v32a-z5m3hf",
+    "triggers": [
+      "p5abtest"
+    ],
+    "triggerExact": false,
+    "replies": [
+      {
+        "text": "P5 reply one",
+        "weight": 1,
+        "time": "any",
+        "emotion": "any",
+        "style": "friendly",
+        "followUps": [],
+        "followUpChance": null
+      },
+      {
+        "text": "P5 reply two",
+        "weight": 1,
+        "time": "any",
+        "emotion": "any",
+        "style": "friendly",
+        "followUps": [],
+        "followUpChance": null
+      }
+    ],
+    "language": "en",
+    "priority": 1,
+    "style": "friendly",
+    "emojisEnabled": true,
+    "enabled": true,
+    "favorite": false,
+    "action": "send_text",
+    "cooldownSeconds": 0,
+    "activeFrom": null,
+    "activeTo": null,
+    "context": null,
+    "setsContext": null,
+    "contextExpiryMs": null,
+    "toneSensitive": null,
+    "timeSensitive": null,
+    "styleSensitive": null,
+    "followUpChance": null,
+    "packId": null,
+    "packVersion": null,
+    "createdFrom": "manual",
+    "status": "active",
+    "createdAt": "2026-09-25T16:42:13.185Z",
+    "updatedAt": "2026-09-25T16:42:13.185Z",
+    "createdBy": "t"
+  }
+]

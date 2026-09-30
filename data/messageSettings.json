@@ -1,0 +1,11 @@
+{
+  "defaultMode": "hybrid",
+  "allowUserOverride": true,
+  "perMenuOverrideEnabled": true,
+  "userOverrideRange": [
+    "edit",
+    "send_new",
+    "delete_send",
+    "hybrid"
+  ]
+}

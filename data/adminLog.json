@@ -1,0 +1,1202 @@
+[
+  {
+    "timestamp": "2026-09-08T18:25:38.475Z",
+    "adminJid": "test-sysadmin@s.whatsapp.net",
+    "action": "settings_change",
+    "details": "maintenance mode on"
+  },
+  {
+    "timestamp": "2026-09-08T18:25:38.658Z",
+    "adminJid": "test-sysadmin@s.whatsapp.net",
+    "action": "admin_access",
+    "details": "added admin 999000111222@lid"
+  },
+  {
+    "timestamp": "2026-09-08T18:25:38.936Z",
+    "adminJid": "test-sysadmin@s.whatsapp.net",
+    "action": "admin_access",
+    "details": "removed admin 999000111222@lid"
+  },
+  {
+    "timestamp": "2026-09-08T18:25:39.056Z",
+    "adminJid": "test-sysadmin@s.whatsapp.net",
+    "action": "settings_change",
+    "details": "reports off"
+  },
+  {
+    "timestamp": "2026-09-08T18:25:39.090Z",
+    "adminJid": "test-sysadmin@s.whatsapp.net",
+    "action": "settings_change",
+    "details": "reports on"
+  },
+  {
+    "timestamp": "2026-09-08T18:25:39.192Z",
+    "adminJid": "test-sysadmin@s.whatsapp.net",
+    "action": "settings_change",
+    "details": "session save off"
+  },
+  {
+    "timestamp": "2026-09-08T18:25:39.223Z",
+    "adminJid": "test-sysadmin@s.whatsapp.net",
+    "action": "settings_change",
+    "details": "session save on"
+  },
+  {
+    "timestamp": "2026-09-08T18:46:51.180Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "conversation chat enabled"
+  },
+  {
+    "timestamp": "2026-09-15T17:48:48.718Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "conversation chat disabled"
+  },
+  {
+    "timestamp": "2026-09-16T12:10:32.137Z",
+    "adminJid": "127531067904055@lid",
+    "action": "backup",
+    "details": "exported 2 user(s)"
+  },
+  {
+    "timestamp": "2026-09-16T12:11:08.934Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test",
+    "details": "sent system test report"
+  },
+  {
+    "timestamp": "2026-09-16T14:25:22.958Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode off"
+  },
+  {
+    "timestamp": "2026-09-16T14:25:23.028Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode on"
+  },
+  {
+    "timestamp": "2026-09-16T14:25:23.048Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "admin notifications off"
+  },
+  {
+    "timestamp": "2026-09-16T14:25:23.358Z",
+    "adminJid": "127531067904055@lid",
+    "action": "scheduled_cancel",
+    "details": "broadcast:mu470g4b-lg3dxm -> cancelled"
+  },
+  {
+    "timestamp": "2026-09-16T14:25:23.389Z",
+    "adminJid": "127531067904055@lid",
+    "action": "emergency_lock",
+    "details": "admin panel locked"
+  },
+  {
+    "timestamp": "2026-09-16T14:25:23.898Z",
+    "adminJid": "127531067904055@lid",
+    "action": "role_change",
+    "details": "test-adv-mod-mu4709fz@s.whatsapp.net -> moderator"
+  },
+  {
+    "timestamp": "2026-09-16T14:27:22.075Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode off"
+  },
+  {
+    "timestamp": "2026-09-16T14:27:22.771Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode on"
+  },
+  {
+    "timestamp": "2026-09-16T14:27:22.795Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "admin notifications off"
+  },
+  {
+    "timestamp": "2026-09-16T14:27:22.884Z",
+    "adminJid": "127531067904055@lid",
+    "action": "scheduled_cancel",
+    "details": "broadcast:mu4730i9-t257mi -> cancelled"
+  },
+  {
+    "timestamp": "2026-09-16T14:27:22.935Z",
+    "adminJid": "127531067904055@lid",
+    "action": "emergency_lock",
+    "details": "admin panel locked"
+  },
+  {
+    "timestamp": "2026-09-16T14:27:23.050Z",
+    "adminJid": "127531067904055@lid",
+    "action": "role_change",
+    "details": "test-adv-mod-mu472wll@s.whatsapp.net -> admin"
+  },
+  {
+    "timestamp": "2026-09-16T14:57:29.592Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode off"
+  },
+  {
+    "timestamp": "2026-09-17T11:22:37.024Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test",
+    "details": "sent system test report"
+  },
+  {
+    "timestamp": "2026-09-17T12:25:22.025Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test_action_alpha",
+    "details": "detail1"
+  },
+  {
+    "timestamp": "2026-09-17T12:25:22.029Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test_action_beta",
+    "details": ""
+  },
+  {
+    "timestamp": "2026-09-17T12:25:22.406Z",
+    "adminJid": "127531067904055@lid",
+    "action": "bulk_block",
+    "details": "3/3 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:25:22.463Z",
+    "adminJid": "127531067904055@lid",
+    "action": "bulk_message",
+    "details": "1/1 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:25:22.664Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_create",
+    "details": "seg-test (3 user(s))"
+  },
+  {
+    "timestamp": "2026-09-17T12:25:22.813Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_broadcast",
+    "details": "seg-test -> 3 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:25:22.847Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_delete",
+    "details": "mu5i5yw6-2nrlbb"
+  },
+  {
+    "timestamp": "2026-09-17T12:25:23.015Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode on"
+  },
+  {
+    "timestamp": "2026-09-17T12:25:23.041Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode off"
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.177Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test_action_alpha",
+    "details": "detail1"
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.179Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test_action_beta",
+    "details": ""
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.391Z",
+    "adminJid": "127531067904055@lid",
+    "action": "bulk_block",
+    "details": "3/3 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.442Z",
+    "adminJid": "127531067904055@lid",
+    "action": "bulk_message",
+    "details": "1/1 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.511Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_create",
+    "details": "seg-test (3 user(s))"
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.547Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_broadcast",
+    "details": "seg-test -> 3 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.576Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_delete",
+    "details": "mu5io5v9-u9c8jz"
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.612Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode on"
+  },
+  {
+    "timestamp": "2026-09-17T12:39:31.626Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode off"
+  },
+  {
+    "timestamp": "2026-09-17T12:59:14.911Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test_action_alpha",
+    "details": "detail1"
+  },
+  {
+    "timestamp": "2026-09-17T12:59:14.913Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test_action_beta",
+    "details": ""
+  },
+  {
+    "timestamp": "2026-09-17T12:59:14.973Z",
+    "adminJid": "127531067904055@lid",
+    "action": "bulk_block",
+    "details": "3/3 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:59:15.005Z",
+    "adminJid": "127531067904055@lid",
+    "action": "bulk_message",
+    "details": "1/1 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:59:15.047Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_create",
+    "details": "seg-test (3 user(s))"
+  },
+  {
+    "timestamp": "2026-09-17T12:59:15.074Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_broadcast",
+    "details": "seg-test -> 3 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T12:59:15.099Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_delete",
+    "details": "mu5jdj39-p9v44r"
+  },
+  {
+    "timestamp": "2026-09-17T12:59:15.126Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode on"
+  },
+  {
+    "timestamp": "2026-09-17T12:59:15.137Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode off"
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.202Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test_action_alpha",
+    "details": "detail1"
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.204Z",
+    "adminJid": "127531067904055@lid",
+    "action": "test_action_beta",
+    "details": ""
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.253Z",
+    "adminJid": "127531067904055@lid",
+    "action": "bulk_block",
+    "details": "3/3 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.276Z",
+    "adminJid": "127531067904055@lid",
+    "action": "bulk_message",
+    "details": "1/1 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.311Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_create",
+    "details": "seg-test (3 user(s))"
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.331Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_broadcast",
+    "details": "seg-test -> 3 user(s)"
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.367Z",
+    "adminJid": "127531067904055@lid",
+    "action": "segment_delete",
+    "details": "mu5mlkri-hla7df"
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.391Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode on"
+  },
+  {
+    "timestamp": "2026-09-17T14:29:29.398Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "maintenance mode off"
+  },
+  {
+    "timestamp": "2026-09-17T15:05:11.003Z",
+    "adminJid": "127531067904055@lid",
+    "action": "maintenance_window_add",
+    "details": "2026-09-17 15:06 → 2026-09-17 15:08"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:08.942Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test",
+    "details": "mu5p4fy0-7ppyat"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:08.958Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:08.974Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_disable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:08.987Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.017Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_duplicate",
+    "details": "mu5p4fy0-7ppyat → mu5p4g53-wk3c47 (fr)"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.034Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_test",
+    "details": "mu5p4fy3-zigxge"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.049Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.079Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_duplicate",
+    "details": "mu5p4fy3-zigxge → mu5p4g6u-oxdm20 (de)"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.101Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chatfaq_export",
+    "details": "all"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.113Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chatfaq_import",
+    "details": "all/skip chat=0 faq=0"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.127Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw hello there"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.133Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw what time is it"
+  },
+  {
+    "timestamp": "2026-09-17T15:40:09.139Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw nothing matches this xyz"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.773Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test",
+    "details": "mu5p6995-o0xplh"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.789Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.853Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_disable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.867Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.901Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_duplicate",
+    "details": "mu5p6995-o0xplh → mu5p69n0-1f5z41 (fr)"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.917Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_test",
+    "details": "mu5p69fs-8jksea"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.931Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.959Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_duplicate",
+    "details": "mu5p69fs-8jksea → mu5p69om-96cvzj (de)"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.981Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chatfaq_export",
+    "details": "all"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:33.992Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chatfaq_import",
+    "details": "all/skip chat=0 faq=0"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:34.006Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw hello there"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:34.013Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw what time is it"
+  },
+  {
+    "timestamp": "2026-09-17T15:41:34.018Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw nothing matches this xyz"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.479Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test",
+    "details": "mu5p8t26-87zyr0"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.495Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.526Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_disable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.538Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.575Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_duplicate",
+    "details": "mu5p8t26-87zyr0 → mu5p8t7i-kcsxbi (fr)"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.587Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_test",
+    "details": "mu5p8t28-elr7zg"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.600Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.628Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_duplicate",
+    "details": "mu5p8t28-elr7zg → mu5p8t8z-70ssa2 (de)"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.652Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chatfaq_export",
+    "details": "all"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.662Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chatfaq_import",
+    "details": "all/skip chat=0 faq=0"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.674Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw hello there"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.683Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw what time is it"
+  },
+  {
+    "timestamp": "2026-09-17T15:43:32.687Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw nothing matches this xyz"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:13.606Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test",
+    "details": "mu5paxmq-k4chua"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:13.710Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:13.783Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_disable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:13.920Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.188Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_duplicate",
+    "details": "mu5paxmq-k4chua → mu5pazm2-igz4od (fr)"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.203Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_test",
+    "details": "mu5paxub-d09rws"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.226Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_enable_all",
+    "details": "1"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.252Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_duplicate",
+    "details": "mu5paxub-d09rws → mu5paznv-pz74aa (de)"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.309Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chatfaq_export",
+    "details": "all"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.321Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chatfaq_import",
+    "details": "all/skip chat=0 faq=0"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.397Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw hello there"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.403Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw what time is it"
+  },
+  {
+    "timestamp": "2026-09-17T15:45:14.408Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "zqxw nothing matches this xyz"
+  },
+  {
+    "timestamp": "2026-09-17T16:15:05.921Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "Hi"
+  },
+  {
+    "timestamp": "2026-09-17T16:36:11.611Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_add",
+    "details": "mu5r4iqf-gwwz5r · hi"
+  },
+  {
+    "timestamp": "2026-09-17T16:37:06.176Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_add",
+    "details": "mu5r5ou3-je0ga2 · hi"
+  },
+  {
+    "timestamp": "2026-09-17T16:38:18.359Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "Hi"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:21.363Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_priority_reorder",
+    "details": "2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:21.400Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_add",
+    "details": "mu5rqlbq-0byu2w · zqxwtest hello, zqxwtest custom"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:21.444Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rqlbq-0byu2w action=send_text"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:21.459Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rqlbq-0byu2w cooldownSeconds=30"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:21.484Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rqlbq-0byu2w dates set"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:58.333Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_priority_reorder",
+    "details": "3 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:58.370Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_add",
+    "details": "mu5rrduo-g6d2fq · zqxwtest hello, zqxwtest custom"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:58.413Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rqlbq-0byu2w action=send_text"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:58.427Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rqlbq-0byu2w cooldownSeconds=30"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:58.450Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rqlbq-0byu2w dates set"
+  },
+  {
+    "timestamp": "2026-09-17T16:53:58.497Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_add",
+    "details": "mu5rrdy7-kb8bur · zqxwtest faq question?"
+  },
+  {
+    "timestamp": "2026-09-17T16:55:30.633Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_priority_reorder",
+    "details": "2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-17T16:55:58.117Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_priority_reorder",
+    "details": "2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-17T16:55:58.165Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_add",
+    "details": "mu5rtyab-6zwaoc · zqxwdbg hello"
+  },
+  {
+    "timestamp": "2026-09-17T16:56:58.117Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_priority_reorder",
+    "details": "2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-17T16:56:58.142Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_add",
+    "details": "mu5rv8kc-z530d5 · zqxwtest hello, zqxwtest custom"
+  },
+  {
+    "timestamp": "2026-09-17T16:56:58.183Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rv8kc-z530d5 action=send_text"
+  },
+  {
+    "timestamp": "2026-09-17T16:56:58.196Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rv8kc-z530d5 cooldownSeconds=30"
+  },
+  {
+    "timestamp": "2026-09-17T16:56:58.217Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rv8kc-z530d5 dates set"
+  },
+  {
+    "timestamp": "2026-09-17T16:56:58.264Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_add",
+    "details": "mu5rv8nq-v46xet · zqxwtest faq question?"
+  },
+  {
+    "timestamp": "2026-09-17T16:57:51.301Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_priority_reorder",
+    "details": "2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-17T16:57:51.550Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_add",
+    "details": "mu5rwdrq-b2h84i · zqxwtest hello, zqxwtest custom"
+  },
+  {
+    "timestamp": "2026-09-17T16:57:51.699Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rwdrq-b2h84i action=send_text"
+  },
+  {
+    "timestamp": "2026-09-17T16:57:51.718Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rwdrq-b2h84i cooldownSeconds=30"
+  },
+  {
+    "timestamp": "2026-09-17T16:57:51.789Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_edit",
+    "details": "mu5rwdrq-b2h84i dates set"
+  },
+  {
+    "timestamp": "2026-09-17T16:57:51.884Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_add",
+    "details": "mu5rwe17-cd8qif · zqxwtest faq question?"
+  },
+  {
+    "timestamp": "2026-09-17T17:36:03.715Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_priority_reorder",
+    "details": "2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-17T17:37:07.949Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_add",
+    "details": "mu5tavzg-jn9npf · hello, hi, hey, helo"
+  },
+  {
+    "timestamp": "2026-09-17T17:39:38.643Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "Hi"
+  },
+  {
+    "timestamp": "2026-09-18T16:11:02.071Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_template_install",
+    "details": "greetings (en, fresh) → 2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-18T16:11:57.214Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "Hi"
+  },
+  {
+    "timestamp": "2026-09-18T16:12:21.087Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "Good Morning"
+  },
+  {
+    "timestamp": "2026-09-18T16:30:32.147Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "conversation chat enabled"
+  },
+  {
+    "timestamp": "2026-09-18T17:09:06.720Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_create",
+    "details": "custom_mu77qpeh → 1 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-18T17:24:13.720Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_template_export",
+    "details": "custom → 0 pack(s)"
+  },
+  {
+    "timestamp": "2026-09-18T17:41:29.104Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "test"
+  },
+  {
+    "timestamp": "2026-09-18T17:44:00.472Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_template_export",
+    "details": "custom → 0 pack(s)"
+  },
+  {
+    "timestamp": "2026-09-18T17:44:33.462Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_template_import",
+    "details": "skip → imported=1 skipped=0 renamed=0 overwritten=0"
+  },
+  {
+    "timestamp": "2026-09-18T17:44:52.620Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_template_install",
+    "details": "test_pack (en, fresh) → 1 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-18T17:45:28.540Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_test_panel",
+    "details": "Test"
+  },
+  {
+    "timestamp": "2026-09-18T18:45:02.993Z",
+    "adminJid": "adv@s.whatsapp.net",
+    "action": "chat_template_install",
+    "details": "greetings (en, fresh) → 2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-18T18:45:03.192Z",
+    "adminJid": "adv@s.whatsapp.net",
+    "action": "chat_template_update",
+    "details": "thanks → 1 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-18T18:45:03.300Z",
+    "adminJid": "adv@s.whatsapp.net",
+    "action": "unmatched_suggest_create",
+    "details": "How do I reset my password"
+  },
+  {
+    "timestamp": "2026-09-18T18:45:03.333Z",
+    "adminJid": "adv@s.whatsapp.net",
+    "action": "unmatched_suggest_ignore",
+    "details": "Ignore me please"
+  },
+  {
+    "timestamp": "2026-09-24T13:41:25.179Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_delete",
+    "details": "mu5r4iqf-gwwz5r"
+  },
+  {
+    "timestamp": "2026-09-24T13:41:55.742Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_delete",
+    "details": "mu5r5ou3-je0ga2"
+  },
+  {
+    "timestamp": "2026-09-24T16:27:20.991Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_delete",
+    "details": "mu5tavzg-jn9npf"
+  },
+  {
+    "timestamp": "2026-09-24T16:28:14.477Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_delete",
+    "details": "mu5r4iqf-gwwz5r"
+  },
+  {
+    "timestamp": "2026-09-24T16:28:51.118Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_rule_delete",
+    "details": "mu5r5ou3-je0ga2"
+  },
+  {
+    "timestamp": "2026-09-24T19:14:57.391Z",
+    "adminJid": "dbg@s.whatsapp.net",
+    "action": "chat_bulk_toggle",
+    "details": "lang:en disable → 4"
+  },
+  {
+    "timestamp": "2026-09-25T22:23:24.117Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_template_install",
+    "details": "how_are_you (en, fresh) → 3 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-25T22:23:47.236Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_template_install",
+    "details": "greetings (en, fresh) → 2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-25T23:24:53.656Z",
+    "adminJid": "127531067904055@lid",
+    "action": "chat_bulk_delete",
+    "details": "Bulk Delete: 10: 10 rules (snapshot chatRules-2026-09-25-23-24-53.json)"
+  },
+  {
+    "timestamp": "2026-09-26T00:02:45.068Z",
+    "adminJid": "127531067904055@lid",
+    "action": "feature_status",
+    "details": "typingIndicator → available"
+  },
+  {
+    "timestamp": "2026-09-27T09:45:34.878Z",
+    "adminJid": "127531067904055@lid",
+    "action": "faq_import",
+    "details": "csv → 1/1"
+  },
+  {
+    "timestamp": "2026-09-29T11:28:51.945Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "bot notify onStartup off"
+  },
+  {
+    "timestamp": "2026-09-29T11:31:42.834Z",
+    "adminJid": "127531067904055@lid",
+    "action": "settings_change",
+    "details": "bot notify onStartup on"
+  },
+  {
+    "timestamp": "2026-09-29T11:58:20.191Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_install",
+    "details": "greetings (en, fresh) → 2 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-29T11:59:39.447Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_create",
+    "details": "custom_mummj435 → 1 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-29T11:59:43.633Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_create",
+    "details": "custom_mummj7cd → 1 rule(s)"
+  },
+  {
+    "timestamp": "2026-09-29T11:59:43.878Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_export",
+    "details": "all → 30 pack(s)"
+  },
+  {
+    "timestamp": "2026-09-29T11:59:43.980Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_export",
+    "details": "custom → 2 pack(s)"
+  },
+  {
+    "timestamp": "2026-09-29T11:59:46.451Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_import",
+    "details": "skip → imported=1 skipped=0 renamed=0 overwritten=0"
+  },
+  {
+    "timestamp": "2026-09-29T11:59:50.878Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_import",
+    "details": "keep-both → imported=1 skipped=0 renamed=1 overwritten=0"
+  },
+  {
+    "timestamp": "2026-09-29T11:59:51.182Z",
+    "adminJid": "tmpl2@s.whatsapp.net",
+    "action": "chat_template_import",
+    "details": "skip → imported=0 skipped=1 renamed=0 overwritten=0"
+  },
+  {
+    "timestamp": "2026-09-29T13:09:12.048Z",
+    "adminJid": "system",
+    "action": "bot_started",
+    "details": "uptime 0m; lastShutdown none"
+  },
+  {
+    "timestamp": "2026-09-29T13:09:12.531Z",
+    "adminJid": "system",
+    "action": "bot_crashed",
+    "details": "lastSeen 2026-09-29T13:09:07.955Z; previousUptime 0"
+  },
+  {
+    "timestamp": "2026-09-29T13:09:48.628Z",
+    "adminJid": "system",
+    "action": "bot_shutdown",
+    "details": "SIGINT; uptime 0m"
+  },
+  {
+    "timestamp": "2026-09-29T13:10:16.130Z",
+    "adminJid": "system",
+    "action": "bot_started",
+    "details": "uptime 0m; lastShutdown 2026-09-29T13:09:48.664Z"
+  },
+  {
+    "timestamp": "2026-09-29T15:19:55.638Z",
+    "adminJid": "system",
+    "action": "bot_shutdown",
+    "details": "SIGINT; uptime 2h 9m"
+  },
+  {
+    "timestamp": "2026-09-29T16:11:42.445Z",
+    "adminJid": "system",
+    "action": "bot_started",
+    "details": "uptime 1m; lastShutdown 2026-09-29T15:19:55.705Z"
+  },
+  {
+    "timestamp": "2026-09-29T18:34:16.418Z",
+    "adminJid": "system",
+    "action": "bot_shutdown",
+    "details": "SIGINT; uptime 2h 24m"
+  },
+  {
+    "timestamp": "2026-09-29T18:35:17.330Z",
+    "adminJid": "system",
+    "action": "bot_started",
+    "details": "uptime 0m; lastShutdown 2026-09-29T18:34:16.423Z"
+  },
+  {
+    "timestamp": "2026-09-29T22:02:54.005Z",
+    "adminJid": "127531067904055@lid",
+    "action": "custom_command_added",
+    "details": "{\"name\":\"testcmd\"}"
+  },
+  {
+    "timestamp": "2026-09-30T08:25:54.586Z",
+    "adminJid": "system",
+    "action": "bot_started",
+    "details": "uptime 0m; lastShutdown 2026-09-29T18:34:16.423Z"
+  },
+  {
+    "timestamp": "2026-09-30T09:04:02.918Z",
+    "adminJid": "system",
+    "action": "bot_shutdown",
+    "details": "SIGINT; uptime 38m"
+  },
+  {
+    "timestamp": "2026-09-30T09:58:01.285Z",
+    "adminJid": "system",
+    "action": "bot_shutdown",
+    "details": "SIGINT; uptime 1m"
+  },
+  {
+    "timestamp": "2026-09-30T09:58:25.823Z",
+    "adminJid": "system",
+    "action": "bot_shutdown",
+    "details": "SIGINT; uptime 0m"
+  },
+  {
+    "timestamp": "2026-09-30T10:01:49.109Z",
+    "adminJid": "system",
+    "action": "bot_shutdown",
+    "details": "SIGINT; uptime 1m"
+  },
+  {
+    "timestamp": "2026-09-30T10:02:36.730Z",
+    "adminJid": "system",
+    "action": "bot_started",
+    "details": "uptime 0m; lastShutdown 2026-09-30T10:01:49.125Z"
+  },
+  {
+    "timestamp": "2026-09-30T10:04:07.023Z",
+    "adminJid": "system",
+    "action": "bot_shutdown",
+    "details": "SIGINT; uptime 1m"
+  },
+  {
+    "timestamp": "2026-09-30T10:20:48.093Z",
+    "adminJid": "system",
+    "action": "bot_started",
+    "details": "uptime 0m; lastShutdown 2026-09-30T10:04:07.040Z"
+  }
+]

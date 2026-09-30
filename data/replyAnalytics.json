@@ -1,0 +1,77 @@
+{
+  "muh6v32a-z5m3hf": {
+    "byStyle": {},
+    "ec102a9d609d": {
+      "text": "P5 reply one",
+      "language": "en",
+      "style": "friendly",
+      "sent": 2,
+      "engagements": 0,
+      "lastSentAt": "2026-09-25T16:42:13.192Z"
+    }
+  },
+  "mu5r4iqf-gwwz5r": {
+    "byStyle": {
+      "friendly": {
+        "sent": 11,
+        "engagements": 8
+      }
+    },
+    "77ad88b850bd": {
+      "text": "Hi, sup?",
+      "language": "en",
+      "style": "friendly",
+      "sent": 11,
+      "engagements": 8,
+      "lastSentAt": "2026-09-26T07:52:45.407Z"
+    }
+  },
+  "mu5tavzg-jn9npf": {
+    "byStyle": {
+      "friendly": {
+        "sent": 4,
+        "engagements": 4
+      }
+    },
+    "e7d8cebaaf24": {
+      "text": "Hey, how are you?",
+      "language": "en",
+      "style": "friendly",
+      "sent": 4,
+      "engagements": 4,
+      "lastSentAt": "2026-09-26T07:02:04.994Z"
+    }
+  },
+  "muhj1uj4-3zxlv3": {
+    "byStyle": {
+      "friendly": {
+        "sent": 1,
+        "engagements": 1
+      }
+    },
+    "e71f8a4a494f": {
+      "text": "I'm doing great, {username}! How about you? 😊",
+      "language": "en",
+      "style": "friendly",
+      "sent": 1,
+      "engagements": 1,
+      "lastSentAt": "2026-09-25T22:27:13.411Z"
+    }
+  },
+  "mu5r5ou3-je0ga2": {
+    "byStyle": {
+      "friendly": {
+        "sent": 2,
+        "engagements": 0
+      }
+    },
+    "77ad88b850bd": {
+      "text": "Hi, sup?",
+      "language": "fr",
+      "style": "friendly",
+      "sent": 2,
+      "engagements": 0,
+      "lastSentAt": "2026-09-27T22:26:47.437Z"
+    }
+  }
+}

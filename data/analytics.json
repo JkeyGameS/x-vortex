@@ -1,0 +1,162 @@
+{
+  "commands": {
+    "start": {
+      "total": 220,
+      "users": {
+        "127531067904055@lid": 220
+      }
+    },
+    "add-chat": {
+      "total": 2,
+      "users": {
+        "127531067904055@lid": 2
+      }
+    },
+    "language": {
+      "total": 6,
+      "users": {
+        "127531067904055@lid": 6
+      }
+    },
+    "admin": {
+      "total": 85,
+      "users": {
+        "127531067904055@lid": 85
+      }
+    },
+    "help": {
+      "total": 4,
+      "users": {
+        "127531067904055@lid": 4
+      }
+    },
+    "feature": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    },
+    "listchat": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    },
+    "listfaq": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    },
+    "addfaq": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    },
+    "addchat": {
+      "total": 2,
+      "users": {
+        "127531067904055@lid": 2
+      }
+    },
+    "manageusers": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    },
+    "stats": {
+      "total": 1,
+      "users": {
+        "dispatch_1@lid": 1
+      }
+    },
+    "id": {
+      "total": 1,
+      "users": {
+        "dispatch_1@lid": 1
+      }
+    },
+    "profile": {
+      "total": 75,
+      "users": {
+        "dispatch_1@lid": 3,
+        "127531067904055@lid": 72
+      }
+    },
+    "health": {
+      "total": 2,
+      "users": {
+        "127531067904055@lid": 2
+      }
+    },
+    "features": {
+      "total": 121,
+      "users": {
+        "127531067904055@lid": 121
+      }
+    },
+    "test": {
+      "total": 6,
+      "users": {
+        "127531067904055@lid": 6
+      }
+    },
+    "try": {
+      "total": 20,
+      "users": {
+        "127531067904055@lid": 20
+      }
+    },
+    "lang": {
+      "total": 9,
+      "users": {
+        "127531067904055@lid": 9
+      }
+    },
+    "preferences": {
+      "total": 11,
+      "users": {
+        "127531067904055@lid": 11
+      }
+    },
+    "broadcast": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    },
+    "info": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    },
+    "feedback": {
+      "total": 12,
+      "users": {
+        "127531067904055@lid": 12
+      }
+    },
+    "feedback-ad": {
+      "total": 4,
+      "users": {
+        "127531067904055@lid": 4
+      }
+    },
+    "editprofile": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    },
+    "analytics": {
+      "total": 1,
+      "users": {
+        "127531067904055@lid": 1
+      }
+    }
+  },
+  "lastUpdated": "2026-09-30T10:02:44.033Z"
+}
