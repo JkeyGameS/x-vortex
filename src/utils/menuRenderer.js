@@ -147,7 +147,9 @@ export async function renderMenu(menuId, user, language, options = {}) {
   };
   const renderedOptions = [];
   for (const opt of visibleMenuOptions(definition, user)) {
-    if (opt.breakBefore) lines.push('');
+    // 'separatorBefore' is the canonical flag; 'breakBefore' is kept as an
+    // alias so any existing definition using it renders identically.
+    if (opt.separatorBefore || opt.breakBefore) lines.push('');
     const marker = showMarkers ? getOptionMarker(opt.featureId) : '';
     const labelTemplate = tx(lang, opt.labelKey, opt.fallbackKey);
     // Legacy buildMenu caps the whole line (labels AND suffixes); markers

@@ -32,7 +32,7 @@ function buildEditOptionsStable() {
       number: String(available.length + 1),
       labelKey: 'menu.edit_profile.advanced',
       emoji: '🔒',
-      action: 'open:edit_profile_advanced',
+      action: 'custom:edit_advanced_menu',
       fallbackKey: 'preferences.advancedOptions'
     });
   }

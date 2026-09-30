@@ -2894,7 +2894,7 @@ async function startBot() {
         if (pResult.kind === 'action') {
           await runMenuAction(pResult.action, {
             sock, sender, chatId, pushName, user: pUser, language: pLang,
-            sendMenuFn: async (menuId) => {
+            sendMenuFn: async (menuId, menuUser, menuLang) => {
               const { sendEditAdvancedSubmenu, sendAdvancedPreferencesView, languageOf } = await import('./handlers/profileCommand.js');
               if (menuId === 'edit_profile_advanced') {
                 return sendEditAdvancedSubmenu({ sock, sender, chatId, pushName }, languageOf(sender));
@@ -2902,7 +2902,10 @@ async function startBot() {
               if (menuId === 'preferences_advanced') {
                 return sendAdvancedPreferencesView({ sock, sender, chatId, pushName }, languageOf(sender));
               }
-              throw new Error(`profile cluster has no opener for '${menuId}'`);
+              // Any other target is a registered menu (runMenuAction has already
+              // verified this), so open it through the shared sender. Throwing
+              // here used to strand live options such as message_display.
+              return sendMenuById(menuId, { sock, sender, chatId, user: menuUser, language: menuLang }, `profile_${menuId}`);
             },
             handlers: profileCustomHandlers
           });
@@ -2962,6 +2965,7 @@ async function startBot() {
 
         // Migrated main menu path (Phase 3): same inputs, same behavior.
         const { resolveMenuOption, runMenuAction } = await import('./utils/menuRouter.js');
+        const { sendMenuById } = await import('./utils/menuSender.js');
         const resendMain = () => sendMigratedMainMenu({ sock, sender, chatId, pushName, user, language, transitionKey: 'main_to_main' });
         const sendSleepConfirm = async () => {
           sessionManager.setState(sender, chatId, { currentMenu: 'sleep_confirm', pendingAction: null });
@@ -3019,9 +3023,11 @@ async function startBot() {
           };
           await runMenuAction(mainResult.action, {
             sock, sender, chatId, pushName, user, language,
-            sendMenuFn: async (menuId) => {
+            sendMenuFn: async (menuId, menuUser, menuLang) => {
               const opener = mainOpeners[menuId];
-              if (!opener) throw new Error(`main menu has no opener for '${menuId}'`);
+              // Not a legacy opener, but runMenuAction has confirmed it is a
+              // registered menu, so open it rather than stranding the option.
+              if (!opener) return sendMenuById(menuId, { sock, sender, chatId, user: menuUser, language: menuLang });
               return opener();
             },
             handlers: { sleep: sendSleepConfirm }
@@ -3159,7 +3165,17 @@ async function startBot() {
   // Cross-check every open:<menuId> action across all definitions.
   const dangling = [];
   for (const m of registeredMenus) {
-    for (const opt of m.options || []) {
+    // Menus built by a dynamicOptions() factory (preferences, edit_profile, ...)
+    // carry an empty options array, so their targets must be materialised here
+    // or their open: targets go unchecked.
+    let opts = m.options;
+    if (typeof m.dynamicOptions === 'function') {
+      try { opts = m.dynamicOptions(); } catch (err) {
+        logger.error({ menuId: m.id, err: err.message }, '[MENU] dynamicOptions failed during startup check');
+        continue;
+      }
+    }
+    for (const opt of opts || []) {
       if (typeof opt.action === 'string' && opt.action.startsWith('open:')) {
         const target = opt.action.slice('open:'.length);
         if (!getMenu(target)) dangling.push(`${m.id}:${opt.number} -> open:${target}`);

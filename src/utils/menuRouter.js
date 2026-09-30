@@ -91,12 +91,23 @@ export async function runMenuAction(action, context = {}) {
         await notifyMenuFailure(context, 'common.menuUnavailable');
         return { success: false };
       }
-      if (typeof context.sendMenuFn !== 'function') {
-        logger.error({ menuId: to }, '[MENU] open: action has no sendMenuFn');
-        await notifyMenuFailure(context, 'common.menuUnavailable');
-        return { success: false };
-      }
-      return await context.sendMenuFn(to, context.user, context.language, {});
+      // Clusters normally pass sendMenuFn so legacy panels can be opened in
+      // place of a registry definition. When none is supplied, fall back to the
+      // shared sender instead of failing: any registered id is openable, so a
+      // missing cluster opener must not strand a live option.
+      const opener = typeof context.sendMenuFn === 'function'
+        ? context.sendMenuFn
+        : async (menuId, menuUser, menuLang) => {
+          const { sendMenuById } = await import('./menuSender.js');
+          return sendMenuById(menuId, {
+            sock: context.sock,
+            sender: context.sender,
+            chatId: context.chatId,
+            user: menuUser,
+            language: menuLang
+          });
+        };
+      return await opener(to, context.user, context.language, {});
     }
     if (action === 'sleep' || action === 'copy_id') {
       const handler = resolveHandler(action, context);

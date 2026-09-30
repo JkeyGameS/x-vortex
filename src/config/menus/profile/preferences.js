@@ -2,8 +2,9 @@ import { getFeature } from '../../../services/featureFlagService.js';
 import { PREFERENCE_FEATURE_OPTIONS } from '../../../handlers/profileCommand.js';
 
 // Preferences dynamic options: available features numbered 1..N (with live
-// registry prefix + notification state suffixes), then the Advanced node when
-// anything is unavailable. Mirrors sendPreferencesView numbering exactly.
+// registry prefix + notification state suffixes), then Message Display, then
+// the Advanced node when anything is unavailable. Advanced Options is always
+// the highest number and is separated from the rows above it.
 const CUSTOM_ACTION_BY_FEATURE = {
   languageSelection: 'custom:pref_change_language',
   notifications: 'custom:pref_toggle_notifications',
@@ -31,17 +32,8 @@ function buildPreferencesOptions() {
     if (SUFFIX_BY_FEATURE[featureId]) opt.dynamicSuffix = SUFFIX_BY_FEATURE[featureId];
     return opt;
   });
-  if (available.length < PREFERENCE_FEATURE_OPTIONS.length) {
-    mapped.push({
-      number: String(available.length + 1),
-      labelKey: 'menu.preferences.advanced',
-      emoji: '🔒',
-      action: 'open:preferences_advanced',
-      fallbackKey: 'preferences.advancedOptions'
-    });
-  }
-  // Message display is a real preference for every user, so it is a fixed
-  // trailing row rather than a hidden entry inside the (conditional) Advanced node.
+  // Message display is a real preference for every user, so it is a fixed row
+  // rather than a hidden entry inside the (conditional) Advanced node.
   mapped.push({
     number: String(mapped.length + 1),
     labelKey: 'menu.message_display.heading',
@@ -49,6 +41,16 @@ function buildPreferencesOptions() {
     action: 'open:message_display',
     fallbackKey: 'menu.message_display.heading'
   });
+  if (available.length < PREFERENCE_FEATURE_OPTIONS.length) {
+    mapped.push({
+      number: String(mapped.length + 1),
+      labelKey: 'menu.preferences.advanced',
+      emoji: '🔒',
+      action: 'custom:pref_advanced_menu',
+      separatorBefore: true,
+      fallbackKey: 'preferences.advancedOptions'
+    });
+  }
   return mapped;
 }
 

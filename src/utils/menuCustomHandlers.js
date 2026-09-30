@@ -14,6 +14,8 @@ import { t } from '../services/localeService.js';
 import {
   dispatchProfileAction,
   sendLanguageSelection,
+  sendAdvancedPreferencesView,
+  sendEditAdvancedSubmenu,
   togglePreference,
   sendTypingMenu
 } from '../handlers/profileCommand.js';
@@ -118,6 +120,16 @@ export const profileCustomHandlers = {
     return sendTypingMenu(context, languageOf(context.sender), ret);
   },
   pref_dispatch_message_settings: dispatch('profile.messageSettings'),
+  // Advanced Options. This is a feature-flag driven legacy panel (its replies
+  // are still handled by handleProfileReply on currentMenu 'pref_advanced'), so
+  // it opens through a handler rather than an open: target -- runMenuAction
+  // rejects open: ids that have no registry definition.
+  pref_advanced_menu: async (context) => sendAdvancedPreferencesView(context, languageOf(context.sender)),
+  // Edit Profile advanced submenu: same situation as pref_advanced_menu -- a
+  // feature-flag driven legacy panel (replies handled by handleProfileReply on
+  // currentMenu 'profile_edit_advanced') with no registry definition, so an
+  // open: target could never resolve.
+  edit_advanced_menu: async (context) => sendEditAdvancedSubmenu(context, languageOf(context.sender)),
   // Legacy: available-but-unhandled preferences only show an invalid message.
   pref_unhandled_feature: async (context) => {
     const language = languageOf(context.sender);

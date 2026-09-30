@@ -31,11 +31,13 @@ const err = (m) => { errors.push(m); };
 const warn = (m) => { warnings.push(m); };
 
 /**
- * `open:` targets that intentionally have no registry entry because they are
- * legacy builders reached through the `sendMenuFn` bridge in index.js.
- * Each one is verified to exist there; a typo in this list would be a bug.
+ * There is deliberately no allowlist of `open:` targets without a registry
+ * entry. runMenuAction rejects an unregistered id at its registry gate before
+ * it ever consults a cluster's sendMenuFn, so such a target is unreachable by
+ * construction -- which is how open:preferences_advanced and
+ * open:edit_profile_advanced shipped while answering "This menu is unavailable
+ * right now". Feature-flag driven legacy panels must use a custom: handler.
  */
-const LEGACY_OPEN_TARGETS = new Set(['edit_profile_advanced', 'preferences_advanced']);
 
 /**
  * Menus whose option numbers intentionally do not start at 1.
@@ -78,7 +80,7 @@ for (const m of menus) {
     if (typeof a === 'string') {
       if (a.startsWith('open:')) {
         const target = a.slice(5);
-        if (!getMenu(target) && !LEGACY_OPEN_TARGETS.has(target)) {
+        if (!getMenu(target)) {
           err(`${m.id} option ${num}: open target "${target}" is NOT registered`);
         }
       } else if (a.startsWith('custom:')) {
