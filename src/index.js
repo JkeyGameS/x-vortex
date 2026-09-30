@@ -2627,12 +2627,13 @@ async function startBot() {
         return;
       }
       // FAQ Knowledge Base submenu + wizard (admin)
+      // Mirror the rendered menu: 11 options + back (option 11 = Filter Category).
       if (session?.currentMenu === 'faq_submenu') {
         if (!isAdminOperator(sender)) return;
-        if (/^([0-9]|10)$/.test(trimmedText)) {
+        if (/^(1[01]|[0-9])$/.test(trimmedText)) {
           await handleFaqReply({ sock, sender, chatId, pushName }, trimmedText);
         } else {
-          await sendText(sock, sender, tr('faq.invalidNumber', { min: 0, max: 10 }));
+          await sendText(sock, sender, tr('faq.invalidNumber', { min: 0, max: 11 }));
         }
         return;
       }
