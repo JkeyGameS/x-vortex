@@ -1,4 +1,4 @@
-# ⚡ X Vortex
+#
 <p align="center">
   <img src="docs/assets/x-vortex-bot.png" width="150" alt="X Vortex">
 </p>
