@@ -56,7 +56,13 @@ try {
   let r = await request(port, '/qr.png');
   check('/qr.png is 404 before a QR exists', r.status === 404, String(r.status));
   r = await request(port, '/qr/page');
-  check('/qr/page is 200 even with no QR (shows guidance)', r.status === 200, String(r.status));
+  check('/qr/page is 200 with no QR', r.status === 200, String(r.status));
+  // The reported bug: the page rendered an <img> pointing at a 404 endpoint, so
+  // browsers showed a broken image. With no QR the page must not reference it.
+  const emptyPage = r.body.toString();
+  check('/qr/page with no QR contains no <img> tag', !emptyPage.includes('<img'), emptyPage.slice(0, 120));
+  check('/qr/page with no QR explains the state', /already connected|expired/i.test(emptyPage), emptyPage.slice(0, 200));
+  check('/qr/page with no QR auto-refreshes', /http-equiv="refresh"/i.test(emptyPage));
 
   // --- health endpoints ----------------------------------------------------
   for (const p of ['/', '/health', '/healthz']) {
@@ -87,6 +93,7 @@ try {
   check('/qr/page is uncached', String(page.headers['cache-control']).includes('no-store'), page.headers['cache-control']);
   const html = page.body.toString();
   check('/qr/page embeds the image tag', html.includes('<img src="/qr.png"'));
+  check('/qr/page pins the image size', html.includes('width: 400px') && html.includes('height: 400px'));
   check('/qr/page shows the generation timestamp', html.includes(getQRGeneratedAt()), 'timestamp missing');
 
   // --- QR cleared on connect ----------------------------------------------
@@ -94,6 +101,8 @@ try {
   check('clearQR empties the payload', getQR() === null && getQRGeneratedAt() === null);
   const after = await request(port, '/qr.png');
   check('/qr.png is 404 once the QR is cleared', after.status === 404, String(after.status));
+  const afterPage = (await request(port, '/qr/page')).body.toString();
+  check('/qr/page drops the <img> again after clear', !afterPage.includes('<img'));
 
   // --- unknown path / method ----------------------------------------------
   const missing = await request(port, '/nope');
