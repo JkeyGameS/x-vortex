@@ -1,5 +1,4 @@
 import makeWASocket, { useMultiFileAuthState, DisconnectReason } from '@whiskeysockets/baileys';
-import qrcode from 'qrcode-terminal';
 import config from './config/config.js';
 import logger from './utils/logger.js';
 import sessionManager from './utils/sessionManager.js';
@@ -8,6 +7,7 @@ import { toSmallCaps } from './utils/smallCaps.js';
 import { t } from './services/localeService.js';
 import { loadCommands } from './handlers/commandHandler.js';
 import { startHealthServer, stopHealthServer } from './healthServer.js';
+import { setQR, clearQR } from './utils/qrState.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
 import {
@@ -389,6 +389,10 @@ async function startBot() {
   // healthy process even while WhatsApp is still handshaking. A bind failure is
   // logged and ignored -- it must never stop the bot.
   startHealthServer();
+  logger.info(
+    { port: process.env.PORT || 3000 },
+    `[HEALTH] QR page will be available at http://localhost:${process.env.PORT || 3000}/qr/page once Baileys generates a QR`
+  );
 
   // Release the probe port on shutdown. Deliberately does not call process.exit:
   // lifecycleService owns the graceful-shutdown path.
@@ -471,7 +475,11 @@ async function startBot() {
     }
 
     if (qr) {
-      qrcode.generate(qr, { small: true });
+      // On a PaaS platform the terminal is wrapped and the ASCII art cannot be
+      // scanned, so the payload is stored and rendered as a PNG by the health
+      // server instead.
+      setQR(qr);
+      logger.info({ url: `http://localhost:${process.env.PORT || 3000}/qr/page` }, '[BAILEYS] New QR available — open /qr/page in the browser to scan');
     }
 
     if (connection === 'close') {
@@ -481,7 +489,8 @@ async function startBot() {
         startBot();
       }
     } else if (connection === 'open') {
-      logger.info('Bot connected successfully');
+      clearQR();
+      logger.info('Bot connected successfully — QR cleared');
       // Lifecycle: detect a previous unclean stop BEFORE marking this boot,
       // otherwise markStartup() overwrites lastStartedAt and every fresh
       // start would look like a crash.

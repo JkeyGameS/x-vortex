@@ -12,7 +12,8 @@
     "test:menuGates": "node tests/menuGates.test.mjs",
     "test:preferencesRouting": "node tests/preferencesRouting.test.mjs",
     "test:languageOnboarding": "node tests/languageOnboarding.test.mjs",
-    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs",
+    "test:healthServer": "node tests/healthServer.test.mjs",
+    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs && node tests/healthServer.test.mjs",
     "audit:menus": "node src/scripts/auditMenus.js"
   },
   "keywords": [],
@@ -23,7 +24,7 @@
     "dotenv": "^17.4.2",
     "pdfkit": "^0.17.0",
     "pino": "^10.3.1",
-    "qrcode-terminal": "^0.12.0"
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.14",
