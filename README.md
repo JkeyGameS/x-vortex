@@ -1,10 +1,4 @@
-```markdown
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-<!--                          X   V O R T E X                              -->
-<!--            The AI Operating Layer for Modern Businesses               -->
-<!-- ═══════════════════════════════════════════════════════════════════════ -->
-
-<div align="center">
+div align="center">
   <img src="docs/assets/IMG_1665.png" width="180" alt="X Vortex AI Agent" />
 </div>
 
