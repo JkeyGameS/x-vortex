@@ -50,21 +50,6 @@ It ingests your knowledge, listens to every conversation, decides what matters, 
 
 <br>
 
-<div align="center">
-
-```text
-╔═══════════════════════════════════════════════════════════════════╗
-║                                                                   ║
-║    💬  CONVERSATION  ──►  🧠  KNOWLEDGE  ──►  🤖  INTELLIGENCE    ║
-║                                                       │           ║
-║                                                       ▼           ║
-║                                              ⚡  ACTION           ║
-║                                                       │           ║
-║                                                       ▼           ║
-║                                             ♾️  AUTOMATION         ║
-║                                                                   ║
-╚═══════════════════════════════════════════════════════════════════╝
-```
 
 </div>
 <img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />---
