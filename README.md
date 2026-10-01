@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/assets/IMG_1665.png" width="180" alt="X Vortex AI Agent" />
+  <img src="docs/assets/431FC7D0-0F32-4BE2-B77C-1EF64651D94B.png" width="180" alt="X Vortex AI Agent" />
 </div>
 
 <div align="center">
