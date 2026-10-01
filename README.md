@@ -1,98 +1,193 @@
 ⚡ X Vortex
 
 <p align="center">
-  <img src="docs/assets/logo.png" width="120" alt="X Vortex">
+  <img src="docs/assets/logo.svg" width="140" alt="X Vortex">
 </p>
-<h3 align="center">Your AI-powered business assistant.</h3>
+<h1 align="center">Your AI-powered business assistant.</h1>
 <p align="center">
-  Intelligent conversations. Automated assistance. Built for business.
+  <strong>Intelligent conversations. Business knowledge. Automated assistance.</strong>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/badge/status-coming%20soon-F5C542?style=for-the-badge" alt="Coming Soon">
-  <img src="https://img.shields.io/badge/AI-Agent-8A2BE2?style=for-the-badge" alt="AI Agent">
-  <img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp">
+  X Vortex connects businesses with their customers through intelligent,
+  context-aware AI conversations.
+</p>
+<p align="center">
+  <a href="#-features">Features</a> ·
+  <a href="#-how-it-works">How it works</a> ·
+  <a href="#-roadmap">Roadmap</a> ·
+  <a href="#-getting-started">Get started</a>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/status-coming%20soon-F5C542?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/AI-Agent-8A2BE2?style=flat-square" alt="AI Agent">
+  <img src="https://img.shields.io/badge/WhatsApp-25D366?style=flat-square&logo=whatsapp&logoColor=white" alt="WhatsApp">
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License">
+</p>
+<br>
+<p align="center">
+  <img src="docs/assets/preview.svg" width="900" alt="X Vortex Preview">
 </p>
 
 ⸻
 
-✨ What is X Vortex?
+✨ About
 
-X Vortex is an AI-powered assistant designed to help businesses communicate with their customers through intelligent, automated conversations.
+X Vortex is an AI-powered business assistant built to make customer communication smarter, faster, and more automated.
 
-It is built to understand business information, respond naturally to customers, and provide assistance without requiring constant human intervention.
+It can be taught about a business — its products, services, policies, FAQs, and workflows — and use that knowledge to provide useful, natural responses to customers.
 
-One assistant. Always available. Built to help your business move faster.
+The vision is simple:
+
+Give every business an intelligent assistant that is always available.
 
 ⸻
 
 🚀 Features
 
-🤖 AI-powered conversations
+<table>
+<tr>
+<td width="50%">
 
-Give customers natural, useful responses powered by AI.
+🤖 AI Conversations
 
-🧠 Business knowledge
+Natural, context-aware conversations powered by AI.
 
-Teach X Vortex about your business, products, services, and frequently asked questions.
+</td>
+<td width="50%">
 
-💬 WhatsApp integration
+🧠 Business Knowledge
 
-Bring your AI assistant directly into the conversations where your customers already are.
+Teach the assistant about your business, products, services, and FAQs.
 
-⚡ Automated assistance
+</td>
+</tr>
+<tr>
+<td>
 
-Handle common questions and customer requests automatically.
+💬 WhatsApp
 
-🔄 Always evolving
+Connect your business directly to the conversations your customers already use.
 
-X Vortex is designed as a foundation for increasingly powerful AI business tools.
+</td>
+<td>
+
+⚡ Automation
+
+Automate repetitive questions, customer requests, and everyday interactions.
+
+</td>
+</tr>
+<tr>
+<td>
+
+🔄 Continuous Evolution
+
+Designed as a foundation for increasingly powerful AI capabilities.
+
+</td>
+<td>
+
+🧩 Extensible Architecture
+
+Built to grow with integrations, tools, workflows, and business systems.
+
+</td>
+</tr>
+</table>
 
 ⸻
 
-🏗️ How it works
+🎯 Built for business
 
-                    ┌──────────────────┐
-                    │     Customer     │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │     WhatsApp     │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │    X VORTEX      │
-                    │    AI AGENT      │
-                    └────────┬─────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              ▼              ▼              ▼
-        ┌──────────┐  ┌────────────┐  ┌───────────┐
-        │ Business │  │ Knowledge  │  │  Tools &  │
-        │   Info   │  │    Base    │  │ Automation│
-        └──────────┘  └────────────┘  └───────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │ Intelligent Reply│
-                    └──────────────────┘
+X Vortex acts as an intelligent layer between a business and its customers.
+
+Use cases
+
+	Use case	Example
+🛍️	Products & services	Answer questions about offerings
+❓	FAQs	Instantly answer common questions
+📦	Orders	Provide business and order information
+📅	Customer assistance	Help customers navigate requests
+💬	Support	Handle repetitive conversations
+🤝	Leads	Engage potential customers
+⚙️	Automation	Reduce repetitive manual work
 
 ⸻
 
-🎯 Built for businesses
+🧠 How it works
 
-X Vortex can serve as an intelligent first layer between a business and its customers.
+                         CUSTOMER
+                            │
+                            ▼
+                    ┌───────────────┐
+                    │    WhatsApp   │
+                    └───────┬───────┘
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │      X VORTEX       │
+                 │      AI AGENT       │
+                 └──────────┬──────────┘
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+          ▼                 ▼                 ▼
+   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐
+   │   Business  │   │  Knowledge  │   │   Tools &   │
+   │    Data     │   │    Base     │   │ Automation  │
+   └─────────────┘   └─────────────┘   └─────────────┘
+          │                 │                 │
+          └─────────────────┼─────────────────┘
+                            │
+                            ▼
+                  ┌───────────────────┐
+                  │ Intelligent Reply │
+                  └─────────┬─────────┘
+                            │
+                            ▼
+                         CUSTOMER
 
-Typical use cases include:
+The conversation flow
 
-* 🛍️ Product & service information
-* ❓ Frequently asked questions
-* 📦 Order & business information
-* 📅 Customer assistance
-* 💬 General customer support
-* 🤝 Lead & customer conversations
-* ⚙️ Repetitive business tasks
+Message
+   ↓
+Understand
+   ↓
+Retrieve context
+   ↓
+Apply business knowledge
+   ↓
+Reason
+   ↓
+Generate response
+   ↓
+Respond
+
+⸻
+
+🏗️ Architecture
+
+X Vortex is designed around modular components so the platform can evolve without rebuilding its foundation.
+
+┌────────────────────────────────────────────────────────┐
+│                     X VORTEX                           │
+│                                                        │
+│  ┌────────────┐   ┌────────────┐   ┌────────────┐    │
+│  │ Messaging  │──▶│ AI Agent   │◀──│  Business  │    │
+│  │   Layer    │   │   Engine   │   │  Knowledge │    │
+│  └────────────┘   └─────┬──────┘   └────────────┘    │
+│                          │                             │
+│                          ▼                             │
+│                   ┌─────────────┐                     │
+│                   │    Tools    │                     │
+│                   │ & Workflows │                     │
+│                   └──────┬──────┘                     │
+│                          │                             │
+│                          ▼                             │
+│                   ┌─────────────┐                     │
+│                   │ Integrations│                     │
+│                   └─────────────┘                     │
+└────────────────────────────────────────────────────────┘
 
 ⸻
 
@@ -107,85 +202,104 @@ X-Vortex/
 │
 ├── docs/
 │   ├── assets/
+│   │   ├── logo.svg
+│   │   └── preview.svg
 │   ├── architecture.md
 │   └── setup.md
 │
 ├── src/
+│   ├── agent/
+│   ├── knowledge/
+│   ├── integrations/
 │   └── ...
 │
 ├── tests/
-│   └── ...
 │
 ├── .env.example
+├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── LICENSE
 ├── SECURITY.md
-├── CHANGELOG.md
 └── README.md
+
+The structure will evolve as the platform grows.
 
 ⸻
 
 ⚙️ Getting started
 
-X Vortex is currently under development.
+Development status: X Vortex is currently under active development.
 
-Clone the repository:
+1. Clone
 
 git clone https://github.com/YOUR_USERNAME/X-Vortex.git
 cd X-Vortex
 
-Install dependencies:
+2. Install dependencies
 
 npm install
 
-Create your environment file:
+3. Configure environment
 
 cp .env.example .env
 
-Configure the required environment variables and start the project:
-
-npm run dev
-
-⸻
-
-🔐 Environment variables
-
-Create a .env file based on .env.example.
-
-Example:
+Add your configuration to .env:
 
 AI_API_KEY=
 WHATSAPP_TOKEN=
 WHATSAPP_PHONE_NUMBER_ID=
 WEBHOOK_VERIFY_TOKEN=
 
-Never commit your .env file or expose private API keys.
+4. Start development
+
+npm run dev
+
+⸻
+
+🔐 Security
+
+Never commit credentials, tokens, or private configuration.
+
+Your local environment should contain:
+
+.env
+
+while the repository should only contain:
+
+.env.example
+
+For security concerns, please see SECURITY.md.
 
 ⸻
 
 🗺️ Roadmap
 
+X Vortex is being developed in stages.
+
 Foundation
 
-* [x]	X Vortex identity
-* [x]	Project foundation
+* [x]	Project identity
+* [x]	X Vortex branding
 * [x]	GitHub repository
 * [x]	WhatsApp business presence
+* [ ]	Core platform architecture
 
-AI
+AI Engine
 
 * [ ]	AI agent
 * [ ]	Business knowledge system
 * [ ]	Context-aware conversations
 * [ ]	Conversation memory
 * [ ]	Advanced instructions
+* [ ]	Tool calling
 
 WhatsApp
 
 * [ ]	WhatsApp API integration
 * [ ]	Message processing
 * [ ]	Automated responses
-* [ ]	Media support
+* [ ]	Media handling
+* [ ]	Webhook infrastructure
 
 Business
 
@@ -193,76 +307,121 @@ Business
 * [ ]	Customer support workflows
 * [ ]	Analytics
 * [ ]	Business dashboard
-* [ ]	Multi-business support
+* [ ]	Multi-business architecture
 
-Future
+Platform
 
 * [ ]	Advanced automation
 * [ ]	AI tools
-* [ ]	Integrations
+* [ ]	External integrations
+* [ ]	Custom workflows
 * [ ]	Public launch
+
+Roadmap items are subject to change as development progresses.
 
 ⸻
 
 📸 Preview
 
 <p align="center">
-  <img src="docs/assets/preview.png" width="850" alt="X Vortex Preview">
+  <img src="docs/assets/preview.svg" width="900" alt="X Vortex interface preview">
 </p>
 
-Product screenshots and demonstrations will be added as development progresses.
+The product interface, demonstrations, and technical previews will be added as development progresses.
 
 ⸻
 
-🧠 Philosophy
+🧭 Design principles
 
-X Vortex is built around a simple idea:
+Simple
 
-AI should make business communication simpler, faster, and more accessible.
+AI should reduce complexity, not create more of it.
 
-Rather than replacing the human side of a business, X Vortex is designed to handle repetitive interactions and give businesses more time to focus on what matters.
+Useful
+
+Every feature should solve a real business problem.
+
+Context-aware
+
+An assistant is more useful when it understands the business behind the conversation.
+
+Extensible
+
+The platform should be able to grow from a simple assistant into a broader AI system.
+
+Human-centered
+
+Automation should support people and businesses rather than make communication feel robotic.
 
 ⸻
 
-🔮 Coming soon
+🔮 The vision
 
-X Vortex is currently under active development.
+X Vortex starts with conversations.
 
-The goal is to build more than just another chatbot — a practical AI assistant that businesses can actually use.
+But conversations are only the beginning.
 
-Stay tuned.
+The long-term vision is to create an AI platform capable of understanding a business, interacting with its customers, using business tools, and automating meaningful workflows.
+
+                    CONVERSATIONS
+                          │
+                          ▼
+                    KNOWLEDGE
+                          │
+                          ▼
+                      ACTIONS
+                          │
+                          ▼
+                    AUTOMATION
+                          │
+                          ▼
+                  INTELLIGENT BUSINESS
 
 ⸻
 
 🤝 Contributing
 
-Contributions, ideas, and feedback are welcome as the project evolves.
+Contributions, ideas, bug reports, and feedback are welcome.
 
-If you’d like to contribute:
+Development workflow
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Open a pull request
+Fork
+  ↓
+Create a branch
+  ↓
+Build
+  ↓
+Test
+  ↓
+Commit
+  ↓
+Pull Request
 
-For larger changes, please open an issue first to discuss the idea.
+For significant changes, open an issue first so the proposed direction can be discussed.
 
 ⸻
 
 📄 License
 
-This project is licensed under the MIT License.
+X Vortex is released under the MIT License.
 
-See LICENSE for more information.
+See LICENSE for details.
 
 ⸻
 
+<br>
 <p align="center">
-
-⚡ X Vortex
-
-AI-powered conversations for modern businesses.
-
-Coming soon.
-
+  <img src="docs/assets/logo.svg" width="70" alt="X Vortex">
+</p>
+<h3 align="center">⚡ X Vortex</h3>
+<p align="center">
+  <strong>AI-powered conversations for modern businesses.</strong>
+</p>
+<p align="center">
+  <sub>Currently in development · Coming soon</sub>
+</p>
+<p align="center">
+  <a href="https://github.com/YOUR_USERNAME/X-Vortex">GitHub</a>
+  ·
+  <a href="https://github.com/YOUR_USERNAME/X-Vortex/issues">Issues</a>
 </p>
