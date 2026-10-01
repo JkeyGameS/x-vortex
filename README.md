@@ -40,7 +40,7 @@
 
 <img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />
 
----
+
 
 ## 🌌 What is X Vortex?
 
@@ -48,122 +48,10 @@
 
 It ingests your knowledge, listens to every conversation, decides what matters, and executes the next step — automatically.
 
-<br>
 
 
 </div>
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />---
-
-⚡ Core Capabilities
-
-<table>
-<tr>
-<td align="center" width="33%">🧠 Understand
-
-Ingests your docs, catalog, policies & tone.
-Builds a living knowledge graph of your business.
-
-</td>
-<td align="center" width="33%">💬 Converse
-
-Talks to customers on WhatsApp & beyond —
-natural, contextual, in your brand voice.
-
-</td>
-<td align="center" width="33%">⚡ Act
-
-Qualifies leads, books meetings, updates CRMs,
-triggers workflows — without human handoff.
-
-</td>
-</tr>
-<tr>
-<td align="center" width="33%">🔗 Integrate
-
-Plugs into the tools you already use —
-CRM, calendar, payments, helpdesk, webhooks.
-
-</td>
-<td align="center" width="33%">📊 Learn
-
-Every conversation improves the agent.
-Analytics that turn chatter into insight.
-
-</td>
-<td align="center" width="33%">🔒 Own
-
-Your data, your model, your rules.
-Privacy-first architecture by design.
-
-</td>
-</tr>
-</table>
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />---
-
-🔄 How It Works
-
-<table>
-<tr>
-<td width="60" align="center"><h2>1️⃣</h2></td>
-<td>Connect your knowledge
-Upload documents, FAQs, catalogs, SOPs — or point X Vortex at your existing systems.
-
-</td>
-</tr>
-<tr>
-<td align="center"><h2>2️⃣</h2></td>
-<td>Plug in your channels
-WhatsApp first. Web chat, Instagram, email, and voice on the roadmap.
-
-</td>
-</tr>
-<tr>
-<td align="center"><h2>3️⃣</h2></td>
-<td>Define your actions
-Tell X Vortex what to do — book, qualify, escalate, notify, sync, refund, remind.
-
-</td>
-</tr>
-<tr>
-<td align="center"><h2>4️⃣</h2></td>
-<td>Go live in minutes
-Your agent answers, reasons, and executes — 24/7, in your voice.
-
-</td>
-</tr>
-</table>
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />---
-
-✨ Built Different
-
-Most tools stop at answering. X Vortex finishes the job.
-
- Typical Chatbot X Vortex
-Understands your business ⚠️ Surface-level ✅ Deep knowledge graph
-Converses naturally ⚠️ Scripted ✅ Contextual & adaptive
-Takes real action ❌ ✅ ✅ ✅
-Multi-channel ⚠️ Web only ✅ WhatsApp-native
-Learns over time ❌ ✅ Continuous
-Owns your data ⚠️ ✅ Privacy-first
-
-
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />---
-
-🗺️ Roadmap
-
-☑ 🧠 Knowledge engine
-☑ 🤖 Reasoning core
-☑ 💬 WhatsApp channel
-□ ⚡ Action framework (v1)
-□ 🔗 CRM & Calendar integrations
-□ 🌐 Web + Instagram channels
-□ 🎙️ Voice agent
-□ 📊 Analytics dashboard
-□ 🧩 Marketplace of agent skills
-□ 🚀 Public launch
-
-
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />---
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />
 
 🧩 The Stack
 
