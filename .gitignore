@@ -1,21 +1,17 @@
 # Dependencies
 node_modules/
 
+# WhatsApp session / credentials -- never commit
+session/
+auth/
+
+# Runtime data: user profiles, chat rules, settings, stats and WhatsApp session.
+# Never commit this directory -- it contains real user JIDs and preferences.
+data
+
 # Environment
 .env
 .env.local
-
-# WhatsApp session / credentials
-session/
-auth/
-data/session/
-
-# Data files that may contain user info or exports
-data/exports/
-data/snapshots/
-data/trash/
-data/*.log
-data/backup-*.json
 
 # Logs
 *.log
