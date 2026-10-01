@@ -62,7 +62,7 @@ It ingests your knowledge, listens to every conversation, decides what matters, 
 <img src="https://img.shields.io/badge/LLMs-GPT%20%7C%20Claude%20%7C%20Llama-7C3AED?style=for-the-badge&labelColor=050510" />
 <img src="https://img.shields.io/badge/Vector_DB-Pinecone%20%7C%20pgvector-00D9FF?style=for-the-badge&labelColor=050510" />
 <img src="https://img.shields.io/badge/Realtime-WebSockets%20%7C%20Events-25D366?style=for-the-badge&labelColor=050510" /></div>
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />---
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />
 
 🚀 Join the Vortex
 
