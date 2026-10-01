@@ -7,7 +7,9 @@ auth/
 
 # Runtime data: user profiles, chat rules, settings, stats and WhatsApp session.
 # Never commit this directory -- it contains real user JIDs and preferences.
-data
+# The changelog is the exception: it is authored content, not user data.
+data/*
+!data/changelog.json
 
 # Environment
 .env

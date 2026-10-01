@@ -2,7 +2,7 @@
 const SUBS = [
   // [id, titleKey, bodyResolver, headingEmoji]
   ['info_about', 'aboutTitle', 'infoAboutBody', '🤖'],
-  ['info_version', 'versionTitle', 'infoVersionBody', '📝'],
+  ['info_version', 'versionTitle', 'changelogBody', '📝'],
   ['info_developer', 'developerTitle', 'infoDeveloperBody', '👨‍💻'],
   ['info_website', 'websiteTitle', 'infoWebsiteBody', '🌐']
 ];

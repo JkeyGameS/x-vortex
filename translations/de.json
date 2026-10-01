@@ -2850,7 +2850,16 @@
       "version": "Versionsverlauf",
       "developer": "Entwickler",
       "website": "Webseite",
-      "footer": "Antworte mit einer Nummer."
+      "footer": "Antworte mit einer Nummer.",
+      "version_history": {
+        "heading": "Versionsverlauf",
+        "currentVersion": "Aktuelle Version",
+        "seeMore": "Mehr anzeigen",
+        "previous": "Zuruck",
+        "subscribe": "Updates abonnieren",
+        "comingSoon": "Diese Funktion kommt bald.",
+        "empty": "Keine Versionsinformationen verfugbar."
+      }
     },
     "info_sub": {
       "info_about": "Über den Bot",

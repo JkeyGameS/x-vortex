@@ -2850,7 +2850,16 @@
       "version": "Historique des versions",
       "developer": "Développeur",
       "website": "Site web",
-      "footer": "Répondez avec un numéro."
+      "footer": "Répondez avec un numéro.",
+      "version_history": {
+        "heading": "Historique des versions",
+        "currentVersion": "Version actuelle",
+        "seeMore": "Voir plus",
+        "previous": "Precedent",
+        "subscribe": "S'abonner aux mises a jour",
+        "comingSoon": "Cette arrivee bientot.",
+        "empty": "Aucune information de version disponible."
+      }
     },
     "info_sub": {
       "info_about": "À propos du bot",

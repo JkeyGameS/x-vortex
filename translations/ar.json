@@ -2850,7 +2850,16 @@
       "version": "سجل الإصدارات",
       "developer": "المطور",
       "website": "الموقع",
-      "footer": "رد برقم."
+      "footer": "رد برقم.",
+      "version_history": {
+        "heading": "سجل الإصدارات",
+        "currentVersion": "الإصدار الحالي",
+        "seeMore": "عرض المزيد",
+        "previous": "السابق",
+        "subscribe": "الاشتراك في التحديثات",
+        "comingSoon": "هذه الميزة قريبا.",
+        "empty": "لا تتوفر معلومات الإصدار."
+      }
     },
     "info_sub": {
       "info_about": "عن البوت",

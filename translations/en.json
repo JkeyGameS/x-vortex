@@ -2875,7 +2875,16 @@
       "version": "Version History",
       "developer": "Developer",
       "website": "Website",
-      "footer": "Reply with a number."
+      "footer": "Reply with a number.",
+      "version_history": {
+        "heading": "Version History",
+        "currentVersion": "Current version",
+        "seeMore": "See more",
+        "previous": "Previous",
+        "subscribe": "Subscribe to updates",
+        "comingSoon": "This feature is coming soon.",
+        "empty": "No version information available."
+      }
     },
     "info_sub": {
       "info_about": "About Bot",

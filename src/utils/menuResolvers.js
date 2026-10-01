@@ -5,6 +5,9 @@ import { getTypingSettings } from '../services/typingSettingsService.js';
 import { hasPermission } from '../services/rolesService.js';
 import settingsService from '../services/settingsService.js';
 import { readBotNotifyToggles } from '../config/notificationToggles.js';
+import sessionManager from './sessionManager.js';
+import { getEntriesPage, getCurrentVersion } from '../services/changelogService.js';
+import { changelogOptions, formatEntryHeading } from './changelogFormat.js';
 import * as messageSettings from '../services/messageSettingsService.js';
 import { MESSAGE_MODES } from '../services/messageSettingsService.js';
 import * as customCommandStore from '../services/customCommandService.js';
@@ -334,3 +337,46 @@ export function registerProgressResolver(name, fn) {
   progressResolvers[name] = fn;
   return true;
 }
+
+// ---------------------------------------------------------------------------
+// Changelog body (Info -> Version History).
+//
+// A bodyResolver menu owns its whole layout (menuRenderer returns early), so
+// this renders the heading line, current version, one page of entries, the
+// paginated option rows and the back row. Static text is small-capped;
+// version numbers, dates and change text are dynamic and stay as-is.
+// ---------------------------------------------------------------------------
+
+registerBodyResolver('changelogBody', async (user, language, ctx) => {
+  const session = ctx?.sender ? sessionManager.getSession(ctx.sender, ctx.chatId || ctx.sender) || {} : {};
+  const page = getEntriesPage(session.changelogPage || 1, 2);
+  const lang = language || 'en';
+  const L = (key) => toSmallCaps(t(lang, key));
+  const lines = [];
+
+  lines.push({ static: L('menu.info.version_history.currentVersion') + ': *', dynamic: `${getCurrentVersion()}*` });
+  lines.push('');
+
+  if (!page.entries.length) {
+    lines.push(L('menu.info.version_history.empty'));
+  } else {
+    for (const entry of page.entries) {
+      // Dynamic: emoji + version + date are not small-capped.
+      lines.push({ static: '', dynamic: formatEntryHeading(entry) });
+      for (const change of entry.changes || []) {
+        lines.push({ static: '', dynamic: '• ' + toSmallCaps(change) });
+      }
+      lines.push('');
+    }
+  }
+
+  for (const opt of changelogOptions(page)) {
+    lines.push({ static: '', dynamic: `${opt.number}. ${opt.emoji} ${toSmallCaps(t(lang, opt.labelKey))}` });
+  }
+
+  lines.push('');
+  lines.push({ static: '', dynamic: `0. ${toSmallCaps(t(lang, 'common.back'))}` });
+  lines.push('');
+  lines.push({ static: '', dynamic: `_${L('menu.replyPrompt')}_` });
+  return lines;
+});

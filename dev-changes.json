@@ -1,0 +1,36 @@
+{
+  "entries": [
+    {
+      "id": "chg-2026-10-01T18-40-00",
+      "timestamp": "2026-10-01T18:40:00Z",
+      "agent": "Cline",
+      "promptSummary": "Changelog Foundation (Prompt 1)",
+      "changes": [
+        "Migrated version history to JSON",
+        "Added changelog service with pagination",
+        "Added subscribe placeholder",
+        "Added changelogBody menu resolver",
+        "Added changelog tests"
+      ],
+      "files": [
+        "data/changelog.json",
+        "src/services/changelogService.js",
+        "src/utils/changelogFormat.js",
+        "src/utils/menuResolvers.js",
+        "src/handlers/infoCommand.js",
+        "src/config/menus/infoSubs.js",
+        "src/index.js",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json",
+        "tests/changelog.test.mjs",
+        "package.json",
+        ".gitignore"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.1.1"
+    }
+  ]
+}

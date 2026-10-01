@@ -2850,7 +2850,16 @@
       "version": "Historial de versiones",
       "developer": "Desarrollador",
       "website": "Sitio web",
-      "footer": "Responde con un número."
+      "footer": "Responde con un número.",
+      "version_history": {
+        "heading": "Historial de versiones",
+        "currentVersion": "Version actual",
+        "seeMore": "Ver mas",
+        "previous": "Anterior",
+        "subscribe": "Suscribirse a actualizaciones",
+        "comingSoon": "Esta funcion llegara pronto.",
+        "empty": "No hay informacion de version disponible."
+      }
     },
     "info_sub": {
       "info_about": "Acerca del bot",

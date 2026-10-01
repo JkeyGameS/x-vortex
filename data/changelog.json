@@ -1,0 +1,42 @@
+{
+  "currentVersion": "1.1.0",
+  "releasedAt": "2026-10-01T00:00:00Z",
+  "entries": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-01",
+      "type": "feature",
+      "changes": [
+        "Config-driven menu system with 49 registered menus",
+        "Bot lifecycle notifications for startup, shutdown and crashes",
+        "Message display modes: edit, send new, delete and send, hybrid",
+        "Custom commands with a built-in editor and conflict detection",
+        "Smart first-time language onboarding with device detection",
+        "PaaS readiness: health endpoint and QR pairing served as a PNG"
+      ]
+    },
+    {
+      "version": "1.0.1",
+      "date": "2026-09-30",
+      "type": "fix",
+      "changes": [
+        "Fixed Preferences routing so Advanced Options and Message Display open",
+        "Fixed Edit Profile Advanced option returning an unavailable error",
+        "Fixed language onboarding bouncing back to the confirmation prompt",
+        "Fixed FAQ option 11 being unreachable behind a stale input gate",
+        "Fixed notification toggles never affecting what was actually sent"
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-09-15",
+      "type": "initial",
+      "changes": [
+        "Initial release",
+        "Menu system refactor complete",
+        "Chat rules, FAQ and snippet handling",
+        "Admin panel with role-based access"
+      ]
+    }
+  ]
+}

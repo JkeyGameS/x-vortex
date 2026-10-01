@@ -8,6 +8,7 @@ import { t } from './services/localeService.js';
 import { loadCommands } from './handlers/commandHandler.js';
 import { startHealthServer, stopHealthServer } from './healthServer.js';
 import { setQR, clearQR } from './utils/qrState.js';
+import { loadChangelog } from './services/changelogService.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
 import {
@@ -393,6 +394,10 @@ async function startBot() {
     { port: process.env.PORT || 3000 },
     `[HEALTH] QR page will be available at http://localhost:${process.env.PORT || 3000}/qr/page once Baileys generates a QR`
   );
+
+  // Version history for the Info menu. Loaded eagerly so the first open does
+  // not pay a disk read; a missing file degrades to an empty changelog.
+  loadChangelog();
 
   // Release the probe port on shutdown. Deliberately does not call process.exit:
   // lifecycleService owns the graceful-shutdown path.

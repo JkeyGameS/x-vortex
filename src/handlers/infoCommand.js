@@ -9,6 +9,8 @@ import { buildMenu } from '../utils/menuBuilder.js';
 import { sendMenu } from '../utils/messageHelper.js';
 import { getUserByJid } from '../services/userService.js';
 import { getFeatureNames, getFeature } from '../services/featureFlagService.js';
+import { getEntriesPage } from '../services/changelogService.js';
+import { resolveChangelogAction } from '../utils/changelogFormat.js';
 
 function L(language, key, params = {}) {
   return toSmallCaps(t(language, key, params));
@@ -52,20 +54,22 @@ export function buildAboutBot(language) {
   );
 }
 
-export function buildVersionHistory(language) {
-  const changes = (config.changelog || []).slice(0, 3).map((key) => '• ' + t(language, key));
+/**
+ * Version History now renders from data/changelog.json via the 'changelogBody'
+ * resolver, so this builder is gone. The info_version menu definition points at
+ * that resolver and the renderer owns the layout.
+ */
+
+/** Placeholder shown for "Subscribe to updates" until it is implemented. */
+export function buildSubscribeNotice(language) {
   return buildMenu(
-    t(language, 'info.versionTitle'),
+    t(language, 'menu.info.version_history.subscribe'),
     '',
     [
-      { static: t(language, 'info.currentVersion') + ': *', dynamic: String(config.botVersion) + '*' },
+      { static: '🚧 ' },
+      { static: '', dynamic: toSmallCaps(t(language, 'menu.info.version_history.comingSoon')) },
       '',
-      t(language, 'info.latestChanges') + ':',
-      ...changes,
-      '',
-      '0. ' + t(language, 'info.back'),
-      '',
-      t(language, 'info.reply0Back')
+      { static: '', dynamic: '0. ' + toSmallCaps(t(language, 'common.back')) }
     ]
   );
 }
@@ -128,7 +132,6 @@ registerDashboardResolver('infoDashboard', async (user, language) => {
 });
 
 registerBodyResolver('infoAboutBody', async (user, language) => bodyOf(buildAboutBot(language)));
-registerBodyResolver('infoVersionBody', async (user, language) => bodyOf(buildVersionHistory(language)));
 registerBodyResolver('infoDeveloperBody', async (user, language) => bodyOf(buildDeveloper(language)));
 registerBodyResolver('infoWebsiteBody', async (user, language) => bodyOf(buildWebsite(language)));
 
@@ -173,7 +176,9 @@ export async function handleInfoReply(context, input) {
       case '1':
         return sendInfoSubmenu(context, 'info_about', buildAboutBot(language), 'info_to_about');
       case '2':
-        return sendInfoSubmenu(context, 'info_version', buildVersionHistory(language), 'info_to_version');
+        // Fresh open resets pagination to page 1.
+        sessionManager.setState(sender, chatId, { changelogPage: 1 });
+        return sendInfoSubmenu(context, 'info_version', null, 'info_to_version');
       case '3':
         return sendInfoSubmenu(context, 'info_developer', buildDeveloper(language), 'info_to_developer');
       case '4':
@@ -184,14 +189,41 @@ export async function handleInfoReply(context, input) {
     }
   }
 
-  if (['info_about', 'info_version', 'info_developer', 'info_website'].includes(menu)) {
+  if (menu === 'info_version') {
+    if (trimmed === '0') {
+      sessionManager.setState(sender, chatId, { changelogPage: 1 });
+      return sendInfoMenu(context, { language, transitionKey: 'info_menu' });
+    }
+
+    // Option numbers shift once Previous appears, so resolve against the
+    // current page rather than hardcoding them.
+    const page = getEntriesPage(session.changelogPage || 1, 2);
+    const action = resolveChangelogAction(trimmed, page);
+
+    if (action === 'more') {
+      sessionManager.setState(sender, chatId, { changelogPage: page.page + 1 });
+      return sendInfoSubmenu(context, 'info_version', null, 'changelog_next');
+    }
+    if (action === 'previous') {
+      sessionManager.setState(sender, chatId, { changelogPage: Math.max(1, page.page - 1) });
+      return sendInfoSubmenu(context, 'info_version', null, 'changelog_prev');
+    }
+    if (action === 'subscribe') {
+      // Placeholder only -- actual subscription arrives in a later prompt.
+      return sendText(context.sock, sender, buildSubscribeNotice(language));
+    }
+
+    await sendText(context.sock, sender, toSmallCaps(t(language, 'common.invalidChoice')));
+    return sendInfoSubmenu(context, 'info_version', null, 'info_menu');
+  }
+
+  if (['info_about', 'info_developer', 'info_website'].includes(menu)) {
     if (trimmed === '0') {
       return sendInfoMenu(context, { language, transitionKey: 'info_menu' });
     }
     await sendText(context.sock, sender, toSmallCaps(t(language, 'common.invalidChoice')));
     const rebuild = {
       info_about: buildAboutBot,
-      info_version: buildVersionHistory,
       info_developer: buildDeveloper,
       info_website: buildWebsite
     }[menu];
