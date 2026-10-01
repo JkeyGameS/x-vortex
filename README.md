@@ -3,12 +3,12 @@
 </div>
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:00D9FF,100:7C3AED&height=200&section=header&text=X%20VORTEX&fontSize=76&fontColor=FFFFFF&animation=fadeIn&fontAlignY=38&desc=THE%20AI%20OPERATING%20LAYER&descAlignY=60&descSize=16&descColor=00D9FF" width="100%" alt="X Vortex" />
+  <img src="https://capsule-render.vercel.app/api?type=venom&color=0:00D9FF,50:7C3AED,100:00D9FF&height=220&section=header&text=X%20VORTEX&fontSize=78&fontColor=FFFFFF&animation=twinkling&fontAlignY=38&desc=THE%20AI%20OPERATING%20LAYER&descAlignY=62&descSize=16&descColor=00D9FF&stroke=00D9FF&strokeWidth=1" width="100%" alt="X Vortex" />
 </div>
 
 <div align="center">
   <a href="#">
-    <img src="https://readme-typing-svg.demolab.com?font=Space+Grotesk&weight=600&size=22&duration=2600&pause=800&color=00D9FF&center=true&vCenter=true&width=900&height=60&lines=Understand+your+customers.;Automate+every+conversation.;Turn+talk+into+real+action.;One+intelligent+layer+for+your+business." alt="Typing SVG" />
+    <img src="https://readme-typing-svg.demolab.com?font=Space+Grotesk&weight=700&size=23&duration=2200&pause=600&color=00D9FF&center=true&vCenter=true&width=900&height=60&lines=Understand+your+customers.;Automate+every+conversation.;Turn+talk+into+real+action.;One+intelligent+layer+for+your+business.;Reasoning.+Deciding.+Executing." alt="Typing SVG" />
   </a>
 </div>
 
@@ -38,54 +38,57 @@
 
 <br>
 
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%&animation=twinkling" />
 
+<h2 align="center">🌌 What is X Vortex?</h2>
 
+<p align="center">
+  <strong>X Vortex</strong> is not a chatbot. It's an <strong>AI business agent</strong> — a reasoning layer that understands your business, talks to your customers, and <em>takes action</em> on your behalf.
+</p>
 
-## 🌌 What is X Vortex?
+<p align="center">
+  It ingests your knowledge, listens to every conversation, decides what matters, and executes the next step — automatically.
+</p>
 
-**X Vortex** is not a chatbot. It's an **AI business agent** — a reasoning layer that understands your business, talks to your customers, and *takes action* on your behalf.
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%&animation=twinkling" />
 
-It ingests your knowledge, listens to every conversation, decides what matters, and executes the next step — automatically.
+<h3 align="center">🧩 The Stack</h3>
 
-
-
+<div align="center">
+  <img src="https://skillicons.dev/icons?i=ts,nodejs,nextjs,react,py,postgres,redis,docker,aws,vercel&theme=dark&perline=10" />
+  <br><br>
+  <img src="https://img.shields.io/badge/LLMs-GPT%20%7C%20Claude%20%7C%20Llama-7C3AED?style=for-the-badge&labelColor=050510" />
+  <img src="https://img.shields.io/badge/Vector_DB-Pinecone%20%7C%20pgvector-00D9FF?style=for-the-badge&labelColor=050510" />
+  <img src="https://img.shields.io/badge/Realtime-WebSockets%20%7C%20Events-25D366?style=for-the-badge&labelColor=050510" />
 </div>
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />
 
-🧩 The Stack
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%&animation=twinkling" />
 
-<div align="center"><img src="https://skillicons.dev/icons?i=ts,nodejs,nextjs,react,py,postgres,redis,docker,aws,vercel&theme=dark" />
+<h3 align="center">🚀 Join the Vortex</h3>
 
-
-
-<img src="https://img.shields.io/badge/LLMs-GPT%20%7C%20Claude%20%7C%20Llama-7C3AED?style=for-the-badge&labelColor=050510" />
-<img src="https://img.shields.io/badge/Vector_DB-Pinecone%20%7C%20pgvector-00D9FF?style=for-the-badge&labelColor=050510" />
-<img src="https://img.shields.io/badge/Realtime-WebSockets%20%7C%20Events-25D366?style=for-the-badge&labelColor=050510" /></div>
-<img src="https://capsule-render.vercel.app/api?type=rect&color=0:00D9FF,50:7C3AED,100:00D9FF&height=3&width=100%" />
-
-🚀 Join the Vortex
-
-<div align="center">Be first in line when X Vortex launches.
-
-<a href="#">
-  <img src="https://img.shields.io/badge/⭐_JOIN_WAITLIST-00D9FF?style=for-the-badge&labelColor=050510" />
-</a>
-<a href="#">
-  <img src="https://img.shields.io/badge/📩_CONTACT_US-7C3AED?style=for-the-badge&labelColor=050510" />
-</a>
-<a href="#">
-  <img src="https://img.shields.io/badge/💬_WHATSAPP-25D366?style=for-the-badge&logo=whatsapp&logoColor=white&labelColor=050510" />
-</a>
-
-
-
-<a href="#"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white&labelColor=050510" /></a>
-<a href="#"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=050510" /></a>
-<a href="#"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white&labelColor=050510" /></a>
-<a href="#"><img src="https://img.shields.io/badge/Website-00D9FF?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=050510" /></a>
-
+<div align="center">
+  <em>Be first in line when X Vortex launches.</em>
+  <br><br>
+  <a href="#">
+    <img src="https://img.shields.io/badge/⭐_JOIN_WAITLIST-00D9FF?style=for-the-badge&labelColor=050510" />
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/📩_CONTACT_US-7C3AED?style=for-the-badge&labelColor=050510" />
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/💬_WHATSAPP-25D366?style=for-the-badge&logo=whatsapp&logoColor=white&labelColor=050510" />
+  </a>
+  <br><br>
+  <a href="#"><img src="https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white&labelColor=050510" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white&labelColor=050510" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white&labelColor=050510" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Website-00D9FF?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=050510" /></a>
 </div>
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:00D9FF,100:7C3AED&height=140&section=footer&text=One%20layer.%20Every%20conversation.%20Real%20action.&fontSize=16&fontColor=FFFFFF&fontAlignY=70" width="100%" /><div align="center">
+
+<br>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:00D9FF,50:7C3AED,100:00D9FF&height=160&section=footer&text=One%20layer.%20Every%20conversation.%20Real%20action.&fontSize=16&fontColor=FFFFFF&fontAlignY=70&animation=twinkling" width="100%" />
+
+<div align="center">
   <sub>© X Vortex — The AI Operating Layer for Modern Businesses.</sub>
 </div>
