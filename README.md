@@ -2,7 +2,7 @@
   <img src="docs/assets/IMG_1665.png" width="180" alt="X Vortex AI Agent">
 </p>
 
-<h1 align="center">⚡ X VORTEX</h1>
+<h1 align="center">X VORTEX</h1>
 
 <p align="center">
   <strong>The AI Operating Layer for Modern Businesses.</strong><br>
