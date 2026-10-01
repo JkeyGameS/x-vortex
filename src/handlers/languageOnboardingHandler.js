@@ -26,6 +26,22 @@ export const ONBOARDING_MENU = 'language_onboarding';
 export const MAX_ATTEMPTS = 3;
 export const COOLDOWN_MS = 5 * 60 * 1000;
 
+// Explicit sub-states. Without these, "no language yet" alone was enough for the
+// gate to restart onboarding, so a user who had already been handed the
+// 5-language menu got the confirmation prompt again instead of picking a
+// language.
+export const STAGE = {
+  CONFIRM: 'confirm_detected',
+  CHOOSE: 'choose_language',
+  RETRY: 'awaiting_retry',
+  LOCKED: 'locked'
+};
+
+// Sessions that are already inside a language flow. The gate must not restart
+// onboarding for these, otherwise the confirmation prompt is re-sent and the
+// chosen language is never applied.
+const IN_LANGUAGE_FLOW = new Set(['language_selection', 'pref_language_selection', 'language_onboarding']);
+
 const LANGUAGES = ['en', 'fr', 'de', 'es', 'ar'];
 
 // menu number for each language, matching handleLanguageSelection's own map
@@ -232,10 +248,6 @@ export function isOnboardingLocked(session) {
   return Number.isFinite(until) && until > Date.now();
 }
 
-function clearOnboarding(session) {
-  return session?.currentMenu === ONBOARDING_MENU;
-}
-
 // ---------------------------------------------------------------------------
 // Admin notifications (Part B)
 // ---------------------------------------------------------------------------
@@ -353,6 +365,7 @@ async function startOnboarding(context, session) {
 
   sessionManager.setState(sender, chatId, {
     currentMenu: ONBOARDING_MENU,
+    onboardingStage: STAGE.CONFIRM,
     detectedLanguage: supported ? detected : null,
     detectedLanguageRaw: rawLocale || null,
     onboardingAttempts: 0,
@@ -383,15 +396,59 @@ async function startOnboarding(context, session) {
   return true;
 }
 
+/**
+ * Hand off to the standard 5-language menu.
+ * The session records stage 'choose_language' while currentMenu becomes
+ * 'language_selection', so the pre-existing language flow handles 1-5, 9 (help)
+ * and invalid input. The stage is what stops the gate from restarting
+ * onboarding for a user who still has no language.
+ */
 async function openLanguageChooser(context) {
   const { sock, sender, chatId } = context;
   sessionManager.setState(sender, chatId, {
     currentMenu: 'language_selection',
+    onboardingStage: STAGE.CHOOSE,
     isLanguageSelectionPending: true,
     onboardingAttempts: 0,
+    onboardingLastRetry: -1,
     languageOnboardingLockedUntil: null
   });
   await sendText(sock, sender, buildLanguageMenu());
+  return true;
+}
+
+/**
+ * Drop every onboarding field while leaving currentMenu alone, so the handler
+ * that completes the language pick keeps routing normally.
+ */
+function clearOnboardingFlags(sender, chatId) {
+  sessionManager.setState(sender, chatId, {
+    onboardingStage: null,
+    onboardingAttempts: 0,
+    onboardingLastRetry: -1,
+    onboardingLanguageChoice: null,
+    languageOnboardingLockedUntil: null,
+    detectedLanguage: null,
+    detectedLanguageRaw: null
+  });
+}
+
+/** "0" on the 5-language menu returns to the detection confirmation. */
+async function returnToConfirmation(context) {
+  const { sock, sender, chatId } = context;
+  const session = sessionManager.getSession(sender, chatId) || {};
+  const detected = session.detectedLanguage;
+  sessionManager.setState(sender, chatId, {
+    currentMenu: ONBOARDING_MENU,
+    onboardingStage: STAGE.CONFIRM,
+    isLanguageSelectionPending: false,
+    onboardingAttempts: 0,
+    onboardingLastRetry: -1,
+    languageOnboardingLockedUntil: null
+  });
+  await sendText(sock, sender, detected
+    ? buildDetectedMessage(detected, detected)
+    : buildUnsupportedMessage(deviceLanguageName(session.detectedLanguageRaw)));
   return true;
 }
 
@@ -403,8 +460,10 @@ async function completeOnboarding(context, chosenLanguage, attempts) {
   userStats.recordOnboardingCompleted(sender, chosenLanguage, attempts);
   sessionManager.setState(sender, chatId, {
     currentMenu: null,
+    onboardingStage: null,
     isLanguageSelectionPending: false,
     onboardingAttempts: 0,
+    onboardingLastRetry: -1,
     onboardingLanguageChoice: chosenLanguage,
     languageOnboardingLockedUntil: null,
     detectedLanguage: null,
@@ -431,6 +490,7 @@ async function applyCooldown(context, session, attempts) {
 
   sessionManager.setState(sender, chatId, {
     currentMenu: ONBOARDING_MENU,
+    onboardingStage: STAGE.LOCKED,
     onboardingAttempts: attempts,
     languageOnboardingLockedUntil: until
   });
@@ -447,7 +507,8 @@ async function applyCooldown(context, session, attempts) {
 }
 
 /**
- * Handle one message while onboarding is active.
+ * Handle one message while the user is in stage 'confirm_detected',
+ * 'awaiting_retry' or 'locked'.
  * @returns {Promise<boolean>} true when the message was consumed.
  */
 async function handleOnboardingReply(context, session) {
@@ -455,8 +516,9 @@ async function handleOnboardingReply(context, session) {
   const text = String(context.text ?? '').trim();
   const detected = session.detectedLanguage;
   const language = detected || config.defaultLanguage;
+  const stage = session.onboardingStage || STAGE.CONFIRM;
 
-  // 1. Yes / no in any supported language.
+  // 1. Yes / no, in any supported language.
   if (isYesReply(text) && detected) {
     return completeOnboarding(context, detected, session.onboardingAttempts || 0);
   }
@@ -464,28 +526,21 @@ async function handleOnboardingReply(context, session) {
     return openLanguageChooser(context);
   }
 
-  // 2. Numbers. "1" only means "accept" when something was detected; otherwise
-  //    1-5 is the language chooser.
+  // 2. Numbers. With a detected language the prompt offers 1 (accept) and
+  //    2 (choose another). Without one, the unsupported-locale prompt asks for
+  //    a number 1-5 directly.
   if (/^[0-5]$/.test(text)) {
-    if (text === '1' && detected) {
-      return completeOnboarding(context, detected, session.onboardingAttempts || 0);
+    if (!detected) {
+      if (text === '0') return openLanguageChooser(context);
+      return completeOnboarding(context, { 1: 'en', 2: 'fr', 3: 'de', 4: 'es', 5: 'ar' }[text], session.onboardingAttempts || 0);
     }
-    if (text === '0') {
-      return openLanguageChooser(context);
-    }
-    const map = { 1: 'en', 2: 'fr', 3: 'de', 4: 'es', 5: 'ar' };
-    const chosen = map[text];
-    if (session.onboardingLanguageChoice !== undefined && detected === null) {
-      // unsupported device language: the greeting asked for 1-5
-      return completeOnboarding(context, chosen, session.onboardingAttempts || 0);
-    }
-    if (detected) {
-      // detected language greeting only offers 1 (accept) and 2 (choose another)
-      return openLanguageChooser(context);
-    }
+    if (text === '1') return completeOnboarding(context, detected, session.onboardingAttempts || 0);
+    // 0 and 2 both mean "pick another"; any other number is not on the prompt,
+    // so treat it as unclear and retry rather than silently navigating.
+    if (text === '0' || text === '2') return openLanguageChooser(context);
   }
 
-  // 3. Retry, rotating the three prompts.
+  // 3. Unclear: rotate the three retry prompts, then lock.
   const attempts = (session.onboardingAttempts || 0) + 1;
   userStats.recordOnboardingAttempt(sender, attempts);
   if (attempts >= MAX_ATTEMPTS) {
@@ -494,8 +549,14 @@ async function handleOnboardingReply(context, session) {
   let index = (session.onboardingLastRetry ?? -1) + 1;
   if (index >= MAX_ATTEMPTS) index = 0;
   if (index === session.onboardingLastRetry) index = (index + 1) % MAX_ATTEMPTS;
-  sessionManager.setState(sender, chatId, { onboardingAttempts: attempts, onboardingLastRetry: index });
+  sessionManager.setState(sender, chatId, {
+    currentMenu: ONBOARDING_MENU,
+    onboardingStage: STAGE.RETRY,
+    onboardingAttempts: attempts,
+    onboardingLastRetry: index
+  });
   await sendText(context.sock, sender, buildRetryMessage(language, index));
+  logger.debug({ sender, stage, attempts }, '[ONBOARD] retry sent');
   return true;
 }
 
@@ -505,32 +566,52 @@ async function handleOnboardingReply(context, session) {
  */
 export async function handleLanguageOnboardingGate(context, session, user) {
   const { sock, sender, chatId } = context;
+  const stage = session?.onboardingStage || null;
+  const input = String(context.text ?? '').trim();
+  logger.debug({ sender, stage, currentMenu: session?.currentMenu, input }, '[ONBOARD] input');
 
   // Cooldown lock: silently ignore everything until it expires (C3).
-  if (isOnboardingLocked(session)) {
+  if (isOnboardingLocked(session)) return true;
+
+  // Lock just expired -> reminder, then the greeting again (A7).
+  if (stage === STAGE.LOCKED) {
+    const detected = session.detectedLanguage;
+    const language = detected || config.defaultLanguage;
+    sessionManager.setState(sender, chatId, {
+      languageOnboardingLockedUntil: null,
+      onboardingStage: STAGE.CONFIRM,
+      onboardingAttempts: 0,
+      onboardingLastRetry: -1,
+      currentMenu: ONBOARDING_MENU
+    });
+    await sendText(sock, sender, buildWelcomeBackMessage(language));
+    await sendText(sock, sender, detected
+      ? buildDetectedMessage(language, detected)
+      : buildUnsupportedMessage(deviceLanguageName(session.detectedLanguageRaw)));
     return true;
   }
 
-  if (clearOnboarding(session)) {
-    // Lock has just expired -> reminder, then the greeting again (A7).
-    const lockCleared = session.languageOnboardingLockedUntil;
-    if (lockCleared) {
-      const detected = session.detectedLanguage;
-      const language = detected || config.defaultLanguage;
-      sessionManager.setState(sender, chatId, {
-        languageOnboardingLockedUntil: null,
-        onboardingAttempts: 0,
-        onboardingLastRetry: -1,
-        currentMenu: ONBOARDING_MENU
-      });
-      await sendText(sock, sender, buildWelcomeBackMessage(language));
-      await sendText(sock, sender, detected
-        ? buildDetectedMessage(language, detected)
-        : buildUnsupportedMessage(deviceLanguageName(session.detectedLanguageRaw)));
-      return true;
-    }
+  // On the 5-language menu. "0" returns to the confirmation prompt; everything
+  // else (1-5, 9 = help, invalid input) belongs to the existing
+  // 'language_selection' flow, so it must fall through. A 1-5 pick is the user
+  // committing, so the onboarding flags are cleared here -- the completing
+  // handler is languageCommand's, which knows nothing about these fields.
+  if (stage === STAGE.CHOOSE) {
+    if (input === '0') return returnToConfirmation(context);
+    if (/^[1-5]$/.test(input)) clearOnboardingFlags(sender, chatId);
+    return false;
+  }
+
+  if (session?.currentMenu === ONBOARDING_MENU) {
     return handleOnboardingReply(context, session);
   }
+
+  // Root-cause guard: a user who has no language but is already inside a
+  // language flow must not be sent the confirmation prompt again. Without this,
+  // picking 1-5 from the 5-language menu restarted onboarding, so the chosen
+  // language was never applied. Keyed on currentMenu only -- a stale
+  // isLanguageSelectionPending flag must never be able to block onboarding.
+  if (IN_LANGUAGE_FLOW.has(session?.currentMenu)) return false;
 
   // First-ever message from a user who has no language yet.
   if (!user?.language) {

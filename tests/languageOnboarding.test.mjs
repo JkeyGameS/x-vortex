@@ -368,6 +368,118 @@ try {
     check('option 5 handler exists', typeof botNotificationCustomHandlers.botnotifs_new_user === 'function');
     check('option 6 handler exists', typeof botNotificationCustomHandlers.botnotifs_onboarding_complete === 'function');
   }
+  // -------------------------------------------------------------------------
+  // Stage routing: the 5-language menu must not bounce back to the confirmation
+  // prompt. These mirror index.js: the gate runs first, then the pre-existing
+  // 'language_selection' branch handles 1-5.
+  // -------------------------------------------------------------------------
+  const { handleLanguageSelection } = await import('../src/handlers/languageCommand.js');
+  async function message(sock, jid, text) {
+    const session = sessionManager.getSession(jid, jid) || {};
+    const consumed = await onboard.handleLanguageOnboardingGate(newContext(sock, jid, text), session, await getUserByJid(jid));
+    if (consumed) return 'gate';
+    if (session.currentMenu === 'language_selection' && /^[1-5]$/.test(text)) {
+      await handleLanguageSelection({ sock, sender: jid, chatId: jid, pushName: 'Tester' }, text);
+      return 'language_selection';
+    }
+    return 'fallthrough';
+  }
+
+  // Drive a brand-new user from the greeting to the 5-language menu.
+  async function startAtChooser(sock, jid) {
+    await message(sock, jid, 'hello');
+    await message(sock, jid, '2');
+    return sessionManager.getSession(jid, jid)?.currentMenu === 'language_selection';
+  }
+
+  // Each number 1-5 from the chooser must apply that language.
+  for (const [digit, expected] of [['1', 'en'], ['2', 'fr'], ['3', 'de'], ['4', 'es'], ['5', 'ar']]) {
+    const jid = '9000000000001' + expected + '0@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    const reached = await startAtChooser(sock, jid);
+    check('chooser: ' + digit + ' reached the 5-language menu', reached, sessionManager.getSession(jid, jid)?.currentMenu);
+    sock.sent.length = 0;
+    const route = await message(sock, jid, digit);
+    check('chooser: ' + digit + ' routed to language_selection', route === 'language_selection', route);
+    check('chooser: ' + digit + ' sets ' + expected, (await getUserByJid(jid))?.language === expected, (await getUserByJid(jid))?.language);
+    const out = toUser(sock).map((m) => m.text).join('\n');
+    check('chooser: ' + digit + ' did not re-show the confirmation', !dec(out).includes('detected your device language'), out.slice(0, 140));
+    check('chooser: ' + digit + ' cleared the onboarding session', sessionManager.getSession(jid, jid)?.onboardingStage === null, String(sessionManager.getSession(jid, jid)?.onboardingStage));
+  }
+
+  // "0" on the chooser returns to the confirmation prompt.
+  {
+    const jid = '900000000000150@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await startAtChooser(sock, jid);
+    sock.sent.length = 0;
+    const route = await message(sock, jid, '0');
+    const out = toUser(sock).map((m) => m.text).join('\n');
+    check('chooser: "0" returns to the confirmation', route === 'gate' && dec(out).includes('detected your device language'), out.slice(0, 140));
+    check('chooser: "0" restores the confirm stage', sessionManager.getSession(jid, jid)?.onboardingStage === 'confirm_detected', String(sessionManager.getSession(jid, jid)?.onboardingStage));
+  }
+
+  // "9" on the chooser falls through so the existing help interception runs.
+  {
+    const jid = '900000000000151@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await startAtChooser(sock, jid);
+    const route = await message(sock, jid, '9');
+    check('chooser: "9" falls through for help handling', route === 'fallthrough', route);
+  }
+
+  // Stage transitions on the confirmation prompt.
+  {
+    const jid = '900000000000152@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await message(sock, jid, 'hello');
+    check('stage: confirm_detected on the greeting', sessionManager.getSession(jid, jid)?.onboardingStage === 'confirm_detected', String(sessionManager.getSession(jid, jid)?.onboardingStage));
+    await message(sock, jid, '???');
+    check('stage: awaiting_retry after an unclear reply', sessionManager.getSession(jid, jid)?.onboardingStage === 'awaiting_retry', String(sessionManager.getSession(jid, jid)?.onboardingStage));
+    for (const bad of ['zzz', 'abc']) await message(sock, jid, bad);
+    check('stage: locked after three unclear replies', sessionManager.getSession(jid, jid)?.onboardingStage === 'locked', String(sessionManager.getSession(jid, jid)?.onboardingStage));
+  }
+
+  // Short yes/no synonyms behave like the full words.
+  {
+    const jid = '900000000000153@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await message(sock, jid, 'hi');
+    await message(sock, jid, 'y');
+    check('"y" is accepted as yes', (await getUserByJid(jid))?.language === 'en', (await getUserByJid(jid))?.language);
+  }
+  {
+    const jid = '900000000000154@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await message(sock, jid, 'hi');
+    await message(sock, jid, 'n');
+    check('"n" opens the 5-language menu', sessionManager.getSession(jid, jid)?.currentMenu === 'language_selection');
+  }
+  {
+    const jid = '900000000000155@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await message(sock, jid, 'hi');
+    await message(sock, jid, '0');
+    check('"0" on the confirmation opens the 5-language menu', sessionManager.getSession(jid, jid)?.currentMenu === 'language_selection');
+  }
+
+  // A user already inside a language flow must not be re-onboarded.
+  {
+    const jid = '900000000000156@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    sessionManager.setState(jid, jid, { currentMenu: 'language_selection', isLanguageSelectionPending: true });
+    const route = await message(sock, jid, '3');
+    check('gate defers while the chooser is open', route === 'language_selection', route);
+    check('no duplicate confirmation was sent', !toUser(sock).some((m) => dec(m.text).includes('detected your device language')));
+  }
 } finally {
   restoreData();
 }
