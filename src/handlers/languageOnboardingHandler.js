@@ -56,6 +56,12 @@ const DEVICE_LANGUAGE_NAMES = {
 
 // Set from connection.update (node.userAgent.localeLanguageIso6391). Baileys only
 // sends it on connect, so the last value is kept for the lifetime of the process.
+//
+// Caveat: the installed Baileys hardcodes localeLanguageIso6391 to 'en' in its
+// getUserAgent() and describes the bot's own client, so this is usually absent or
+// uninformative. Callers may pass an explicit deviceLocale instead. When nothing
+// is known, detection falls back to the default language, which still yields the
+// full confirmation flow.
 let lastDeviceLocale = null;
 let lastDevicePlatform = null;
 

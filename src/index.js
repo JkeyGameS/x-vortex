@@ -440,6 +440,24 @@ async function startBot() {
   sock.ev.on('connection.update', async (update) => {
     const { connection, lastDisconnect, qr } = update;
 
+    // Device locale/platform for first-time language onboarding.
+    // NOTE: with this Baileys version connection.update never carries
+    // node.userAgent (the 'open' event is emitted with only { connection }), and
+    // the value Baileys does send is a hardcoded 'en' from its own getUserAgent()
+    // for the *bot's* client, not the contacting user's device. This hook is kept
+    // so a real value is used if a future version ever surfaces one; until then
+    // detection falls back to the default language.
+    if (update?.node?.userAgent) {
+      const { recordDeviceLocale, recordDevicePlatform, getDeviceLocale, getDevicePlatform } =
+        await import('./handlers/languageOnboardingHandler.js');
+      const ua = update.node.userAgent;
+      if (ua.localeLanguageIso6391 || ua.os) {
+        recordDeviceLocale(ua.localeLanguageIso6391);
+        recordDevicePlatform(ua.platform, ua.os);
+        logger.info({ locale: getDeviceLocale(), platform: getDevicePlatform() }, '[ONBOARD] device info captured');
+      }
+    }
+
     if (qr) {
       qrcode.generate(qr, { small: true });
     }
@@ -452,17 +470,6 @@ async function startBot() {
       }
     } else if (connection === 'open') {
       logger.info('Bot connected successfully');
-      // Device locale/platform for first-time language onboarding. Baileys only
-      // sends node.userAgent on connect, so it is captured here for later use.
-      {
-        const ua = update?.node?.userAgent;
-        if (ua?.localeLanguageIso6391 || ua?.os) {
-          const onboard = await import('./handlers/languageOnboardingHandler.js');
-          onboard.recordDeviceLocale(ua.localeLanguageIso6391);
-          onboard.recordDevicePlatform(ua.platform, ua.os);
-          logger.info({ locale: onboard.getDeviceLocale(), platform: onboard.getDevicePlatform() }, '[ONBOARD] device info captured');
-        }
-      }
       // Lifecycle: detect a previous unclean stop BEFORE marking this boot,
       // otherwise markStartup() overwrites lastStartedAt and every fresh
       // start would look like a crash.
