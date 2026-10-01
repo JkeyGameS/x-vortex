@@ -1,26 +1,43 @@
 <p align="center">
-  <img src="docs/assets/x-vortex-bot.png" width="150" alt="X Vortex">
-</p>
-<h1 align="center">X VORTEX</h1>
-<p align="center">
-  <strong>The AI operating layer for modern businesses.</strong><br>
-  <sub>Understand customers. Automate conversations. Take action.</sub>
-</p>
-<p align="center">
-  <img src="https://img.shields.io/badge/Coming%20Soon-00D9FF?style=flat-square">
-  <img src="https://img.shields.io/badge/AI%20Agent-7C3AED?style=flat-square">
-  <img src="https://img.shields.io/badge/WhatsApp-25D366?style=flat-square&logo=whatsapp&logoColor=white">
+  <img src="docs/assets/x-vortex-bot.png" width="180" alt="X Vortex AI Agent">
 </p>
 
-🌌 What is X Vortex?
-X Vortex is an AI business agent designed to understand your business, communicate with customers, and automate everyday tasks.
+<h1 align="center">⚡ X VORTEX</h1>
+
+<p align="center">
+  <strong>The AI Operating Layer for Modern Businesses.</strong><br>
+  <sub>Understand customers. Automate conversations. Take action.</sub>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/COMING_SOON-00D9FF?style=for-the-badge&labelColor=050510">
+  <img src="https://img.shields.io/badge/AI_AGENT-7C3AED?style=for-the-badge&labelColor=050510">
+  <img src="https://img.shields.io/badge/WHATSAPP-25D366?style=for-the-badge&logo=whatsapp&logoColor=white&labelColor=050510">
+</p>
+
+<br>
+
+<p align="center">
+  <em>One intelligent layer between your business, your customers, and your operations.</em>
+</p>
+
+---
+
+## 🌌 What is X Vortex?
+
+**X Vortex** is an AI business agent that understands your business, communicates with customers, and turns conversations into real actions.
+
 ```text
-💬 Conversation
-      ↓
-🧠 Knowledge
-      ↓
-🤖 Intelligence
-      ↓
-⚡ Action
-      ↓
-🚀 Automation
+        💬 CONVERSATION
+               │
+               ▼
+        🧠 KNOWLEDGE
+               │
+               ▼
+        🤖 INTELLIGENCE
+               │
+               ▼
+          ⚡ ACTION
+               │
+               ▼
+        🚀 AUTOMATION
