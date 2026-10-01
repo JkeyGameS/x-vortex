@@ -1,4 +1,4 @@
-div align="center">
+<div align="center">
   <img src="docs/assets/IMG_1665.png" width="180" alt="X Vortex AI Agent" />
 </div>
 
