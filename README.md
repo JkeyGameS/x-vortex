@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/x-vortex-bot.png" width="180" alt="X Vortex AI Agent">
+  <img src="docs/assets/IMG_1665.png" width="180" alt="X Vortex AI Agent">
 </p>
 
 <h1 align="center">⚡ X VORTEX</h1>
