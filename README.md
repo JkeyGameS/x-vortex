@@ -47,3 +47,111 @@ Not a chatbot. Not a dashboard. An **operating layer** — reasoning over your k
 CONVERSATION   ───▶   KNOWLEDGE   ───▶   INTELLIGENCE   ───▶   ACTION
    ▲                                                              │
    └────────────────────  FEEDBACK LOOP  ◀───────────────────────┘
+ 
+</p>
+ 
+ 
+🧩 Core Capabilities
+ 
+<table>
+<tr>
+<td width="50%" valign="top">
+
+ 
+🧠 Business Intelligence
+ 
+Ingests your catalog, policies, docs, and tone of voice — then answers like your best employee.
+• Vector knowledge base
+• Brand voice tuning
+• Context-aware memory 
+</td>
+<td width="50%" valign="top">
+
+ 
+💬 Conversation Engine
+ 
+Natural, multi-turn dialogue across channels — always on, always on-brand.
+• WhatsApp-native
+• Multilingual by default
+• Human handoff built in 
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+ 
+⚡ Action Layer
+ 
+Turns intent into execution — orders, bookings, tickets, follow-ups, CRM writes.
+• Tool & API calling
+• Workflow automation
+• Event triggers 
+</td>
+<td width="50%" valign="top">
+
+ 
+📊 Insight Loop
+ 
+Every conversation becomes signal. Every signal sharpens the agent.
+• Live analytics
+• Intent clustering
+• Continuous learning 
+</td>
+</tr>
+</table>
+ 
+ 
+🏗️ Architecture
+┌──────────────────────────────────────────────────────────────┐
+│                        X  V O R T E X                        │
+├──────────────────────────────────────────────────────────────┤
+│                                                              │
+│   ┌──────────┐    ┌──────────┐    ┌──────────┐               │
+│   │ Channels │───▶│  Agent   │───▶│  Tools   │               │
+│   │ WhatsApp │    │  Core    │    │  & APIs  │               │
+│   │ Web · IG │◀───│  (LLM)   │◀───│          │               │
+│   └──────────┘    └────┬─────┘    └──────────┘               │
+│                        │                                     │
+│                   ┌────▼─────┐                               │
+│                   │  Memory  │                               │
+│                   │  + RAG   │                               │
+│                   └────┬─────┘                               │
+│                        │                                     │
+│                   ┌────▼─────┐                               │
+│                   │ Business │                               │
+│                   │  Brain   │                               │
+│                   └──────────┘                               │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+ 
+ 
+🚀 Roadmap
+Phase Milestone Status
+01 Agent Core + WhatsApp Channel 🟡 In Progress
+02 Business Brain (RAG + Memory) ⚪ Planned
+03 Action Layer (Tools & Workflows) ⚪ Planned
+04 Multi-channel Expansion ⚪ Planned
+05 Analytics & Insight Loop ⚪ Planned
+
+ 
+ 
+🎨 Design PrinciplesInvisible intelligence. The best AI doesn't announce itself — it just works.‌
+• Business-first — built around outcomes, not features.
+• Human-grade — conversations that feel like people, not prompts.
+• Composable — plug into any stack, any workflow, any scale.
+• Private by default — your data stays yours. 
+ 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:00D9FF,50:7C3AED,100:050510&height=120&section=footer" width="100%">
+</p>
+
+ 
+<p align="center">
+  <strong>X VORTEX</strong><br>
+  <sub>Understand. Automate. Act.</sub>
+</p>
+
+ 
+<p align="center">
+  <img src="https://img.shields.io/badge/©_2025-X_VORTEX-050510?style=for-the-badge&labelColor=00D9FF">
+</p>
