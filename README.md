@@ -1,127 +1,84 @@
 # ⚡ X Vortex
 <p align="center">
-  <img src="docs/assets/x-vortex-bot.png" width="150" alt="X Vortex AI Agent">
+  <img src="docs/assets/x-vortex-bot.png" width="150" alt="X Vortex">
 </p>
 <h1 align="center">X VORTEX</h1>
 <p align="center">
   <strong>The AI operating layer for modern businesses.</strong><br>
-  <sub>Understand. Act. Automate.</sub>
+  <sub>Understand customers. Automate conversations. Take action.</sub>
 </p>
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-Coming%20Soon-00D9FF?style=for-the-badge">
-  <img src="https://img.shields.io/badge/AI%20Agent-7C3AED?style=for-the-badge">
-  <img src="https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white">
-</p>
-<p align="center">
-  <img src="docs/assets/x-vortex-hero.png" width="900" alt="X Vortex">
+  <img src="https://img.shields.io/badge/Coming%20Soon-00D9FF?style=flat-square">
+  <img src="https://img.shields.io/badge/AI%20Agent-7C3AED?style=flat-square">
+  <img src="https://img.shields.io/badge/WhatsApp-25D366?style=flat-square&logo=whatsapp&logoColor=white">
 </p>
 ---
-## 🌌 One Agent. Infinite Possibilities.
-X Vortex is an AI business agent designed to understand customers, learn business knowledge, use tools, and automate workflows.
+## 🌌 What is X Vortex?
+X Vortex is an AI business agent designed to understand your business, communicate with customers, and automate everyday tasks.
 ```text
 💬 Conversation
-       ↓
-🧠 Understanding
-       ↓
-📚 Knowledge
-       ↓
-🤖 Reasoning
-       ↓
-🔧 Action
-       ↓
-⚡ Automation
-       ↓
-📈 Business Outcome
+      ↓
+🧠 Knowledge
+      ↓
+🤖 Intelligence
+      ↓
+⚡ Action
+      ↓
+🚀 Automation
 
 ⸻
 
-✨ What It Does
+✨ Built to Do More
 
-🧠 Knowledge	🤖 AI	⚡ Automation
-Business data	Context	Workflows
-Products	Memory	Triggers
-Documents	Reasoning	Follow-ups
-💬 Communication	🔧 Tools	📊 Insights
-WhatsApp	APIs	Analytics
-Web chat	CRM	Metrics
-Messaging	Database	Monitoring
+🧠 Understand
+Learn products, services, policies, and business knowledge.
+
+💬 Communicate
+Connect with customers through WhatsApp and other channels.
+
+🔧 Act
+Use tools, APIs, databases, and business systems.
+
+⚡ Automate
+Turn conversations into workflows and real business actions.
 
 ⸻
 
-🧬 Architecture
+🧬 How It Works
 
-             👤 CUSTOMER
+             👤 Customer
                   │
                   ▼
-          ┌───────────────┐
-          │ WhatsApp / Web│
-          └───────┬───────┘
-                  │
-                  ▼
-        ╔═══════════════════╗
-        ║   🤖 X VORTEX     ║
+        ┌──────────────────┐
+        │ WhatsApp / Web   │
+        └────────┬─────────┘
+                 ▼
+        ╔══════════════════╗
+        ║   🤖 X VORTEX    ║
         ║     AI AGENT      ║
-        ╚═════════╤═════════╝
-                  │
-        ┌─────────┼─────────┐
-        ▼         ▼         ▼
-     🧠 Knowledge 🔧 Tools ⚡ Workflows
-        │         │         │
-        └─────────┼─────────┘
-                  ▼
-           📈 BUSINESS
-             OUTCOME
-
-⸻
-
-🔥 From Chat → Action
-
-MESSAGE
-   ↓
-UNDERSTAND
-   ↓
-REASON
-   ↓
-DECIDE
-   ↓
-ACT
-   ↓
-AUTOMATE
-
-A customer doesn’t just receive an answer.
-
-The conversation can become an operation.
-
-⸻
-
-🌀 The Vortex
-
-        ✦        ·       ✧
-           ╲     │     ╱
-        ────── 🌀 ──────
-           ╱     │     ╲
-        ✧        ·       ✦
-              🤖
-             VORTEX
-
-X Vortex connects:
-
-People → Conversations → Knowledge → Tools → Automation
+        ╚════════╤═════════╝
+                 │
+        ┌────────┼────────┐
+        ▼        ▼        ▼
+     🧠 Knowledge  🔧 Tools  ⚡ Automation
+        └────────┼────────┘
+                 ▼
+          🚀 Business Outcome
 
 ⸻
 
 🗺️ Roadmap
 
-Foundation    ████████████████████ ✓
-AI Agent      ████████████░░░░░░░░ ◐
-WhatsApp      ████████░░░░░░░░░░░░ ◐
-Automation    █████░░░░░░░░░░░░░░░ ○
-Dashboard     ██░░░░░░░░░░░░░░░░░░ ○
-Launch        ░░░░░░░░░░░░░░░░░░░░ ○
+Foundation   ████████████████████ ✓
+AI Agent     ████████████░░░░░░░░ ◐
+WhatsApp     ████████░░░░░░░░░░░░ ◐
+Automation   █████░░░░░░░░░░░░░░░ ○
+Dashboard    ██░░░░░░░░░░░░░░░░░░ ○
+Launch       ░░░░░░░░░░░░░░░░░░░░ ○
 
 ⸻
 
-🛠️ Quick Start
+🛠️ Development
 
 git clone https://github.com/YOUR_USERNAME/X-Vortex.git
 cd X-Vortex
@@ -137,11 +94,9 @@ WEBHOOK_VERIFY_TOKEN=
 
 ⸻
 
-🌌 Vision
+🔮 The Vision
 
-Don’t build another chatbot.
-
-Build an AI agent that understands the business behind the conversation.
+Don’t build another chatbot. Build an AI agent that understands the business behind the conversation.
 
 CONVERSATION
       ↓
@@ -150,13 +105,10 @@ KNOWLEDGE
 ACTION
       ↓
 AUTOMATION
-      ↓
-🚀 INTELLIGENT BUSINESS
 <p align="center">
-  <img src="docs/assets/x-vortex-bot.png" width="90" alt="X Vortex">
+  <img src="docs/assets/x-vortex-bot.png" width="80" alt="X Vortex">
 </p>
-<h3 align="center">⚡ X VORTEX</h3>
 <p align="center">
-  <strong>Understand. Act. Automate.</strong><br>
-  <sub>🚀 Coming soon.</sub>
+  <strong>⚡ X VORTEX</strong><br>
+  <sub>Understand. Act. Automate.</sub>
 </p>
