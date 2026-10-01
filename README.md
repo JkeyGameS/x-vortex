@@ -30,7 +30,6 @@
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:050510,50:7C3AED,100:00D9FF&height=120&section=header&text=&fontSize=0" width="100%">
 </p>
 
----
 
 ## 🌌 What is X Vortex?
 
@@ -40,16 +39,6 @@ Not a chatbot. Not a dashboard. An **operating layer** — reasoning over your k
 
 <br>
 
-<p align="center">
-
-```text
-   💬                    🧠                    🤖                    ⚡
-CONVERSATION   ───▶   KNOWLEDGE   ───▶   INTELLIGENCE   ───▶   ACTION
-   ▲                                                              │
-   └────────────────────  FEEDBACK LOOP  ◀───────────────────────┘
- 
-</p>
- 
  
 🧩 Core Capabilities
  
