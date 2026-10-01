@@ -7,6 +7,7 @@ import { sendText } from './services/messageService.js';
 import { toSmallCaps } from './utils/smallCaps.js';
 import { t } from './services/localeService.js';
 import { loadCommands } from './handlers/commandHandler.js';
+import { startHealthServer, stopHealthServer } from './healthServer.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
 import {
@@ -383,6 +384,17 @@ let lifecycleSock = null;
 
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState(config.sessionPath);
+
+  // PaaS liveness probe. Started before the socket so the platform sees a
+  // healthy process even while WhatsApp is still handshaking. A bind failure is
+  // logged and ignored -- it must never stop the bot.
+  startHealthServer();
+
+  // Release the probe port on shutdown. Deliberately does not call process.exit:
+  // lifecycleService owns the graceful-shutdown path.
+  const closeHealth = () => { stopHealthServer(); };
+  process.once('SIGINT', closeHealth);
+  process.once('SIGTERM', closeHealth);
 
   const sock = makeWASocket({
     auth: state,

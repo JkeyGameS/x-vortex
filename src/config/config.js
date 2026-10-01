@@ -1,10 +1,22 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
+// Deployment knobs. Everything here can be supplied by the PaaS environment;
+// the fallbacks are the values this project has always shipped with, so a local
+// run with no .env behaves exactly as before.
+const envList = (raw, fallback) => {
+  const value = (raw ?? '').trim();
+  const list = value ? value.split(',').map((s) => s.trim()).filter(Boolean) : [];
+  // Never silently end up with zero admins: an empty ADMIN_JIDS would disable
+  // admin commands and every admin notification.
+  return list.length ? list : fallback;
+};
+
 const config = {
-  botName: 'X‑Vortex',
+  botName: process.env.BOT_NAME || 'X‑Vortex',
   botVersion: '1.0.0',
   LATEST_VERSION: '1.1.0',
+  logLevel: process.env.LOG_LEVEL || 'info',
   changelog: [
     'info.change1',
     'info.change2',
@@ -16,13 +28,13 @@ const config = {
     github: '...' //https://github.com/x-vortex
   },
   website: '...', //https://x-vortex.bot
-  prefix: '/',
-  sessionPath: './session',
+  prefix: process.env.PREFIX || '/',
+  sessionPath: process.env.SESSION_PATH || './session',
   defaultLanguage: 'en',
   supportedLanguages: ['en', 'fr', 'de', 'es', 'ar'],
 sessionTimeoutMinutes: 5,
   testUserCleanupIntervalMs: 3600000, // default: every hour
-  adminJids: ['127531067904055@lid'], // e.g., ['123456789@lid']
+  adminJids: envList(process.env.ADMIN_JIDS, ['127531067904055@lid']), // e.g. ['123456789@lid']
   ownerJid: null, // bot owner JID; defaults to the first adminJid when null
   reportEnabled: true,
   reportMinIntervalMs: 60000, // minimum delay between two immediate reports of same type

@@ -1,7 +1,10 @@
 import pino from 'pino';
+import config from '../config/config.js';
 
 const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
+  // Single source of truth: config.logLevel already reads LOG_LEVEL with an
+  // 'info' fallback.
+  level: config.logLevel,
   transport: {
     target: 'pino-pretty',
     options: { colorize: true }
