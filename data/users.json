@@ -1135,5 +1135,93 @@
       "lastCommandTime": null,
       "points": 0
     }
+  },
+  "1790847467002-v5mb43@lid": {
+    "jid": "1790847467002-v5mb43@lid",
+    "name": "VelvetCircuit",
+    "isTest": true,
+    "username": "test_v5mb43",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-10-01T09:37:47.002Z",
+    "lastUpdated": "2026-10-01T09:38:55.173Z",
+    "lastActive": "2026-10-01T09:37:47.002Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 8,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
+  },
+  "1790849396425-raep7t@lid": {
+    "jid": "1790849396425-raep7t@lid",
+    "name": "QuietPixel",
+    "isTest": true,
+    "username": "test_raep7t",
+    "bio": "",
+    "language": "en",
+    "timezone": "UTC",
+    "joined": "2026-10-01T10:09:56.425Z",
+    "lastUpdated": "2026-10-01T10:11:00.272Z",
+    "lastActive": "2026-10-01T10:09:56.426Z",
+    "accountType": "free",
+    "level": 1,
+    "rank": null,
+    "profileCompleteness": 0,
+    "notifyRequests": {},
+    "chatReplyHistory": {},
+    "preferences": {
+      "notifications": true,
+      "theme": "dark",
+      "announcements": true,
+      "replyStyle": "formal",
+      "privacy": "contacts",
+      "tutorialProgress": {
+        "gettingStarted": false,
+        "usefulCommands": false,
+        "profileGuide": false,
+        "settingsPrefs": false,
+        "selfDestruct": false,
+        "feedback": false,
+        "quickTips": false,
+        "whatNew": false
+      }
+    },
+    "stats": {
+      "messagesSent": 6,
+      "commandsUsed": 0,
+      "recentCommandTimestamps": [],
+      "commandCounts": {},
+      "lastCommand": null,
+      "lastCommandTime": null,
+      "points": 0
+    }
   }
 }
