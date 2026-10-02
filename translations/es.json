@@ -2953,7 +2953,8 @@
       "resultOn": "notificaciones del bot activadas.",
       "resultOff": "notificaciones del bot desactivadas.",
       "onNewUser": "nuevo usuario",
-      "onOnboardingComplete": "fin de configuración"
+      "onOnboardingComplete": "fin de configuración",
+      "on_code_change": "Al cambiar el código"
     },
     "message_display": {
       "heading": "visualizacion de mensajes",

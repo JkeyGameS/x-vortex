@@ -396,7 +396,8 @@ const BOT_NOTIF_KEYS = {
   onShutdown: 'botNotifyOnShutdown',
   onCrash: 'botNotifyOnCrash',
   onNewUser: 'botNotifyOnNewUser',
-  onOnboardingComplete: 'botNotifyOnOnboardingComplete'
+  onOnboardingComplete: 'botNotifyOnOnboardingComplete',
+  onCodeChange: 'botNotifyOnCodeChange'
 };
 
 function readBotNotifSettings() {
@@ -444,6 +445,7 @@ export const botNotificationCustomHandlers = {
   botnotifs_crash: (context) => toggleBotNotifications(context, 'onCrash'),
   botnotifs_new_user: (context) => toggleBotNotifications(context, 'onNewUser'),
   botnotifs_onboarding_complete: (context) => toggleBotNotifications(context, 'onOnboardingComplete'),
+  toggle_code_change_notifs: (context) => toggleBotNotifications(context, 'onCodeChange'),
   sys_bot_notifications: async (context) => {
     const { sendMenuById } = await import('./menuSender.js');
     const chatId = context.chatId || context.sender;

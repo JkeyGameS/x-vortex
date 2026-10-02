@@ -515,6 +515,23 @@ async function startBot() {
           }
         }, 3000);
       }
+
+      // Dev-change notifications: report entries newer than the last one shown
+      // to admins. Separate guard and delay from the lifecycle block above so a
+      // reconnect cannot fire it twice, and delayed so it lands after the
+      // startup/crash notices rather than interleaving with them.
+      if (!global.__devChangesNotified) {
+        global.__devChangesNotified = true;
+        setTimeout(async () => {
+          try {
+            const { notifyPendingDevChanges } = await import('./services/devChangeNotifier.js');
+            await notifyPendingDevChanges(sock);
+          } catch (err) {
+            // A failed notification must never stop the bot from running.
+            logger.error({ err }, '[DEV_CHANGES] startup notification failed');
+          }
+        }, 5000);
+      }
     }
   });
 

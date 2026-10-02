@@ -15,12 +15,13 @@ export const BOT_NOTIFY_KEYS = {
   onShutdown: 'botNotifyOnShutdown',
   onCrash: 'botNotifyOnCrash',
   onNewUser: 'botNotifyOnNewUser',
-  onOnboardingComplete: 'botNotifyOnOnboardingComplete'
+  onOnboardingComplete: 'botNotifyOnOnboardingComplete',
+  onCodeChange: 'botNotifyOnCodeChange'
 };
 
 // Per-event toggles, in menu order. `toggleAll` is the master switch and is
 // intentionally absent.
-export const BOT_NOTIFY_EVENTS = ['onStartup', 'onShutdown', 'onCrash', 'onNewUser', 'onOnboardingComplete'];
+export const BOT_NOTIFY_EVENTS = ['onStartup', 'onShutdown', 'onCrash', 'onNewUser', 'onOnboardingComplete', 'onCodeChange'];
 
 /** Current value of every toggle, with the master switch applied. */
 export function readBotNotifyToggles() {

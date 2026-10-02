@@ -2953,7 +2953,8 @@
       "resultOn": "تم تفعيل إشعارات البوت.",
       "resultOff": "تم تعطيل إشعارات البوت.",
       "onNewUser": "مستخدم جديد",
-      "onOnboardingComplete": "إتمام الإعداد"
+      "onOnboardingComplete": "إتمام الإعداد",
+      "on_code_change": "عند تغيير الكود"
     },
     "message_display": {
       "heading": "عرض الرسائل",

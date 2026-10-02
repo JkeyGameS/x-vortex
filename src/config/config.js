@@ -153,6 +153,7 @@ sessionTimeoutMinutes: 5,
     // the intended default is on.
     onNewUser: true, // notify admins when a new user appears
     onOnboardingComplete: true, // notify admins when a user finishes language onboarding
+    onCodeChange: true, // notify admins when dev-changes.json gains new entries
     crashDetectionWindowMs: 300000, // 5 min — a newer-than-this unclean stop counts as a crash
     crashSpamWindowMs: 600000, // 10 min — sliding window for the spam threshold
     crashSpamThreshold: 3, // >= this many crashes in the window -> send the summary instead

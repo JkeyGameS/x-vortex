@@ -11,6 +11,9 @@ auth/
 data/*
 !data/changelog.json
 
+# Environment-specific notification bookkeeping (never shared between hosts)
+data/lastNotifiedChangeId.json
+
 # Environment
 .env
 .env.local

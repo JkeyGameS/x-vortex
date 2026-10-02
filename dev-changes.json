@@ -1,6 +1,40 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-02T06:20:00",
+      "timestamp": "2026-10-02T06:20:00Z",
+      "agent": "Cline",
+      "promptSummary": "Dev Change Reader (Prompt 2)",
+      "changes": [
+        "Added dev-changes service with pending detection",
+        "Added dev-change formatter for single and aggregated notices",
+        "Added startup notification with toggle and guard",
+        "Added on code change toggle to bot notifications",
+        "Added dev change reader tests"
+      ],
+      "files": [
+        "src/services/devChangesService.js",
+        "src/services/devChangeNotifier.js",
+        "src/utils/devChangeFormatter.js",
+        "src/config/notificationToggles.js",
+        "src/config/config.js",
+        "src/config/menus/admin/botNotifications.js",
+        "src/utils/menuResolvers.js",
+        "src/utils/menuCustomHandlers.js",
+        "src/index.js",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json",
+        "tests/devChanges.test.mjs",
+        "package.json",
+        ".gitignore"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.2.0"
+    },
+    {
       "id": "chg-2026-10-01T18-40-00",
       "timestamp": "2026-10-01T18:40:00Z",
       "agent": "Cline",

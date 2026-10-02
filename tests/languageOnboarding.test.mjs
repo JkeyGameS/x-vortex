@@ -358,7 +358,7 @@ try {
     await import('../src/config/menus/index.js');
     const menu = getMenu('bot_notifications');
     const numbers = menu.options.map((o) => String(o.number));
-    check('bot_notifications has six options', numbers.join(',') === '1,2,3,4,5,6', numbers.join(','));
+    check('bot_notifications has seven options', numbers.join(',') === '1,2,3,4,5,6,7', numbers.join(','));
     check('option 5 is onNewUser', menu.options[4]?.labelKey === 'menu.bot_notifications.onNewUser', menu.options[4]?.labelKey);
     check('option 6 is onOnboardingComplete', menu.options[5]?.labelKey === 'menu.bot_notifications.onOnboardingComplete', menu.options[5]?.labelKey);
     const { dynamicSuffixResolvers } = await import('../src/utils/menuResolvers.js');

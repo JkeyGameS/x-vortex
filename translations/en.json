@@ -2978,7 +2978,8 @@
       "resultOn": "bot notifications turned on.",
       "resultOff": "bot notifications turned off.",
       "onNewUser": "on new user",
-      "onOnboardingComplete": "on onboarding complete"
+      "onOnboardingComplete": "on onboarding complete",
+      "on_code_change": "On Code Change"
     },
     "message_display": {
       "heading": "message display",

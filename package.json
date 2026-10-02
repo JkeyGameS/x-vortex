@@ -14,7 +14,8 @@
     "test:languageOnboarding": "node tests/languageOnboarding.test.mjs",
     "test:healthServer": "node tests/healthServer.test.mjs",
     "test:changelog": "node tests/changelog.test.mjs",
-    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs && node tests/healthServer.test.mjs && node tests/changelog.test.mjs",
+    "test:devChanges": "node tests/devChanges.test.mjs",
+    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs && node tests/healthServer.test.mjs && node tests/changelog.test.mjs && node tests/devChanges.test.mjs",
     "audit:menus": "node src/scripts/auditMenus.js"
   },
   "keywords": [],

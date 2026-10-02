@@ -35,7 +35,8 @@ export const dynamicSuffixResolvers = {
   botNotifs_onShutdownState: (user, language) => botNotifsSuffix('onShutdown', language),
   botNotifs_onCrashState: (user, language) => botNotifsSuffix('onCrash', language),
   botNotifs_onNewUserState: (user, language) => botNotifsSuffix('onNewUser', language),
-  botNotifs_onOnboardingCompleteState: (user, language) => botNotifsSuffix('onOnboardingComplete', language)
+  botNotifs_onOnboardingCompleteState: (user, language) => botNotifsSuffix('onOnboardingComplete', language),
+  codeChangeState: (user, language) => botNotifsSuffix('onCodeChange', language)
 };
 
 /**
