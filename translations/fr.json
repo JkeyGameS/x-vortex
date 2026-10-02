@@ -40,7 +40,17 @@
     "langCooldownTitle": "Revenez plus tard",
     "langCooldownBody": "Vous avez envoyé trop de réponses incompréhensibles.\nJe serai à nouveau disponible dans *{minutes}* minutes.",
     "langWelcomeBackTitle": "Content de vous revoir !",
-    "langWelcomeBackBody": "Réessayons."
+    "langWelcomeBackBody": "Réessayons.",
+    "langDetectedLine": "J'ai détecté que la langue de votre appareil est {language}.",
+    "langLanguagesAvailable": "Langues disponibles",
+    "langNotSupportedHint": "Langue non prise en charge ? Répondez 2 pour en choisir une autre.",
+    "langReplyHint": "Répondez avec un numéro, ou tapez oui / non.",
+    "langGreetingMorning": "Bonjour",
+    "langGreetingAfternoon": "Bon après-midi",
+    "langGreetingEvening": "Bonsoir",
+    "langGreetingHey": "Salut",
+    "langGreetingHello": "Bonjour !",
+    "langDetectYesShort": "Oui, utiliser"
   },
   "info": {
     "cmd": "commandes",

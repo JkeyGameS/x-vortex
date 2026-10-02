@@ -40,7 +40,17 @@
     "langCooldownTitle": "الرجاء العودة لاحقًا",
     "langCooldownBody": "لقد أرسلت ردودًا غير واضحة كثيرة.\nسأكون هنا مرة أخرى خلال *{minutes}* دقائق.",
     "langWelcomeBackTitle": "مرحبًا بعودتك!",
-    "langWelcomeBackBody": "لنحاول مرة أخرى."
+    "langWelcomeBackBody": "لنحاول مرة أخرى.",
+    "langDetectedLine": "اكتشفت أن لغة جهازك هي {language}.",
+    "langLanguagesAvailable": "اللغات المتاحة",
+    "langNotSupportedHint": "اللغة غير مدعومة؟ أرسل 2 لاختيار لغة أخرى.",
+    "langReplyHint": "أجب برقم، أو اكتب نعم / لا.",
+    "langGreetingMorning": "صباح الخير",
+    "langGreetingAfternoon": "مساء الخير",
+    "langGreetingEvening": "مساء الخير",
+    "langGreetingHey": "أهلا",
+    "langGreetingHello": "مرحبًا!",
+    "langDetectYesShort": "نعم، استخدم"
   },
   "info": {
     "cmd": "الأوامر",

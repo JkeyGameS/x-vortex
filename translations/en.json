@@ -62,7 +62,17 @@
       "unsupported": "unsupported",
       "footer": "x-vortex notifications",
       "attempts": "attempts"
-    }
+    },
+    "langDetectedLine": "I detected your device language is {language}.",
+    "langLanguagesAvailable": "Languages available",
+    "langNotSupportedHint": "Language not supported? Reply 2 to pick another.",
+    "langReplyHint": "Reply with a number, or type yes / no.",
+    "langGreetingMorning": "Good morning",
+    "langGreetingAfternoon": "Good afternoon",
+    "langGreetingEvening": "Good evening",
+    "langGreetingHey": "Hey",
+    "langGreetingHello": "Hello!",
+    "langDetectYesShort": "Yes, use"
   },
   "info": {
     "cmd": "Commands",

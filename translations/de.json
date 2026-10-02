@@ -40,7 +40,17 @@
     "langCooldownTitle": "Komm später wieder",
     "langCooldownBody": "Du hast zu viele unverständliche Antworten geschickt.\nIch bin in *{minutes}* Minuten wieder da.",
     "langWelcomeBackTitle": "Willkommen zurück!",
-    "langWelcomeBackBody": "Lass uns noch einmal versuchen."
+    "langWelcomeBackBody": "Lass uns noch einmal versuchen.",
+    "langDetectedLine": "Ich habe erkannt, dass die Sprache deines Geräts {language} ist.",
+    "langLanguagesAvailable": "Verfügbare Sprachen",
+    "langNotSupportedHint": "Sprache nicht unterstützt? Antworte 2 für eine andere.",
+    "langReplyHint": "Antworte mit einer Zahl, oder tippe ja / nein.",
+    "langGreetingMorning": "Guten Morgen",
+    "langGreetingAfternoon": "Guten Tag",
+    "langGreetingEvening": "Guten Abend",
+    "langGreetingHey": "Hallo",
+    "langGreetingHello": "Hallo!",
+    "langDetectYesShort": "Ja, verwenden"
   },
   "info": {
     "cmd": "Befehle",

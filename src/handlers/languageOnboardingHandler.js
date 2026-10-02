@@ -15,6 +15,7 @@ import sessionManager from '../utils/sessionManager.js';
 import settingsService from '../services/settingsService.js';
 import { t } from '../services/localeService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
+import { getTimeOfDay } from '../utils/timeOfDay.js';
 import { sendText } from '../services/messageService.js';
 import { buildMenu } from '../utils/menuBuilder.js';
 import { handleLanguageSelection, buildLanguageMenu } from './languageCommand.js';
@@ -42,12 +43,114 @@ export const STAGE = {
 // chosen language is never applied.
 const IN_LANGUAGE_FLOW = new Set(['language_selection', 'pref_language_selection', 'language_onboarding']);
 
-const LANGUAGES = ['en', 'fr', 'de', 'es', 'ar'];
+// How long the bot shows "composing" before the first onboarding message.
+const TYPING_DELAY_MS = 1200;
+
+// Native language names and flags, kept in code (never in translations) so
+// they render correctly regardless of the UI language.
+export const LANGUAGES = ['en', 'fr', 'de', 'es', 'ar'];
+
+export const LANGUAGE_NAMES = {
+  en: 'English',
+  fr: 'Français',
+  de: 'Deutsch',
+  es: 'Español',
+  ar: 'العربية'
+};
+
+export const LANGUAGE_FLAGS = {
+  en: '🇬🇧',
+  fr: '🇫🇷',
+  de: '🇩🇪',
+  es: '🇪🇸',
+  ar: '🇸🇦'
+};
+
+export const LANGUAGES_WITH_FLAGS = LANGUAGES.map((l) => `${LANGUAGE_FLAGS[l]} ${LANGUAGE_NAMES[l]}`);
+
+// First-message keyword hints. A greeting in the user's own language is a
+// stronger signal about what they want than the device locale.
+export const LANG_KEYWORDS = {
+  en: ['hello', 'hi', 'hey', 'help'],
+  fr: ['bonjour', 'salut', 'merci', 'aide'],
+  de: ['hallo', 'guten', 'hilfe'],
+  es: ['hola', 'buenos', 'ayuda'],
+  ar: ['مرحبا', 'سلام', 'مساعدة']
+};
+
+// Emoji-only shortcuts, matched on the whole trimmed message.
+const EMOJI_YES = new Set(['\u{1F44D}', '✅']);
+const EMOJI_NO = new Set(['\u{1F310}', '\u{1F501}']);
+
+/**
+ * Validate a WhatsApp push name for use in the greeting.
+ * Rejects empty, too-short, letter-less (punctuation/emoji only) and JID values.
+ * @returns {string|null} cleaned name, or null when unusable
+ */
+export function sanitizePushName(pushName, jid = null) {
+  const raw = typeof pushName === 'string' ? pushName.replace(/\s+/g, ' ').trim() : '';
+  if (!raw) return null;
+  if (jid && raw === jid) return null;
+  // Strip variation selectors / ZWJ used by emoji sequences.
+  const stripped = raw.replace(/[\u200D\uFE0F]/g, '').trim();
+  if (stripped.length < 2) return null;
+  // Must contain at least one real letter in any script.
+  if (!/\p{L}/u.test(stripped)) return null;
+  return raw.slice(0, 32);
+}
+
+/**
+ * Match a first message against LANG_KEYWORDS.
+ * @returns {string|null} supported language code, or null
+ */
+export function detectLanguageFromText(text) {
+  const value = normalizeReply(text);
+  if (!value) return null;
+  let best = null;
+  let bestLen = 0;
+  for (const [lang, words] of Object.entries(LANG_KEYWORDS)) {
+    for (const word of words) {
+      if (value === word || value.includes(word)) {
+        // Longest match wins so "bonjour" beats a stray "hi".
+        if (word.length > bestLen) { best = lang; bestLen = word.length; }
+      }
+    }
+  }
+  return best;
+}
+
+/**
+ * Greeting line for a time of day.
+ * @param {string} language UI language (the greeting is localized)
+ * @param {string} bucket one of morning/afternoon/evening/night
+ * @param {boolean} hasName whether a usable push name was supplied
+ */
+export function greetingFor(language, bucket, hasName) {
+  const key = {
+    morning: 'onboarding.langGreetingMorning',
+    afternoon: 'onboarding.langGreetingAfternoon',
+    evening: 'onboarding.langGreetingEvening',
+    night: 'onboarding.langGreetingHey'
+  }[bucket] || 'onboarding.langGreetingHey';
+  if (hasName) return { prefix: L(language, key), fallback: false };
+  return { prefix: L(language, 'onboarding.langGreetingHello'), fallback: true };
+}
+
+/** True when the trimmed message is exactly one of the emoji shortcuts. */
+export function emojiShortcut(text) {
+  const value = String(text ?? '').replace(/\s+/g, '');
+  if (!value) return null;
+  if (EMOJI_YES.has(value)) return 'yes';
+  if (EMOJI_NO.has(value)) return 'no';
+  return null;
+}
+
 
 // menu number for each language, matching handleLanguageSelection's own map
 const NUMBER_BY_LANG = { en: '1', fr: '2', de: '3', es: '4', ar: '5' };
 
-const FLAG_BY_LANG = { en: '🇬🇧', fr: '🇫🇷', de: '🇩🇪', es: '🇪🇸', ar: '🇸🇦' };
+// Single source for the flag emoji: the admin notifications use them too.
+const FLAG_BY_LANG = LANGUAGE_FLAGS;
 const NAME_KEY_BY_LANG = {
   en: 'languageNameEnglish',
   fr: 'languageNameFrench',
@@ -178,23 +281,60 @@ function brandGreeting() {
   return '👋🏼 *' + toSmallCaps(settingsService.getBotName() || 'X-Vortex') + '*';
 }
 
-/** A2: supported device language, ask to confirm. */
-export function buildDetectedMessage(language, detectedLang) {
-  const name = t(language, 'onboarding.' + NAME_KEY_BY_LANG[detectedLang]);
+/**
+ * A2: supported device language, ask to confirm.
+ * @param {string} language UI language for the static text
+ * @param {string} detectedLang the language being suggested
+ * @param {{ pushName?: string, timezone?: string, now?: Date }} opts
+ */
+export function buildDetectedMessage(language, detectedLang, opts = {}) {
+  const name = LANGUAGE_NAMES[detectedLang] || detectedLang;
+  const flag = LANGUAGE_FLAGS[detectedLang] || '';
+  const withFlag = `${name} ${flag}`.trim();
+  const clean = sanitizePushName(opts.pushName, opts.jid);
+  const bucket = getTimeOfDay(opts.now || new Date(), opts.timezone || 'UTC');
+  const { prefix, fallback } = greetingFor(language, bucket, Boolean(clean));
+
+  // Dynamic values (name, language, flags) are appended raw; only the static
+  // scaffolding is small-capped.
+  const greeting = clean
+    ? `${prefix} *${clean}* 👋🏼`
+    : fallback
+      ? `${prefix} 👋🏼`
+      : `${prefix} 👋🏼`;
+
   return [
     brandGreeting(),
     '',
-    // {language} is substituted before small-capping, so the bolded name comes
-    // out in small caps exactly like the surrounding sentence.
-    L(language, 'onboarding.langDetectHello', { language: name }),
+    greeting,
+    '',
+    '🌐 ' + detectedLineFor(language, withFlag),
+    '',
+    L(language, 'onboarding.langLanguagesAvailable') + ': ' + LANGUAGES.map((l) => LANGUAGE_FLAGS[l]).join(' '),
     '',
     L(language, 'onboarding.langDetectQuestion'),
     '',
-    '1. ✅ ' + L(language, 'onboarding.langDetectYes', { language: name }),
+    '1. ✅ ' + L(language, 'onboarding.langDetectYesShort') + ' ' + withFlag,
     '2. 🌐 ' + L(language, 'onboarding.langDetectChoose'),
     '',
-    '_' + L(language, 'onboarding.langDetectPrompt') + '_'
+    L(language, 'onboarding.langNotSupportedHint'),
+    '',
+    '_' + L(language, 'onboarding.langReplyHint') + '_'
   ].join('\n');
+}
+
+/**
+ * "I detected your device language is *Français 🇫🇷*."
+ *
+ * The static wording is small-capped but the language name and flag must stay
+ * raw, so the template is split on {language} instead of being run through the
+ * interpolating small-caps helper.
+ */
+export function detectedLineFor(language, nameWithFlag) {
+  const template = t(language, 'onboarding.langDetectedLine');
+  const [before, after = ''] = String(template).split('{language}');
+  // trimEnd guards against a template that already pads the placeholder.
+  return toSmallCaps(before.trimEnd()) + ' *' + nameWithFlag + '*' + toSmallCaps(after);
 }
 
 /** A4: device language is not one we support; ask for a number 1-5 in English. */
@@ -353,8 +493,17 @@ async function startOnboarding(context, session) {
   const { sock, sender, chatId, pushName } = context;
   const rawLocale = context.deviceLocale || getDeviceLocale();
   const platform = context.platform || getDevicePlatform();
-  const detected = normalizeLanguage(rawLocale) || config.defaultLanguage;
-  const supported = normalizeLanguage(rawLocale) !== null || !rawLocale;
+  const deviceLang = normalizeLanguage(rawLocale);
+  const supported = deviceLang !== null || !rawLocale;
+
+  // A first message in the user's own language beats the device locale: someone
+  // typing "bonjour" wants French even on an English phone. A bare "hi" is not
+  // proof of English though -- it is what people type on any phone, so it must
+  // not drag a French phone back to English.
+  const hinted = supported ? detectLanguageFromText(context.text) : null;
+  const override = Boolean(hinted) && (hinted !== 'en' || !deviceLang);
+  const detected = override ? hinted : deviceLang || config.defaultLanguage;
+  const source = override ? 'message' : 'device';
 
   const recorded = userStats.recordNewUser(sender, {
     pushName,
@@ -368,6 +517,7 @@ async function startOnboarding(context, session) {
     onboardingStage: STAGE.CONFIRM,
     detectedLanguage: supported ? detected : null,
     detectedLanguageRaw: rawLocale || null,
+    detectedLanguageSource: supported ? source : null,
     onboardingAttempts: 0,
     onboardingLastRetry: -1,
     languageOnboardingLockedUntil: null,
@@ -375,13 +525,28 @@ async function startOnboarding(context, session) {
   });
 
   const language = supported ? detected : 'en';
+
+  // A brief "composing" presence so the first message does not feel abrupt.
+  const typingMs = Number.isFinite(context.typingDelayMs) ? context.typingDelayMs : TYPING_DELAY_MS;
+  try {
+    await sock.sendPresenceUpdate('composing', sender);
+    if (typingMs > 0) await new Promise((resolve) => setTimeout(resolve, typingMs));
+  } catch (err) {
+    logger.debug({ err, sender }, '[ONBOARD] typing presence failed');
+  }
+
   await sendText(sock, sender, supported
-    ? buildDetectedMessage(language, detected)
+    ? buildDetectedMessage(language, detected, {
+      pushName,
+      jid: sender,
+      timezone: context.timezone,
+      now: context.now
+    })
     : buildUnsupportedMessage(deviceLanguageName(rawLocale)));
 
   logAdminAction(sender, 'onboarding_started',
-    `deviceLanguage=${rawLocale || 'unknown'} -> ${supported ? detected : 'unsupported'}`);
-  logger.info({ sender, deviceLocale: rawLocale, detected: supported ? detected : null, firstTime: recorded.firstTime }, '[ONBOARD] started');
+    `deviceLanguage=${rawLocale || 'unknown'} -> ${supported ? detected : 'unsupported'} (${source})`);
+  logger.info({ sender, deviceLocale: rawLocale, detected: supported ? detected : null, source, firstTime: recorded.firstTime }, '[ONBOARD] started');
 
   if (recorded.firstTime && isBotNotifyEnabled('onNewUser')) {
     await notifyNewUser(sock, {
@@ -429,7 +594,8 @@ function clearOnboardingFlags(sender, chatId) {
     onboardingLanguageChoice: null,
     languageOnboardingLockedUntil: null,
     detectedLanguage: null,
-    detectedLanguageRaw: null
+    detectedLanguageRaw: null,
+    detectedLanguageSource: null
   });
 }
 
@@ -447,7 +613,12 @@ async function returnToConfirmation(context) {
     languageOnboardingLockedUntil: null
   });
   await sendText(sock, sender, detected
-    ? buildDetectedMessage(detected, detected)
+    ? buildDetectedMessage(detected, detected, {
+      pushName: context.pushName,
+      jid: sender,
+      timezone: context.timezone,
+      now: context.now
+    })
     : buildUnsupportedMessage(deviceLanguageName(session.detectedLanguageRaw)));
   return true;
 }
@@ -467,7 +638,8 @@ async function completeOnboarding(context, chosenLanguage, attempts) {
     onboardingLanguageChoice: chosenLanguage,
     languageOnboardingLockedUntil: null,
     detectedLanguage: null,
-    detectedLanguageRaw: null
+    detectedLanguageRaw: null,
+    detectedLanguageSource: null
   });
   logAdminAction(sender, 'onboarding_completed', `chosenLanguage=${chosenLanguage}; attempts=${attempts}`);
   logger.info({ sender, chosenLanguage, attempts }, '[ONBOARD] completed');
@@ -518,12 +690,16 @@ async function handleOnboardingReply(context, session) {
   const language = detected || config.defaultLanguage;
   const stage = session.onboardingStage || STAGE.CONFIRM;
 
-  // 1. Yes / no, in any supported language.
-  if (isYesReply(text) && detected) {
+  // 1. Emoji shortcuts and yes/no, in any supported language.
+  const shortcut = emojiShortcut(text);
+  if (shortcut === 'yes' && detected) {
     return completeOnboarding(context, detected, session.onboardingAttempts || 0);
   }
-  if (isNoReply(text)) {
+  if (shortcut === 'no' || isNoReply(text)) {
     return openLanguageChooser(context);
+  }
+  if (isYesReply(text) && detected) {
+    return completeOnboarding(context, detected, session.onboardingAttempts || 0);
   }
 
   // 2. Numbers. With a detected language the prompt offers 1 (accept) and
@@ -586,7 +762,12 @@ export async function handleLanguageOnboardingGate(context, session, user) {
     });
     await sendText(sock, sender, buildWelcomeBackMessage(language));
     await sendText(sock, sender, detected
-      ? buildDetectedMessage(language, detected)
+      ? buildDetectedMessage(language, detected, {
+        pushName: context.pushName,
+        jid: sender,
+        timezone: context.timezone,
+        now: context.now
+      })
       : buildUnsupportedMessage(deviceLanguageName(session.detectedLanguageRaw)));
     return true;
   }

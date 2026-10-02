@@ -1,4 +1,4 @@
-﻿// Smart first-time language onboarding + new-user admin notifications.
+// Smart first-time language onboarding + new-user admin notifications.
 //
 // Covers Part D of the spec: the confirmation flow, free-text yes/no in every
 // supported language, the unsupported-locale path, the three-attempt retry
@@ -42,15 +42,17 @@ const ADMIN = '127531067904055@lid';
 
 function makeSock() {
   const sent = [];
+  const presence = [];
   return {
     sent,
+    presence,
     sendMessage: async (jid, content) => {
       sent.push({ jid, text: String(content?.text ?? ''), edit: content?.edit, delete: content?.delete });
       if (content?.delete) return;
       if (content?.edit) return { key: content.edit };
       return { key: { id: 'K' + sent.length } };
     },
-    sendPresenceUpdate: async () => {},
+    sendPresenceUpdate: async (type, jid) => { presence.push({ type, jid }); },
     readMessages: async () => true
   };
 }
@@ -66,12 +68,14 @@ for (const ch of 'abcdefghijklmnopqrstuvwxyz') {
   if (mapped && mapped.length === 1 && mapped !== ch) SMALL_TO_PLAIN.set(mapped, ch);
 }
 const dec = (s) => String(s).split('').map((c) => SMALL_TO_PLAIN.get(c) ?? c).join('');
+// Small caps carry no case, so decode then fold for prose assertions.
+const decf = (s) => dec(s).toLowerCase();
 const lastText = (sock) => sock.sent.length ? sock.sent[sock.sent.length - 1].text : '';
 const toUser = (sock) => sock.sent.filter((m) => m.jid !== ADMIN);
 const toAdmin = (sock) => sock.sent.filter((m) => m.jid === ADMIN);
 
-function newContext(sock, jid, text, locale) {
-  return { sock, sender: jid, chatId: jid, pushName: 'Tester', text, deviceLocale: locale };
+function newContext(sock, jid, text, locale, opts = {}) {
+  return { sock, sender: jid, chatId: jid, pushName: 'Tester', text, deviceLocale: locale, ...opts };
 }
 
 function resetSession(jid) {
@@ -131,7 +135,7 @@ try {
     const consumed = await onboard.handleLanguageOnboardingGate(newContext(sock, jid, 'hello there', 'en-US'), sessionManager.getSession(jid, jid), await getUserByJid(jid));
     check('D1.1 first message is consumed by onboarding', consumed === true);
     const greeting = toUser(sock).map((m) => m.text).join('\n');
-    check('D1.1 greets and names the detected language', dec(greeting).includes('english'), greeting.slice(0, 160));
+    check('D1.1 greets and names the detected language', flat(dec(greeting)).includes('english'), greeting.slice(0, 160));
     check('D1.1 offers yes / choose another', greeting.includes('1.') && greeting.includes('2.'));
     check('D1.1 admin got the new-user notification', toAdmin(sock).length === 1, 'admin msgs=' + toAdmin(sock).length);
     const notice = toAdmin(sock)[0]?.text || '';
@@ -479,6 +483,260 @@ try {
     const route = await message(sock, jid, '3');
     check('gate defers while the chooser is open', route === 'language_selection', route);
     check('no duplicate confirmation was sent', !toUser(sock).some((m) => dec(m.text).includes('detected your device language')));
+  }
+  // =========================================================================
+  // Prompt A: the enriched first onboarding message
+  // =========================================================================
+  const { buildDetectedMessage, sanitizePushName, detectLanguageFromText, greetingFor, emojiShortcut, detectedLineFor, buildUnsupportedMessage } = onboard;
+  const MORNING = new Date('2026-10-01T08:00:00Z');
+  const AFTERNOON = new Date('2026-10-01T14:00:00Z');
+  const EVENING = new Date('2026-10-01T18:00:00Z');
+  const NIGHT = new Date('2026-10-01T23:00:00Z');
+  const at = (d) => ({ now: d, timezone: 'UTC' });
+
+  // 1. Time-of-day greeting logic, in all four buckets.
+  check('greetingFor morning bucket -> morning key', decf(greetingFor('en', 'morning', true).prefix) === 'good morning', decf(greetingFor('en', 'morning', true).prefix));
+  check('greetingFor afternoon bucket -> afternoon key', decf(greetingFor('en', 'afternoon', true).prefix) === 'good afternoon', decf(greetingFor('en', 'afternoon', true).prefix));
+  check('greetingFor evening bucket -> evening key', decf(greetingFor('en', 'evening', true).prefix) === 'good evening', decf(greetingFor('en', 'evening', true).prefix));
+  check('greetingFor night bucket -> hey key', decf(greetingFor('en', 'night', true).prefix) === 'hey', decf(greetingFor('en', 'night', true).prefix));
+  check('greetingFor unknown bucket falls back to hey', decf(greetingFor('en', 'lunchtime', true).prefix) === 'hey', decf(greetingFor('en', 'lunchtime', true).prefix));
+
+  // 2. The greeting is localized, not always English.
+  check('greeting is localized to the message language', decf(greetingFor('fr', 'evening', true).prefix) === 'bonsoir', decf(greetingFor('fr', 'evening', true).prefix));
+  check('greeting is localized to Arabic', decf(greetingFor('ar', 'morning', true).prefix) === 'صباح الخير', decf(greetingFor('ar', 'morning', true).prefix));
+
+  // 3. A real push name appears in the greeting, raw and bolded.
+  {
+    const out = buildDetectedMessage('en', 'en', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    check('pushName is used in the greeting', out.includes('*John*'), out.split('\n')[2]);
+    check('morning greeting is shown for an 08:00 message', decf(out).includes('good morning'));
+  }
+  {
+    const out = buildDetectedMessage('en', 'en', { ...at(NIGHT), pushName: 'John', jid: '1@lid' });
+    check('night greeting is shown for a 23:00 message', decf(out).includes('hey'));
+  }
+
+  // 4. Missing or junk push names degrade to a plain "Hello!".
+  check('no pushName -> Hello! fallback', sanitizePushName(undefined, '1@lid') === null, sanitizePushName(undefined, '1@lid'));
+  check('empty pushName -> null', sanitizePushName('', '1@lid') === null);
+  check('whitespace pushName -> null', sanitizePushName('   ', '1@lid') === null);
+  {
+    const out = buildDetectedMessage('en', 'en', { ...at(MORNING), pushName: '', jid: '1@lid' });
+    check('fallback greeting has no name interpolation', decf(out).includes('hello!') && !out.includes('**'), out.split('\n')[2]);
+  }
+
+  // 5. Push name sanitization rejects unusable values.
+  check('1-character name is rejected', sanitizePushName('J', '1@lid') === null, sanitizePushName('J', '1@lid'));
+  check('digits-only name is rejected', sanitizePushName('12345', '1@lid') === null, sanitizePushName('12345', '1@lid'));
+  check('emoji-only name is rejected', sanitizePushName('\u{1F600}\u{1F601}', '1@lid') === null, sanitizePushName('\u{1F600}\u{1F601}', '1@lid'));
+  check('name equal to the JID is rejected', sanitizePushName('123456789@lid', '123456789@lid') === null, sanitizePushName('123456789@lid', '123456789@lid'));
+  check('very long name is capped at 32 chars', sanitizePushName('A'.repeat(80), '1@lid') === 'A'.repeat(32), sanitizePushName('A'.repeat(80), '1@lid')?.length);
+  check('normal name passes through unchanged', sanitizePushName('QuietPixel', '1@lid') === 'QuietPixel');
+  check('non-Latin name passes through', sanitizePushName('محمد', '1@lid') === 'محمد', sanitizePushName('محمد', '1@lid'));
+
+  // 6. Detected-language line format.
+  {
+    const out = buildDetectedMessage('en', 'fr', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    check('detected line names the language', decf(out).includes('i detected your device language is'), out.split('\n')[4]);
+    check('detected line is bolded', out.includes('*Français ' + onboard.LANGUAGE_FLAGS.fr + '*'), out.split('\n')[4]);
+  }
+
+  // 7. The native language name is appended raw, never small-capped.
+  {
+    const out = buildDetectedMessage('en', 'fr', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    const line = out.split('\n')[4];
+    check('native name is raw (Français, not small caps)', line.includes('Français'), line);
+    check('native name is not small-capped', !line.includes(toSmallCaps('Français')), line);
+  }
+  check('each supported language has a native name', ['en', 'fr', 'de', 'es', 'ar']
+    .every((l) => typeof onboard.LANGUAGE_NAMES[l] === 'string' && onboard.LANGUAGE_NAMES[l].length > 0));
+  check('every supported language has a flag', ['en', 'fr', 'de', 'es', 'ar']
+    .every((l) => typeof onboard.LANGUAGE_FLAGS[l] === 'string' && onboard.LANGUAGE_FLAGS[l].length > 0));
+  check('LANGUAGES_WITH_FLAGS pairs name and flag', onboard.LANGUAGES_WITH_FLAGS.length === 5
+    && onboard.LANGUAGES_WITH_FLAGS.every((s) => /[\u{1F1E6}-\u{1F1FF}]{2}/u.test(s)), JSON.stringify(onboard.LANGUAGES_WITH_FLAGS));
+
+  // 8. The correct flag per language.
+  check('en -> GB flag', onboard.LANGUAGE_FLAGS.en === '\u{1F1EC}\u{1F1E7}');
+  check('fr -> FR flag', onboard.LANGUAGE_FLAGS.fr === '\u{1F1EB}\u{1F1F7}');
+  check('de -> DE flag', onboard.LANGUAGE_FLAGS.de === '\u{1F1E9}\u{1F1EA}');
+  check('es -> ES flag', onboard.LANGUAGE_FLAGS.es === '\u{1F1EA}\u{1F1F8}');
+  check('ar -> SA flag', onboard.LANGUAGE_FLAGS.ar === '\u{1F1F8}\u{1F1E6}');
+
+  // 9. "Languages available" row lists all five flags.
+  {
+    const out = buildDetectedMessage('en', 'en', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    const row = out.split('\n').find((l) => decf(l).includes('languages available'));
+    check('languages-available row exists', Boolean(row), row);
+    check('languages-available row lists all 5 flags', ['en', 'fr', 'de', 'es', 'ar']
+      .every((l) => row.includes(onboard.LANGUAGE_FLAGS[l])), row);
+  }
+
+  // 10. Unsupported-language hint.
+  {
+    const out = buildDetectedMessage('en', 'en', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    check('unsupported-language hint is present', decf(out).includes('reply 2 to pick another'), out);
+    check('unsupported-language hint mentions option 2', decf(out).includes('language not supported'));
+  }
+
+  // 11. Reply hint.
+  {
+    const out = buildDetectedMessage('en', 'en', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    check('reply hint is present and italic', /_.*reply with a number.*_/.test(decf(out)), decf(out).split('\n').pop());
+    check('reply hint mentions yes / no', decf(out).includes('type yes / no'));
+  }
+
+  // 12. Option 1 small-caps the static half and keeps the name raw.
+  {
+    const out = buildDetectedMessage('en', 'fr', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    const opt1 = out.split('\n').find((l) => l.includes('\u2705'));
+    check('option 1 keeps the language name raw', opt1.includes('Français'), opt1);
+    check('option 1 small-caps the static text', decf(opt1).includes('yes, use') && opt1.includes(toSmallCaps('Yes, use')), opt1);
+    check('option 1 has no leftover placeholder', !out.includes('{language}') && !out.includes('{'), opt1);
+  }
+  {
+    const out = buildDetectedMessage('ar', 'ar', { ...at(AFTERNOON), pushName: 'QuietPixel', jid: '9@lid' });
+    const opt1 = out.split('\n').find((l) => l.includes('\u2705'));
+    check('Arabic option 1 keeps the native name raw', opt1.includes('العربية'), opt1);
+  }
+
+  // 13. Confirmation emojis are present.
+  {
+    const out = buildDetectedMessage('en', 'en', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    check('check-mark emoji is present', out.includes('\u2705'));
+    check('globe emoji is present', out.includes('\u{1F310}'));
+    check('two numbered options are present', /^1\. /m.test(out) && /^2\. /m.test(out), out);
+    check('option 2 is the globe/choose option', out.split('\n').find((l) => /^2\. /.test(l))?.includes('\u{1F310}'));
+  }
+
+  // 14. First-message keywords override the device locale.
+  check('"bonjour" detects French', detectLanguageFromText('bonjour') === 'fr', detectLanguageFromText('bonjour'));
+  check('"hola" detects Spanish', detectLanguageFromText('hola') === 'es', detectLanguageFromText('hola'));
+  check('"guten morgen" detects German', detectLanguageFromText('guten morgen') === 'de', detectLanguageFromText('guten morgen'));
+  check('"مرحبا" detects Arabic', detectLanguageFromText('مرحبا') === 'ar', detectLanguageFromText('مرحبا'));
+  check('"hello" detects English', detectLanguageFromText('hello') === 'en', detectLanguageFromText('hello'));
+  check('"hi there" detects English', detectLanguageFromText('hi there') === 'en', detectLanguageFromText('hi there'));
+  check('unrelated text detects nothing', detectLanguageFromText('123456') === null, detectLanguageFromText('123456'));
+  check('empty text detects nothing', detectLanguageFromText('') === null, detectLanguageFromText(''));
+  {
+    // A French first message on an English device must greet in French.
+    const jid = '900000000000200@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await onboard.handleLanguageOnboardingGate(
+      newContext(sock, jid, 'bonjour', 'en-US', { typingDelayMs: 0 }),
+      sessionManager.getSession(jid, jid), await getUserByJid(jid));
+    // The admin notification may be the last message, so target the user's own.
+    const out = toUser(sock)[0].text;
+    check('first-message keyword overrides the device locale', decf(out.split('\n')[2]).includes('bon'), out.split('\n')[2]);
+    check('overridden language is confirmed as French', out.includes('Français'), out.split('\n')[4]);
+    check('the detected source is recorded as the message', sessionManager.getSession(jid, jid)?.detectedLanguageSource === 'message',
+      sessionManager.getSession(jid, jid)?.detectedLanguageSource);
+  }
+  {
+    // With no keyword, the device locale still wins.
+    const jid = '900000000000201@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await onboard.handleLanguageOnboardingGate(
+      newContext(sock, jid, '123456', 'de-DE', { typingDelayMs: 0 }),
+      sessionManager.getSession(jid, jid), await getUserByJid(jid));
+    check('device locale is used when no keyword matches',
+      sessionManager.getSession(jid, jid)?.detectedLanguageSource === 'device',
+      sessionManager.getSession(jid, jid)?.detectedLanguageSource);
+  }
+
+  // 15/16. Emoji shortcuts resolve to the same actions as the words.
+  check('thumbs-up -> yes', emojiShortcut('\u{1F44D}') === 'yes', emojiShortcut('\u{1F44D}'));
+  check('check mark -> yes', emojiShortcut('✅') === 'yes', emojiShortcut('✅'));
+  check('globe -> no', emojiShortcut('\u{1F310}') === 'no', emojiShortcut('\u{1F310}'));
+  check('refresh -> no', emojiShortcut('\u{1F501}') === 'no', emojiShortcut('\u{1F501}'));
+  check('emoji is matched regardless of surrounding whitespace', emojiShortcut('  ✅  ') === 'yes', emojiShortcut('  ✅  '));
+  check('plain text is not an emoji shortcut', emojiShortcut('yes') === null, emojiShortcut('yes'));
+  check('unrelated emoji is not a shortcut', emojiShortcut('\u{1F600}') === null, emojiShortcut('\u{1F600}'));
+  {
+    const jid = '900000000000202@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await onboard.handleLanguageOnboardingGate(
+      newContext(sock, jid, 'hello', 'en-US', { typingDelayMs: 0 }),
+      sessionManager.getSession(jid, jid), await getUserByJid(jid));
+    await onboard.handleLanguageOnboardingGate(
+      newContext(sock, jid, '\u{1F44D}', undefined, { typingDelayMs: 0 }),
+      sessionManager.getSession(jid, jid), await getUserByJid(jid));
+    check('thumbs-up confirms the language', (await getUserByJid(jid))?.language === 'en', (await getUserByJid(jid))?.language);
+  }
+  {
+    const jid = '900000000000203@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await onboard.handleLanguageOnboardingGate(
+      newContext(sock, jid, 'hello', 'en-US', { typingDelayMs: 0 }),
+      sessionManager.getSession(jid, jid), await getUserByJid(jid));
+    await onboard.handleLanguageOnboardingGate(
+      newContext(sock, jid, '\u{1F310}', undefined, { typingDelayMs: 0 }),
+      sessionManager.getSession(jid, jid), await getUserByJid(jid));
+    check('globe emoji opens the 5-language menu', sessionManager.getSession(jid, jid)?.currentMenu === 'language_selection',
+      sessionManager.getSession(jid, jid)?.currentMenu);
+  }
+
+  // 17. A typing presence is sent before the first message.
+  {
+    const jid = '900000000000204@lid';
+    const sock = makeSock();
+    await makeNewUser(jid);
+    await onboard.handleLanguageOnboardingGate(
+      newContext(sock, jid, 'hello', 'en-US', { typingDelayMs: 0 }),
+      sessionManager.getSession(jid, jid), await getUserByJid(jid));
+    check('composing presence was sent', sock.presence.some((p) => p.type === 'composing' && p.jid === jid),
+      JSON.stringify(sock.presence));
+    check('presence is sent to the new user', sock.presence.length > 0 && sock.presence[0].jid === jid);
+  }
+  {
+    // A sock that rejects presence must not break onboarding.
+    const jid = '900000000000205@lid';
+    const sock = makeSock();
+    sock.sendPresenceUpdate = async () => { throw new Error('presence unsupported'); };
+    await makeNewUser(jid);
+    const consumed = await onboard.handleLanguageOnboardingGate(
+      newContext(sock, jid, 'hello', 'en-US', { typingDelayMs: 0 }),
+      sessionManager.getSession(jid, jid), await getUserByJid(jid));
+    check('a failing presence does not break onboarding', consumed === true && toUser(sock).length > 0);
+  }
+
+  // 18. No tofu / replacement characters anywhere.
+  for (const lang of ['en', 'fr', 'de', 'es', 'ar']) {
+    for (const bucket of [MORNING, AFTERNOON, EVENING, NIGHT]) {
+      const out = buildDetectedMessage(lang, lang, { now: bucket, timezone: 'UTC', pushName: 'John', jid: '1@lid' });
+      check(`${lang} @ ${bucket.toISOString().slice(11, 16)} renders with no replacement chars`,
+        !out.includes('\uFFFD'), JSON.stringify(out.slice(0, 80)));
+      check(`${lang} @ ${bucket.toISOString().slice(11, 16)} renders its flag`,
+        out.includes(onboard.LANGUAGE_FLAGS[lang]));
+    }
+  }
+
+  // Full structural order, per the intended layout.
+  {
+    const out = buildDetectedMessage('en', 'en', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
+    const lines = out.split('\n').map((l) => l.trim()).filter(Boolean);
+    check('brand heading is first', lines[0].includes('*x'), lines[0]);
+    check('greeting is second', decf(lines[1]).startsWith('good morning'), lines[1]);
+    check('detected line is third', decf(lines[2]).includes('i detected your device language is'), lines[2]);
+    check('languages row is fourth', decf(lines[3]).startsWith('languages available'), lines[3]);
+    check('the question follows the preview row', decf(lines[4]).includes('as your language'), lines[4]);
+    check('option 1 is sixth', /^1\./.test(lines[5]), lines[5]);
+    check('option 2 is seventh', /^2\./.test(lines[6]), lines[6]);
+    check('unsupported hint is eighth', decf(lines[7]).includes('language not supported'), lines[7]);
+    check('reply hint is last and italic', lines[8].startsWith('_') && lines[8].endsWith('_'), lines[8]);
+    check('the message has exactly 9 non-empty lines', lines.length === 9, String(lines.length));
+  }
+
+  // The unsupported-locale path keeps its own wording and gets no preview row.
+  {
+    const out = buildUnsupportedMessage('Nederlands');
+    check('unsupported path names the language', decf(out).includes('nederlands'), decf(out).split('\n')[2]);
+    check('unsupported path explains itself', decf(out).includes("isn't supported"), decf(out));
+    check('unsupported path does not show the languages row', !decf(out).includes('languages available'), out);
+    check('unsupported path has no replacement chars', !out.includes('\uFFFD'));
   }
 } finally {
   restoreData();
