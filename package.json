@@ -16,7 +16,7 @@
     "test:changelog": "node tests/changelog.test.mjs",
     "test:devChanges": "node tests/devChanges.test.mjs",
     "test:changelogManager": "node tests/changelogManager.test.mjs",
-    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs && node tests/welcomeBack.test.mjs && node tests/healthServer.test.mjs && node tests/changelog.test.mjs && node tests/devChanges.test.mjs && node tests/changelogManager.test.mjs",
+    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs && node tests/welcomeBack.test.mjs && node tests/resumeFlow.test.mjs && node tests/healthServer.test.mjs && node tests/changelog.test.mjs && node tests/devChanges.test.mjs && node tests/changelogManager.test.mjs",
     "audit:menus": "node src/scripts/auditMenus.js"
   },
   "keywords": [],

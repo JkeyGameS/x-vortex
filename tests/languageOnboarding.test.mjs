@@ -235,8 +235,10 @@ try {
     sock.sent.length = 0;
     await onboard.handleLanguageOnboardingGate(newContext(sock, jid, 'back again', 'en'), sessionManager.getSession(jid, jid), await getUserByJid(jid));
     const out = toUser(sock).map((m) => m.text).join('\n');
-    check('D1.9 welcome back after cooldown', dec(out).includes('welcome back'), out.slice(0, 160));
-    check('D1.9 greeting repeated after the reminder', dec(out).includes('detected your device language'));
+    check('D1.9 cooldown expiry sends nothing on its own', toUser(sock).length === 0, toUser(sock).map((m) => m.text).join('\n').slice(0, 200));
+    check('D1.9 cooldown expiry sends exactly no reminder', !dec(toUser(sock).map((m) => m.text).join('\n')).includes('welcome back'));
+    check('D1.9 the lock is released on expiry', (sessionManager.getSession(jid, jid)?.languageOnboardingLockedUntil ?? 0) <= Date.now());
+    check('D1.9 the router is told the cooldown just expired', sessionManager.getSession(jid, jid)?.cooldownJustExpired === true);
     check('D1.9 attempts reset to 0', (sessionManager.getSession(jid, jid)?.onboardingAttempts || 0) === 0);
 
     sock.sent.length = 0;
@@ -538,15 +540,15 @@ try {
   {
     const out = buildDetectedMessage('en', 'fr', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
     check('detected line names the language', decf(out).includes('i detected your device language is'), out.split('\n')[4]);
-    check('detected line is bolded', out.includes('*Français ' + onboard.LANGUAGE_FLAGS.fr + '*'), out.split('\n')[4]);
+    check('detected line is bolded', out.includes('*' + toSmallCaps('Français') + ' ' + onboard.LANGUAGE_FLAGS.fr + '*'), out.split('\n')[4]);
   }
 
   // 7. The native language name is appended raw, never small-capped.
   {
     const out = buildDetectedMessage('en', 'fr', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
     const line = out.split('\n')[4];
-    check('native name is raw (Français, not small caps)', line.includes('Français'), line);
-    check('native name is not small-capped', !line.includes(toSmallCaps('Français')), line);
+    check('native name is small-capped', line.includes(toSmallCaps('Français')), line);
+    check('native name is not left raw', !line.includes('Français'), line);
   }
   check('each supported language has a native name', ['en', 'fr', 'de', 'es', 'ar']
     .every((l) => typeof onboard.LANGUAGE_NAMES[l] === 'string' && onboard.LANGUAGE_NAMES[l].length > 0));
@@ -589,7 +591,7 @@ try {
   {
     const out = buildDetectedMessage('en', 'fr', { ...at(MORNING), pushName: 'John', jid: '1@lid' });
     const opt1 = out.split('\n').find((l) => l.includes('\u2705'));
-    check('option 1 keeps the language name raw', opt1.includes('Français'), opt1);
+    check('option 1 keeps the language name small-capped', opt1.includes(toSmallCaps('Français')), opt1);
     check('option 1 small-caps the static text', decf(opt1).includes('yes, use') && opt1.includes(toSmallCaps('Yes, use')), opt1);
     check('option 1 has no leftover placeholder', !out.includes('{language}') && !out.includes('{'), opt1);
   }
@@ -628,7 +630,7 @@ try {
     // The admin notification may be the last message, so target the user's own.
     const out = toUser(sock)[0].text;
     check('first-message keyword overrides the device locale', decf(out.split('\n')[2]).includes('bon'), out.split('\n')[2]);
-    check('overridden language is confirmed as French', out.includes('Français'), out.split('\n')[4]);
+    check('overridden language is confirmed as French', out.includes(toSmallCaps('Français')), out.split('\n')[4]);
     check('the detected source is recorded as the message', sessionManager.getSession(jid, jid)?.detectedLanguageSource === 'message',
       sessionManager.getSession(jid, jid)?.detectedLanguageSource);
   }

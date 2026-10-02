@@ -222,6 +222,8 @@ import {
   renderWelcomeBack
 } from './services/welcomeBackService.js';
 import { isWelcomeBackEnabled, welcomeBackTipShownPatch } from './config/welcomeBackToggles.js';
+import { pickSpeaker } from './utils/pickSpeaker.js';
+import { sendResumePrompt, handleResumeReply } from './handlers/resumeHandler.js';
 import * as blockedUsers from './services/blockedUsersService.js';
 import * as scheduleService from './services/scheduleService.js';
 import * as featureScheduleService from './services/featureScheduleService.js';
@@ -742,40 +744,75 @@ async function startBot() {
       const language = userInfo?.language || config.defaultLanguage;
       const tr = (key, params) => toSmallCaps(t(language, key, params));
 
-      // Welcome-back (Prompt B).
+      // Speaker coordinator (Prompt C).
       //
-      // This has to sit before the onboarding gate: for a user still mid
-      // onboarding the gate is what re-sends the Prompt A confirmation, and the
-      // welcome must land above it. It also has to sit after the blocked-user
-      // check so a blocked user is never greeted.
+      // Exactly one flow answers each inbound message. Previously the
+      // welcome-back greeting, the cooldown-expiry branch and the onboarding
+      // gate could all fire on the same input and produce two or three replies.
       {
         const seen = recordLastSeen(sender, userInfo);
-        const gate = shouldWelcomeBack({
+        const speaker = pickSpeaker({
           user: userInfo,
           session,
-          gap: seen.gap,
-          previousLastSeen: seen.previous,
-          enabled: isWelcomeBackEnabled()
+          gap: seen.gap
         });
-        if (gate.ok) {
-          const wb = buildWelcomeBackMessage(userInfo, gate.gap, { livePushName: msg.pushName, jid: sender });
-          await sendText(sock, sender, renderWelcomeBack(wb, language), { type: 'silent' });
-          if (wb.showTip) settingsService.updateSettings(welcomeBackTipShownPatch());
-          // Category A needs nothing further: the onboarding gate below
-          // re-sends the Prompt A confirmation on its own.
-          // Category B offers the main menu, but not when the message is a
-          // command that already answers itself -- /start would otherwise send
-          // the menu twice.
-          if (wb.category === 'B' && !isCommand) {
-            sessionManager.setState(sender, chatId, { currentMenu: 'main' });
-            await sendMigratedMainMenu({
-              sock, sender, chatId, user: userInfo, language, transitionKey: 'welcome_back'
-            });
-          }
-          logger.info(
-            { sender, gapMs: gate.gap, variant: wb.variant, category: wb.category },
-            '[WELCOME] greeted a returning user'
+
+        // A pending resume confirmation outranks everything, including
+        // commands: the only valid input is yes or no.
+        if (session?.awaitingResumeConfirmation === true) {
+          await handleResumeReply({ sock, sender, chatId, pushName, text: trimmedText }, session, userInfo);
+          return;
+        }
+
+        // Cooldown expiry and "came back later" share one prompt. The lock has
+        // already expired by the time we get here, so it is released now.
+        if (speaker === 'cooldown' || speaker === 'resume') {
+          sessionManager.setState(sender, chatId, {
+            awaitingResumeConfirmation: true,
+            resumeFromStage: session?.onboardingStage || 'confirm_detected',
+            cooldownJustExpired: false,
+            languageOnboardingLockedUntil: null
+          });
+          await sendResumePrompt(
+            { sock, sender, chatId, pushName },
+            session,
+            userInfo,
+            seen.gap
           );
+          logger.info(
+            { sender, speaker, gapMs: seen.gap },
+            '[RESUME] prompt sent, message consumed'
+          );
+          return;
+        }
+
+        // Welcome-back applies only to a finished user; a half-onboarded one
+        // gets the resume prompt above instead.
+        if (speaker === 'welcomeBack') {
+          const gate = shouldWelcomeBack({
+            user: userInfo,
+            session,
+            gap: seen.gap,
+            previousLastSeen: seen.previous,
+            enabled: isWelcomeBackEnabled()
+          });
+          if (gate.ok) {
+            const wb = buildWelcomeBackMessage(userInfo, gate.gap, { livePushName: msg.pushName, jid: sender });
+            await sendText(sock, sender, renderWelcomeBack(wb, language), { type: 'silent' });
+            if (wb.showTip) settingsService.updateSettings(welcomeBackTipShownPatch());
+            // Not sent when the message is a command that answers itself --
+            // /start would otherwise send the menu twice.
+            if (!isCommand) {
+              sessionManager.setState(sender, chatId, { currentMenu: 'main' });
+              await sendMigratedMainMenu({
+                sock, sender, chatId, user: userInfo, language, transitionKey: 'welcome_back'
+              });
+            }
+            logger.info(
+              { sender, gapMs: gate.gap, variant: wb.variant, category: wb.category },
+              '[WELCOME] greeted a returning user'
+            );
+          }
         }
       }
 

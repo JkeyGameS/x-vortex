@@ -1,6 +1,38 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-02T16-40-36",
+      "timestamp": "2026-10-02T16:40:36Z",
+      "agent": "Cline",
+      "promptSummary": "Fix triple-message bug + unified resume flow",
+      "changes": [
+        "Added speaker coordinator so exactly one flow answers each message",
+        "Cooldown now expires silently instead of auto-sending a reminder and a fresh confirmation",
+        "Unified cooldown and long-gap resume into one prompt with a warmer long-gap variant",
+        "Resume yes continues from the core prompt without the brand heading or greeting",
+        "Resume no sends one polite close and starts an idle window",
+        "Three escalating nudges then silence on unclear resume replies",
+        "Language names are now small-capped everywhere"
+      ],
+      "files": [
+        "src/utils/pickSpeaker.js",
+        "src/handlers/resumeHandler.js",
+        "src/index.js",
+        "src/handlers/languageOnboardingHandler.js",
+        "src/config/config.js",
+        "tests/resumeFlow.test.mjs",
+        "tests/languageOnboarding.test.mjs",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.4.1"
+    },
+    {
       "id": "chg-2026-10-02T14-59-23",
       "timestamp": "2026-10-02T14:59:23Z",
       "agent": "Cline",

@@ -90,7 +90,8 @@ sessionTimeoutMinutes: 5,
     dayGapMs: 24 * 60 * 60 * 1000, // 24 hours -> A3 / B2
     weekGapMs: 7 * 24 * 60 * 60 * 1000, // 7 days -> A4 / B3
     lastSeenFlushMs: 30000, // batch lastSeen disk writes every 30s
-    tipEnabled: true // show the one-time tip on the first B1/B2 welcome
+    tipEnabled: true, // show the one-time tip on the first B1/B2 welcome
+    idleCloseMs: 30 * 60 * 1000 // after a "no, not now" do not re-prompt for 30 min
   },
   // Natural diversified replies (weighted random + anti-repetition)
   chatReplyAntiRepetitionEnabled: true, // exclude recently used replies per user

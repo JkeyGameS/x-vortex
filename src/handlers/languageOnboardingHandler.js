@@ -278,45 +278,46 @@ function brandGreeting() {
 export function buildDetectedMessage(language, detectedLang, opts = {}) {
   const name = LANGUAGE_NAMES[detectedLang] || detectedLang;
   const flag = LANGUAGE_FLAGS[detectedLang] || '';
-  const withFlag = `${name} ${flag}`.trim();
+  // Language names are small-capped everywhere (Prompt C), unlike the user's
+  // push name, which stays raw.
+  const withFlag = `${toSmallCaps(name)} ${flag}`.trim();
   const clean = sanitizePushName(opts.pushName, opts.jid);
-  const bucket = getTimeOfDay(opts.now || new Date(), opts.timezone || 'UTC');
-  const { prefix, fallback } = greetingFor(language, bucket, Boolean(clean));
 
-  // Dynamic values (name, language, flags) are appended raw; only the static
-  // scaffolding is small-capped.
-  const greeting = clean
-    ? `${prefix} *${clean}* 👋🏼`
-    : fallback
-      ? `${prefix} 👋🏼`
-      : `${prefix} 👋🏼`;
+  const lines = [];
 
-  return [
-    brandGreeting(),
-    '',
-    greeting,
-    '',
-    '🌐 ' + detectedLineFor(language, withFlag),
+  if (opts.skipGreeting) {
+    // Resume flow: the user already met the bot, so drop the brand heading and
+    // the time-of-day greeting and keep only the core language prompt.
+    lines.push(`> *\u{1F310} ${L(language, 'onboarding.resumeLanguageHeading')}*`, '');
+  } else {
+    const bucket = getTimeOfDay(opts.now || new Date(), opts.timezone || 'UTC');
+    const { prefix, fallback } = greetingFor(language, bucket, Boolean(clean));
+    const greeting = clean ? `${prefix} *${clean}* \u{1F44B}` : `${prefix} \u{1F44B}`;
+    lines.push(brandGreeting(), '', greeting, '');
+  }
+
+  lines.push(
+    '\u{1F310} ' + detectedLineFor(language, withFlag),
     '',
     L(language, 'onboarding.langLanguagesAvailable') + ': ' + LANGUAGES.map((l) => LANGUAGE_FLAGS[l]).join(' '),
     '',
     L(language, 'onboarding.langDetectQuestion'),
     '',
-    '1. ✅ ' + L(language, 'onboarding.langDetectYesShort') + ' ' + withFlag,
-    '2. 🌐 ' + L(language, 'onboarding.langDetectChoose'),
+    '1. \u2705 ' + L(language, 'onboarding.langDetectYesShort') + ' ' + withFlag,
+    '2. \u{1F310} ' + L(language, 'onboarding.langDetectChoose'),
     '',
     L(language, 'onboarding.langNotSupportedHint'),
     '',
     '_' + L(language, 'onboarding.langReplyHint') + '_'
-  ].join('\n');
+  );
+  return lines.join('\n');
 }
 
 /**
  * "I detected your device language is *Français 🇫🇷*."
  *
- * The static wording is small-capped but the language name and flag must stay
- * raw, so the template is split on {language} instead of being run through the
- * interpolating small-caps helper.
+ * The template is split on {language} rather than interpolated, so the static
+ * wording is small-capped independently of the value.
  */
 export function detectedLineFor(language, nameWithFlag) {
   const template = t(language, 'onboarding.langDetectedLine');
@@ -358,14 +359,12 @@ export function buildCooldownMessage(language, minutes) {
   ].join('\n');
 }
 
-/** A7: reminder once the cooldown expires. */
-export function buildWelcomeBackMessage(language) {
-  return [
-    '👋🏼 *' + L(language || 'en', 'onboarding.langWelcomeBackTitle') + '*',
-    '',
-    L(language || 'en', 'onboarding.langWelcomeBackBody')
-  ].join('\n');
-}
+/**
+ * The cooldown-expiry reminder this used to render is gone (Prompt C). The lock
+ * now expires silently and resumeHandler sends one resume prompt on the next
+ * message. Its name was also colliding with welcomeBackService's builder of the
+ * same name, so removing it leaves one unambiguous entry point.
+ */
 
 // ---------------------------------------------------------------------------
 // Session helpers
@@ -737,26 +736,21 @@ export async function handleLanguageOnboardingGate(context, session, user) {
   // Cooldown lock: silently ignore everything until it expires (C3).
   if (isOnboardingLocked(session)) return true;
 
-  // Lock just expired -> reminder, then the greeting again (A7).
+  // The lock expires silently (Prompt C). It used to send a "Welcome back!
+  // Let's try again." reminder plus a fresh confirmation, which combined with
+  // the welcome-back greeting to produce up to three replies to one message.
+  // pickSpeaker now returns 'cooldown' for the first message after expiry and
+  // the router sends a single resume prompt instead.
   if (stage === STAGE.LOCKED) {
-    const detected = session.detectedLanguage;
-    const language = detected || config.defaultLanguage;
     sessionManager.setState(sender, chatId, {
       languageOnboardingLockedUntil: null,
       onboardingStage: STAGE.CONFIRM,
       onboardingAttempts: 0,
       onboardingLastRetry: -1,
+      cooldownJustExpired: true,
       currentMenu: ONBOARDING_MENU
     });
-    await sendText(sock, sender, buildWelcomeBackMessage(language));
-    await sendText(sock, sender, detected
-      ? buildDetectedMessage(language, detected, {
-        pushName: context.pushName,
-        jid: sender,
-        timezone: context.timezone,
-        now: context.now
-      })
-      : buildUnsupportedMessage(deviceLanguageName(session.detectedLanguageRaw)));
+    logger.debug({ sender }, '[ONBOARD] cooldown expired silently');
     return true;
   }
 
