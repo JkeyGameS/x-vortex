@@ -1,6 +1,23 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-02T11-20-00",
+      "timestamp": "2026-10-02T11:20:00Z",
+      "agent": "Cline",
+      "promptSummary": "Verify build integrity before Suga redeploy",
+      "changes": [
+        "Fixed startup crash when pino-pretty is not installed",
+        "Logger falls back to plain output in production",
+        "Verified all imports resolve and all files parse",
+        "Confirmed config works without env vars"
+      ],
+      "files": [
+        "src/utils/logger.js"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.3.2"
+    },
+    {
       "id": "chg-2026-10-02T10-15-00",
       "timestamp": "2026-10-02T10:15:00Z",
       "agent": "Cline",
