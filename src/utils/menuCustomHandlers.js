@@ -558,6 +558,10 @@ export const messageDisplayCustomHandlers = {
   set_user_mode_hybrid: (context) => setUserMessageMode(context, 'hybrid'),
   set_message_mode_default: adminSetDefaultMode,
   toggle_user_override: toggleUserOverride,
+  toggle_welcome_back: async (context) => {
+    const { handleWelcomeBackToggle } = await import('../handlers/welcomeBackCommand.js');
+    return handleWelcomeBackToggle(context);
+  },
   toggle_per_menu_override: togglePerMenuOverride,
   sys_message_display: (context) => reRender(context, 'message_display_admin', 'system_message_display', null)
 };

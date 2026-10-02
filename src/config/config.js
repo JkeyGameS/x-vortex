@@ -79,6 +79,19 @@ sessionTimeoutMinutes: 5,
   typingAdaptiveMaxMs: 2500, // adaptive mode ceiling
   // Trash retention for bulk-deleted chat rules
   chatTrashRetentionDays: 30, // auto-purge trashed rules after this many days
+  // Welcome-back greeting for returning users (Prompt B).
+  // `enabled` here is only the default; the live value is persisted in
+  // data/settings.json by the General Settings toggle, so the menu and the
+  // sender can never disagree (see config/welcomeBackToggles.js).
+  welcomeBack: {
+    enabled: true,
+    minGapMs: 5 * 60 * 1000, // below this the user is treated as still present
+    shortGapMs: 60 * 60 * 1000, // 1 hour -> category A1 / B1
+    dayGapMs: 24 * 60 * 60 * 1000, // 24 hours -> A3 / B2
+    weekGapMs: 7 * 24 * 60 * 60 * 1000, // 7 days -> A4 / B3
+    lastSeenFlushMs: 30000, // batch lastSeen disk writes every 30s
+    tipEnabled: true // show the one-time tip on the first B1/B2 welcome
+  },
   // Natural diversified replies (weighted random + anti-repetition)
   chatReplyAntiRepetitionEnabled: true, // exclude recently used replies per user
   chatReplyAntiRepetitionWindow: 3, // number of recent replies to exclude

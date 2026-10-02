@@ -732,7 +732,10 @@
       "typingOff": "Indicador desactivado.",
       "optionCustomCommands": "comandos personalizados",
       "optionBotNotifications": "Notificaciones del bot",
-      "optionChangelog": "Registro de cambios"
+      "optionChangelog": "Registro de cambios",
+      "optionWelcomeBack": "Mensajes de bienvenida",
+      "welcomeBackOn": "Mensajes de bienvenida activados.",
+      "welcomeBackOff": "Mensajes de bienvenida desactivados."
     },
     "optionAnalytics": "Análisis de comandos",
     "stats": {
@@ -3143,5 +3146,8 @@
     "onStartup": "al iniciar",
     "onShutdown": "al detener",
     "onCrash": "al fallar"
+  },
+  "welcomeBack": {
+    "tip": "Consejo: envia /start para volver a este menu."
   }
 }

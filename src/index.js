@@ -214,6 +214,14 @@ import { handleAnalyticsReply, handleAnalyticsDetailReply, handleMaintMenuReply,
 import { openFeedback, handleFeedbackReply, handleFeedbackAdminReply } from './handlers/feedbackCommand.js';
 import { setLastError } from './utils/errorTracker.js';
 import settingsService from './services/settingsService.js';
+import {
+  recordLastSeen,
+  flushLastSeen,
+  shouldWelcomeBack,
+  buildWelcomeBackMessage,
+  renderWelcomeBack
+} from './services/welcomeBackService.js';
+import { isWelcomeBackEnabled, welcomeBackTipShownPatch } from './config/welcomeBackToggles.js';
 import * as blockedUsers from './services/blockedUsersService.js';
 import * as scheduleService from './services/scheduleService.js';
 import * as featureScheduleService from './services/featureScheduleService.js';
@@ -403,6 +411,12 @@ async function startBot() {
   // Release the probe port on shutdown. Deliberately does not call process.exit:
   // lifecycleService owns the graceful-shutdown path.
   const closeHealth = () => { stopHealthServer(); };
+  // Persist batched lastSeen values, otherwise up to one flush interval of
+  // presence data is lost on every restart.
+  const flushPresence = () => {
+    try { flushLastSeen(); } catch { /* shutdown must not throw */ }
+  };
+  process.once('exit', flushPresence);
   process.once('SIGINT', closeHealth);
   process.once('SIGTERM', closeHealth);
 
@@ -727,6 +741,43 @@ async function startBot() {
       const userInfo = await getUserByJid(sender);
       const language = userInfo?.language || config.defaultLanguage;
       const tr = (key, params) => toSmallCaps(t(language, key, params));
+
+      // Welcome-back (Prompt B).
+      //
+      // This has to sit before the onboarding gate: for a user still mid
+      // onboarding the gate is what re-sends the Prompt A confirmation, and the
+      // welcome must land above it. It also has to sit after the blocked-user
+      // check so a blocked user is never greeted.
+      {
+        const seen = recordLastSeen(sender, userInfo);
+        const gate = shouldWelcomeBack({
+          user: userInfo,
+          session,
+          gap: seen.gap,
+          previousLastSeen: seen.previous,
+          enabled: isWelcomeBackEnabled()
+        });
+        if (gate.ok) {
+          const wb = buildWelcomeBackMessage(userInfo, gate.gap, { livePushName: msg.pushName, jid: sender });
+          await sendText(sock, sender, renderWelcomeBack(wb, language), { type: 'silent' });
+          if (wb.showTip) settingsService.updateSettings(welcomeBackTipShownPatch());
+          // Category A needs nothing further: the onboarding gate below
+          // re-sends the Prompt A confirmation on its own.
+          // Category B offers the main menu, but not when the message is a
+          // command that already answers itself -- /start would otherwise send
+          // the menu twice.
+          if (wb.category === 'B' && !isCommand) {
+            sessionManager.setState(sender, chatId, { currentMenu: 'main' });
+            await sendMigratedMainMenu({
+              sock, sender, chatId, user: userInfo, language, transitionKey: 'welcome_back'
+            });
+          }
+          logger.info(
+            { sender, gapMs: gate.gap, variant: wb.variant, category: wb.category },
+            '[WELCOME] greeted a returning user'
+          );
+        }
+      }
 
       // Smart first-time language onboarding owns the reply while active and
       // outranks every other flow, commands included (A8/C2). Also the silent
@@ -1493,11 +1544,13 @@ async function startBot() {
 
       // Grouped system settings submenus reply
       if (session?.currentMenu === 'general_settings') {
-        // Mirror the rendered menu: 5 options + back (option 5 = Message Display).
-        if (/^[0-5]$/.test(trimmedText)) {
+        // Mirror the rendered menu: 5 options + back, plus option 9
+        // (Welcome Back Messages). 6-8 are unassigned, so they fall through
+        // to the handler's invalid-choice branch.
+        if (/^[0-9]$/.test(trimmedText)) {
           await handleGeneralSettingsReply({ sock, sender, chatId, pushName }, trimmedText);
         } else {
-          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: 5 }));
+          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: 9 }));
         }
         return;
       }

@@ -16,6 +16,11 @@ import settingsService from '../services/settingsService.js';
 import { t } from '../services/localeService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { getTimeOfDay } from '../utils/timeOfDay.js';
+import { sanitizePushName } from '../utils/pushNameHelper.js';
+
+// Re-exported so existing callers keep a single import site for the greeting
+// name validator; the implementation now lives in utils/pushNameHelper.js.
+export { sanitizePushName };
 import { sendText } from '../services/messageService.js';
 import { buildMenu } from '../utils/menuBuilder.js';
 import { handleLanguageSelection, buildLanguageMenu } from './languageCommand.js';
@@ -81,23 +86,6 @@ export const LANG_KEYWORDS = {
 // Emoji-only shortcuts, matched on the whole trimmed message.
 const EMOJI_YES = new Set(['\u{1F44D}', '✅']);
 const EMOJI_NO = new Set(['\u{1F310}', '\u{1F501}']);
-
-/**
- * Validate a WhatsApp push name for use in the greeting.
- * Rejects empty, too-short, letter-less (punctuation/emoji only) and JID values.
- * @returns {string|null} cleaned name, or null when unusable
- */
-export function sanitizePushName(pushName, jid = null) {
-  const raw = typeof pushName === 'string' ? pushName.replace(/\s+/g, ' ').trim() : '';
-  if (!raw) return null;
-  if (jid && raw === jid) return null;
-  // Strip variation selectors / ZWJ used by emoji sequences.
-  const stripped = raw.replace(/[\u200D\uFE0F]/g, '').trim();
-  if (stripped.length < 2) return null;
-  // Must contain at least one real letter in any script.
-  if (!/\p{L}/u.test(stripped)) return null;
-  return raw.slice(0, 32);
-}
 
 /**
  * Match a first message against LANG_KEYWORDS.

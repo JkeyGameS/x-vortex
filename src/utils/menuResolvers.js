@@ -5,6 +5,7 @@ import { getTypingSettings } from '../services/typingSettingsService.js';
 import { hasPermission } from '../services/rolesService.js';
 import settingsService from '../services/settingsService.js';
 import { readBotNotifyToggles } from '../config/notificationToggles.js';
+import { isWelcomeBackEnabled } from '../config/welcomeBackToggles.js';
 import sessionManager from './sessionManager.js';
 import { getEntriesPage, getCurrentVersion } from '../services/changelogService.js';
 import { getPendingDrafts } from '../services/changelogDraftService.js';
@@ -37,7 +38,12 @@ export const dynamicSuffixResolvers = {
   botNotifs_onCrashState: (user, language) => botNotifsSuffix('onCrash', language),
   botNotifs_onNewUserState: (user, language) => botNotifsSuffix('onNewUser', language),
   botNotifs_onOnboardingCompleteState: (user, language) => botNotifsSuffix('onOnboardingComplete', language),
-  codeChangeState: (user, language) => botNotifsSuffix('onCodeChange', language)
+  codeChangeState: (user, language) => botNotifsSuffix('onCodeChange', language),
+  // Welcome-back greeting for returning users (Prompt B).
+  welcomeBackState: (user, language) => {
+    const on = isWelcomeBackEnabled();
+    return ': ' + toSmallCaps(t(language || 'en', on ? 'common.onFlag' : 'common.offFlag'));
+  }
 };
 
 /**

@@ -732,7 +732,10 @@
       "typingOff": "تم تعطيل المؤشر.",
       "optionCustomCommands": "اوامر مخصصة",
       "optionBotNotifications": "إشعارات البوت",
-      "optionChangelog": "سجل التغييرات"
+      "optionChangelog": "سجل التغييرات",
+      "optionWelcomeBack": "رسائل العودة",
+      "welcomeBackOn": "تم تفعيل رسائل العودة.",
+      "welcomeBackOff": "تم تعطيل رسائل العودة."
     },
     "optionAnalytics": "تحليل الأوامر",
     "stats": {
@@ -3143,5 +3146,8 @@
     "onStartup": "عند البدء",
     "onShutdown": "عند التوقف",
     "onCrash": "عند التعطل"
+  },
+  "welcomeBack": {
+    "tip": "نصيحة: أرسل /start للعودة إلى هذه القائمة."
   }
 }

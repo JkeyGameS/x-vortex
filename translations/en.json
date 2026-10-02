@@ -757,7 +757,10 @@
       "typingOff": "Typing indicator disabled.",
       "optionCustomCommands": "custom commands",
       "optionBotNotifications": "Bot Notifications",
-      "optionChangelog": "Changelog"
+      "optionChangelog": "Changelog",
+      "optionWelcomeBack": "Welcome back messages",
+      "welcomeBackOn": "Welcome-back messages enabled.",
+      "welcomeBackOff": "Welcome-back messages disabled."
     },
     "optionAnalytics": "Command Analytics",
     "stats": {
@@ -3168,5 +3171,8 @@
     "onStartup": "on startup",
     "onShutdown": "on shutdown",
     "onCrash": "on crash"
+  },
+  "welcomeBack": {
+    "tip": "Tip: send /start any time to come back to this menu."
   }
 }

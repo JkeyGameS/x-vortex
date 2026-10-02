@@ -732,7 +732,10 @@
       "typingOff": "Schreibanzeige deaktiviert.",
       "optionCustomCommands": "eigene befehle",
       "optionBotNotifications": "Bot-Benachrichtigungen",
-      "optionChangelog": "Anderungsprotokoll"
+      "optionChangelog": "Anderungsprotokoll",
+      "optionWelcomeBack": "Willkommensnachrichten",
+      "welcomeBackOn": "Willkommensnachrichten aktiviert.",
+      "welcomeBackOff": "Willkommensnachrichten deaktiviert."
     },
     "optionAnalytics": "Befehlsanalyse",
     "stats": {
@@ -3143,5 +3146,8 @@
     "onStartup": "beim start",
     "onShutdown": "beim beenden",
     "onCrash": "bei absturz"
+  },
+  "welcomeBack": {
+    "tip": "Hinweis: Sende /start, um jederzeit zu diesem Menu zurueckzukehren."
   }
 }

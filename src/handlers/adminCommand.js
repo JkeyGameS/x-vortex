@@ -5,6 +5,7 @@ import config from '../config/config.js';
 import logger from '../utils/logger.js';
 import sessionManager from '../utils/sessionManager.js';
 import settingsService from '../services/settingsService.js';
+import { isWelcomeBackEnabled, welcomeBackPatch } from '../config/welcomeBackToggles.js';
 import * as messageDisplayService from '../services/messageSettingsService.js';
 import * as blockedUsers from '../services/blockedUsersService.js';
 import * as templateService from '../services/templateService.js';
@@ -4310,6 +4311,7 @@ function buildGeneralSettingsMenu(language, resultLine = '') {
       '3. ' + t(language, 'admin.systemSettings.optionBotName'),
       '4. ⌨️ ' + toSmallCaps(t(language, 'admin.systemSettings.optionTyping')) + ': ' + toSmallCaps(statusText(language, settings.typingIndicatorEnabled !== false)),
       '5. 📩 ' + toSmallCaps(t(language, 'menu.message_display_admin.heading')) + ': ' + toSmallCaps(t(language, msgMode === 'hybrid' ? 'menu.message_display.hybrid' : 'menu.message_display.' + msgMode)),
+      '9. 👋 ' + toSmallCaps(t(language, 'admin.systemSettings.optionWelcomeBack')) + ': ' + toSmallCaps(statusText(language, isWelcomeBackEnabled())),
       '',
       '0. ' + t(language, 'admin.systemSettings.optionBack'),
       '',
@@ -4927,10 +4929,29 @@ export async function handleGeneralSettingsReply(context, selectedNumber) {
     case '5':
       await sendMessageByIdForAdmin(context);
       break;
+    case '9':
+      await toggleWelcomeBackMessages(context);
+      break;
     default:
-      await sendText(context.sock, sender, L(language, 'common.invalidChoiceMinMax', { min: 0, max: 5 }));
+      await sendText(context.sock, sender, L(language, 'common.invalidChoiceMinMax', { min: 0, max: 9 }));
       break;
   }
+}
+
+/**
+ * Welcome-back master toggle. Writes through welcomeBackPatch so the value
+ * lands in data/settings.json, which is the same store the router reads.
+ */
+async function toggleWelcomeBackMessages(context) {
+  const sender = context.sender;
+  const language = resolveLanguage(sender);
+  const next = !isWelcomeBackEnabled();
+  const settings = settingsService.updateSettings(welcomeBackPatch(next));
+  const on = settings?.welcomeBackEnabled !== false;
+  logger.info({ sender, welcomeBackEnabled: on }, '[SYSTEM] toggled welcome-back messages');
+  logAdminAction(sender, 'settings_change', 'welcome back messages ' + (on ? 'on' : 'off'));
+  const msg = t(language, on ? 'admin.systemSettings.welcomeBackOn' : 'admin.systemSettings.welcomeBackOff');
+  await sendGeneralSettingsPanel(context, { resultLine: msg });
 }
 
 async function toggleTypingIndicator(context) {

@@ -1,6 +1,40 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-02T14-59-23",
+      "timestamp": "2026-10-02T14:59:23Z",
+      "agent": "Cline",
+      "promptSummary": "Welcome Back Flow (Prompt B)",
+      "changes": [
+        "Greet returning users based on how long they were away and whether onboarding finished",
+        "Track lastSeen on every message with batched disk writes",
+        "Stay silent during the onboarding cooldown lock and any half-finished wizard",
+        "Accept emoji answers and fall back to a nameless greeting when the push name is unusable",
+        "Add a Welcome Back Messages toggle to General Settings"
+      ],
+      "files": [
+        "src/services/welcomeBackService.js",
+        "src/config/welcomeBackToggles.js",
+        "src/config/config.js",
+        "src/utils/pushNameHelper.js",
+        "src/handlers/languageOnboardingHandler.js",
+        "src/handlers/welcomeBackCommand.js",
+        "src/handlers/adminCommand.js",
+        "src/utils/menuCustomHandlers.js",
+        "src/utils/menuResolvers.js",
+        "src/index.js",
+        "tests/welcomeBack.test.mjs",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.4.0"
+    },
+    {
       "id": "chg-2026-10-02T11-20-00",
       "timestamp": "2026-10-02T11:20:00Z",
       "agent": "Cline",
