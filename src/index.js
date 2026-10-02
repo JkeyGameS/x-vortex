@@ -9,6 +9,7 @@ import { loadCommands } from './handlers/commandHandler.js';
 import { startHealthServer, stopHealthServer } from './healthServer.js';
 import { setQR, clearQR } from './utils/qrState.js';
 import { loadChangelog } from './services/changelogService.js';
+import { SUB_STATES as CHANGELOG_SUB_STATES } from './handlers/changelogManagerCommand.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
 import {
@@ -931,12 +932,13 @@ async function startBot() {
         chat_snippet_impex: 'snippet_impex',
         bot_notifications: 'bot_notifications',
         message_display: 'message_display',
-        message_display_admin: 'message_display_admin'
+        message_display_admin: 'message_display_admin',
+        changelog_manager: 'changelog_manager'
       }[session?.currentMenu || ''];
       if (migratedChatFaqId) {
         // Legacy parity: admin-only menus ignore non-admin input entirely.
         // User-facing menus (settings, stats, tutorial, info, feedback) skip this.
-        if (['chat_faq_menu', 'chat_responses_main', 'chat_settings', 'chat_snippets', 'chat_test_panel', 'chat_import_export', 'admin', 'admin_quick_actions', 'broadcast_submenu', 'admin_users', 'system_settings', 'admin_backup', 'logs', 'admin_search', 'admin_scheduled_tasks', 'command_analytics', 'faq_main', 'faq_add', 'faq_view', 'faq_manage', 'faq_import_export', 'faq_stats', 'faq_search', 'chat_snippet_impex', 'bot_notifications', 'message_display', 'message_display_admin'].includes(session?.currentMenu || '')) {
+        if (['chat_faq_menu', 'chat_responses_main', 'chat_settings', 'chat_snippets', 'chat_test_panel', 'chat_import_export', 'admin', 'admin_quick_actions', 'broadcast_submenu', 'admin_users', 'system_settings', 'admin_backup', 'logs', 'admin_search', 'admin_scheduled_tasks', 'command_analytics', 'faq_main', 'faq_add', 'faq_view', 'faq_manage', 'faq_import_export', 'faq_stats', 'faq_search', 'chat_snippet_impex', 'bot_notifications', 'message_display', 'message_display_admin', 'changelog_manager'].includes(session?.currentMenu || '')) {
           if (!isAdminOperator(sender)) return;
         }
         const clusterUser = await getUserByJid(sender);
@@ -2942,6 +2944,16 @@ async function startBot() {
             return;
           }
         }
+      }
+
+      // Changelog Manager sub-states (draft list/detail, wizards, entry edit).
+      // The manager menu itself is handled by the cluster above; everything it
+      // opens is a sub-state owned by one dispatcher.
+      if (CHANGELOG_SUB_STATES.has(session?.currentMenu || '')) {
+        if (!isAdminOperator(sender)) return;
+        const { handleChangelogManagerReply } = await import('./handlers/changelogManagerCommand.js');
+        await handleChangelogManagerReply({ sock, sender, chatId, pushName }, trimmedText);
+        return;
       }
 
       // Profile-cluster menus: session keeps legacy ids, the registry speaks

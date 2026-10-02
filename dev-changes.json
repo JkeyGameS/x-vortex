@@ -1,6 +1,42 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-02T10-15-00",
+      "timestamp": "2026-10-02T10:15:00Z",
+      "agent": "Cline",
+      "promptSummary": "Admin Changelog Manager (Prompt 3)",
+      "changes": [
+        "Added changelog manager menu with 8 admin actions",
+        "Added draft service and auto-draft creation from dev changes",
+        "Added publish, edit and delete for changelog entries",
+        "Added add-entry wizard and set-version flow",
+        "Added changelog export and import"
+      ],
+      "files": [
+        "src/services/changelogDraftService.js",
+        "src/services/changelogPublishService.js",
+        "src/utils/versionBump.js",
+        "src/config/menus/admin/changelogManager.js",
+        "src/config/menus/admin/systemSettings.js",
+        "src/config/menus/index.js",
+        "src/handlers/changelogManagerCommand.js",
+        "src/utils/menuResolvers.js",
+        "src/utils/menuCustomHandlers.js",
+        "src/services/devChangeNotifier.js",
+        "src/index.js",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json",
+        "tests/changelogManager.test.mjs",
+        "package.json",
+        ".gitignore"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.3.0"
+    },
+    {
       "id": "chg-2026-10-02T06:20:00",
       "timestamp": "2026-10-02T06:20:00Z",
       "agent": "Cline",

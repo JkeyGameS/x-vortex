@@ -11,7 +11,8 @@ const OPTS = [
   ['7', 'data', 'custom:sys_data', 'admin.systemSettings.optionDataManagement', '🧹'],
   ['8', 'logs', 'custom:sys_logs', 'admin.systemSettings.optionLogs', '❗'],
   ['9', 'bot_notifications', 'custom:sys_bot_notifications', 'admin.systemSettings.optionBotNotifications', '🔔'],
-  ['10', 'custom_commands', 'custom:sys_custom_commands', 'admin.systemSettings.optionCustomCommands', '🛠️']
+  ['10', 'custom_commands', 'custom:sys_custom_commands', 'admin.systemSettings.optionCustomCommands', '🛠️'],
+  ['11', 'changelog', 'open:changelog_manager', 'admin.systemSettings.optionChangelog', '📝']
 ];
 
 export default {

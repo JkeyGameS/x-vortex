@@ -7,6 +7,7 @@ import settingsService from '../services/settingsService.js';
 import { readBotNotifyToggles } from '../config/notificationToggles.js';
 import sessionManager from './sessionManager.js';
 import { getEntriesPage, getCurrentVersion } from '../services/changelogService.js';
+import { getPendingDrafts } from '../services/changelogDraftService.js';
 import { changelogOptions, formatEntryHeading } from './changelogFormat.js';
 import * as messageSettings from '../services/messageSettingsService.js';
 import { MESSAGE_MODES } from '../services/messageSettingsService.js';
@@ -264,6 +265,16 @@ export const bodyResolvers = {};
 export const dashboardResolvers = {};
 export const summaryResolvers = {};
 export const progressResolvers = {};
+
+// Changelog Manager summary: current version plus how many drafts await review.
+registerSummaryResolver('changelogManagerSummary', () => {
+  const version = getCurrentVersion();
+  const pending = getPendingDrafts().length;
+  return [
+    { static: toSmallCaps(t('en', 'menu.changelog_manager.current_version')) + ': *', dynamic: version + '*' },
+    { static: toSmallCaps(t('en', 'menu.changelog_manager.pending_drafts')) + ': *', dynamic: String(pending) + '*' }
+  ];
+});
 
 // Message display summaries (registered eagerly: no cycle risk, the service
 // only reads/writes data/messageSettings.json).

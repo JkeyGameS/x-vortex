@@ -7,13 +7,67 @@ import logger from '../utils/logger.js';
 import { sendText } from './messageService.js';
 import { isBotNotifyEnabled } from '../config/notificationToggles.js';
 import { getPendingChanges, saveNotifiedState } from './devChangesService.js';
+import { getCurrentVersion } from './changelogService.js';
+import { addDraft, getDraftById } from './changelogDraftService.js';
+import { suggestVersionBump } from '../utils/versionBump.js';
 import { formatSingleChange, formatAggregatedChanges } from '../utils/devChangeFormatter.js';
+
+/**
+ * Turn one dev-change into a reviewable draft, or null when a draft for it
+ * already exists. The suggested version chains off the *current* changelog
+ * version bumped by the change type.
+ */
+function draftFromChange(change, suggestedVersion, suggestedType) {
+  const draftId = 'draft-' + change.id;
+  if (getDraftById(draftId)) return null;
+  return {
+    id: draftId,
+    sourceChangeId: change.id,
+    version: suggestedVersion,
+    type: suggestedType,
+    date: new Date().toISOString().slice(0, 10),
+    changes: change.changes || [],
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  };
+}
+
+/**
+ * Create drafts for the given changes, newest first. Each suggestion is based
+ * on the version the previous entry would produce, so two pending features
+ * don't both suggest the same number.
+ * @returns {object[]} the drafts actually created
+ */
+export function createDraftsFromChanges(changes) {
+  const list = Array.isArray(changes) ? changes : [];
+  const created = [];
+  let version = getCurrentVersion();
+  for (const change of list) {
+    const type = change.type || 'improvement';
+    const bumped = suggestVersionBump(version, type);
+    const draft = draftFromChange(change, bumped, type);
+    if (draft) {
+      addDraft(draft);
+      created.push(draft);
+    }
+    // Advance even when the draft already existed, so numbering stays stable.
+    version = bumped;
+  }
+  return created;
+}
 
 export async function notifyPendingDevChanges(sock) {
   const pending = getPendingChanges();
   if (pending.length === 0) {
     logger.info('[DEV_CHANGES] no pending changes');
-    return { sent: 0, pending: 0, skipped: false };
+    return { sent: 0, pending: 0, drafts: 0, skipped: false };
+  }
+
+  // Drafts are created regardless of the toggle: the admin review queue is
+  // about content, not about whether a notification was pushed.
+  const drafts = createDraftsFromChanges(pending);
+  if (drafts.length) {
+    logger.info({ drafts: drafts.length }, '[DEV_CHANGES] drafts created for review');
   }
 
   const enabled = isBotNotifyEnabled('onCodeChange');
@@ -21,7 +75,7 @@ export async function notifyPendingDevChanges(sock) {
     // Mark as seen anyway: a disabled toggle must not build up a backlog.
     saveNotifiedState(pending[0].id);
     logger.info({ pending: pending.length }, '[DEV_CHANGES] notifications disabled; state advanced');
-    return { sent: 0, pending: pending.length, skipped: true };
+    return { sent: 0, pending: pending.length, drafts: drafts.length, skipped: true };
   }
 
   const text = pending.length === 1
@@ -41,6 +95,6 @@ export async function notifyPendingDevChanges(sock) {
   }
 
   saveNotifiedState(pending[0].id);
-  logger.info({ pending: pending.length, sent, aggregated: pending.length > 1 }, '[DEV_CHANGES] notifications sent');
-  return { sent, pending: pending.length, skipped: false };
+  logger.info({ pending: pending.length, sent, drafts: drafts.length, aggregated: pending.length > 1 }, '[DEV_CHANGES] notifications sent');
+  return { sent, pending: pending.length, drafts: drafts.length, skipped: false };
 }

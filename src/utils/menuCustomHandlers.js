@@ -4,6 +4,7 @@ import { handleTutorialReply } from '../handlers/tutorialCommand.js';
 import { handleInfoReply } from '../handlers/infoCommand.js';
 import { handleFeedbackReply } from '../handlers/feedbackCommand.js';
 import { handleFaqMain } from '../handlers/faqCommand.js';
+import { changelogManagerHandlers } from '../handlers/changelogManagerCommand.js';
 import { handleSnippetImpex } from '../handlers/chatCommand.js';
 import config from '../config/config.js';
 import sessionManager from '../utils/sessionManager.js';
@@ -269,6 +270,9 @@ Object.assign(chatFaqCustomHandlers, {
 const redispatch = (fn, input) => async (context) => fn(context, input);
 
 export const adminCustomHandlers = {
+  // Changelog Manager (admin). Thin delegates: the flows live in
+  // handlers/changelogManagerCommand.js so the 11 sub-states stay in one place.
+  ...changelogManagerHandlers,
   // Admin Panel options (legacy lock + perm gates preserved in handleAdminReply).
   admin_opt_quick: redispatch(handleAdminReply, '1'),
   admin_opt_stats: redispatch(handleAdminReply, '2'),

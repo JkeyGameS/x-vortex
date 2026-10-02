@@ -13,6 +13,7 @@ data/*
 
 # Environment-specific notification bookkeeping (never shared between hosts)
 data/lastNotifiedChangeId.json
+data/changelogDrafts.json
 
 # Environment
 .env
