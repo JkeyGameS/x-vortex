@@ -16,7 +16,7 @@
 //
 // `cooldown` outranks `resume` because both mean "unfinished onboarding" but
 // the cooldown one also has to clear a lock.
-import config from '../config/config.js';
+import { welcomeBackThresholds } from './botTiming.js';
 
 /**
  * @param {{ user: object|null, session: object|null, gap: number }} input
@@ -24,7 +24,7 @@ import config from '../config/config.js';
  */
 export function pickSpeaker({ user, session, gap } = {}) {
   const now = Date.now();
-  const gapLong = Number.isFinite(gap) && gap >= config.welcomeBack.minGapMs;
+  const gapLong = Number.isFinite(gap) && gap >= welcomeBackThresholds().minGapMs;
   const awaiting = session?.awaitingResumeConfirmation === true;
 
   // No record yet: first ever contact, the onboarding greeting owns it.

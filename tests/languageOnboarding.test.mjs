@@ -181,7 +181,7 @@ try {
     await makeNewUser(jid);
     await onboard.handleLanguageOnboardingGate(newContext(sock, jid, 'oi', 'pt-BR'), sessionManager.getSession(jid, jid), await getUserByJid(jid));
     const greeting = toUser(sock).map((m) => m.text).join('\n');
-    check('D1.4 unsupported notice names the language', dec(greeting).includes('portuguese'), greeting.slice(0, 160));
+    check('D1.4 unsupported notice names the language', decf(greeting).includes('portuguese'), greeting.slice(0, 160));
     check('D1.4 unsupported notice is in English', dec(greeting).includes('please choose'));
     check('D1.4 stats mark the device language unsupported', userStats.getUserStatsEntry(jid)?.deviceLanguage === null);
     sock.sent.length = 0;

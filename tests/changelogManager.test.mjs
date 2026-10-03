@@ -148,9 +148,14 @@ try {
   check('A: summary reports the current version', summary.some((l) => String(l.dynamic || '').includes(changelogSvc.getCurrentVersion())), JSON.stringify(summary));
   check('A: summary reports pending draft count', String(summary[1]?.dynamic).replace('*', '') === '2', JSON.stringify(summary));
 
-  const sysDef = getMenu('system_settings');
-  check('A: system settings has 11 options', sysDef.options.length === 11, String(sysDef.options.length));
+const sysDef = getMenu('system_settings');
+  // 12 rows now: option 12 is the Bot Content & Timing editor, which took the
+  // next free number rather than renumbering the changelog manager off 11.
+  check('A: system settings has 12 options', sysDef.options.length === 12, String(sysDef.options.length));
+  check('A: the changelog manager keeps option 11', sysDef.options[10]?.number === '11', sysDef.options[10]?.number);
   check('A: system settings option 11 opens the manager', sysDef.options[10]?.action === 'open:changelog_manager', sysDef.options[10]?.action);
+  check('A: option 12 is the bot content editor', sysDef.options[11]?.number === '12' && sysDef.options[11]?.action === 'open:bot_content', JSON.stringify(sysDef.options[11]));
+  check('A: no duplicate option numbers', new Set(sysDef.options.map((o) => o.number)).size === sysDef.options.length, JSON.stringify(sysDef.options.map((o) => o.number)));
   check('A: option 11 target is registered', !!getMenu(String(sysDef.options[10]?.action).slice(5)));
 
   const renderedManager = await renderMenu('changelog_manager', { jid: ADMIN, name: 'A', username: 'a', language: 'en', preferences: {}, stats: {} }, 'en', { sender: ADMIN, chatId: ADMIN });

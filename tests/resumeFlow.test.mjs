@@ -256,7 +256,7 @@ try {
     const out = texts(sock)[0] || '';
     check('C: no sends exactly one message', toUser(sock).length === 1, toUser(sock).length);
     check('C: the close is polite', decf(out).includes('no worries'), decf(out));
-    check('C: it promises to be there later', decf(out).includes('here when you are ready'), decf(out));
+    check('C: it promises to be there later', decf(out).includes("here when you're ready"), decf(out));
     check('C: awaitingResumeConfirmation is cleared', sessionManager.getSession(jid, jid)?.awaitingResumeConfirmation === false);
     check('C: idleClose is set', sessionManager.getSession(jid, jid)?.idleClose === true);
     check('C: an idle window is recorded', (sessionManager.getSession(jid, jid)?.idleCloseUntil ?? 0) > Date.now());
@@ -382,7 +382,7 @@ try {
     check('the cooldown branch no longer sends', !/STAGE\.LOCKED\)[\s\S]{0,400}sendText/.test(lo), 'a sendText survived the cooldown branch');
     check('the cooldown branch sets cooldownJustExpired', lo.includes('cooldownJustExpired: true'));
     check('buildDetectedMessage supports skipGreeting', lo.includes('opts.skipGreeting'));
-    check('language names are small-capped in the detected message', /toSmallCaps\(name\)/.test(lo));
+    check('language names come from the editable language display', lo.includes('getLanguageDisplay(detectedLang)'));
 
     const { t } = await import('../src/services/localeService.js');
     for (const lang of ['en', 'fr', 'de', 'es', 'ar']) {

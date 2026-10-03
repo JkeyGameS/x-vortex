@@ -23,6 +23,9 @@ import { toSmallCaps } from '../utils/smallCaps.js';
 import { preferredDisplayName, sanitizePushName } from '../utils/pushNameHelper.js';
 import { shouldShowTip } from '../config/welcomeBackToggles.js';
 import { updateUser } from './userService.js';
+import { getContent } from './botContentService.js';
+import { resolvePlaceholders } from '../utils/placeholderResolver.js';
+import { welcomeBackThresholds, idleCloseMs } from '../utils/botTiming.js';
 
 /**
  * Menu states that represent a half-finished wizard. If the user left off in
@@ -103,6 +106,8 @@ const HEADING_TEXT = {
   B3: 'Long time no see'
 };
 
+// Short/long resume headings live in the resume content, not here.
+
 // {name} is substituted after small-capping so it stays readable. Every entry
 // also carries a `without` phrasing: dropping the name out of "Hey {name}, ..."
 // by string surgery would leave a dangling comma, and the spec asks for the
@@ -145,16 +150,35 @@ const BODIES = {
   ]
 };
 
-function pick(variants) {
-  return variants[Math.floor(Math.random() * variants.length)];
+/**
+ * Variants come from botContent.welcomeBack.<variant>, falling back to the
+ * code table. An admin may shorten, lengthen or empty a pool, so a missing
+ * array degrades to the built-in one rather than throwing.
+ */
+function variantsFor(variant) {
+  const configured = getContent(`welcomeBack.${variant}`);
+  return Array.isArray(configured) && configured.length ? configured : BODIES[variant];
 }
 
-/** Small-cap the static fragments, splice the name in raw. */
+function pick(variant) {
+  const pool = variantsFor(variant);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/**
+ * The {with, without} pair keeps a nameless greeting grammatical. Content
+ * templates use {pushName} only, so a nameless render falls back to the
+ * nameless phrasing when the configured variant still references the name.
+ */
 function fill(variant, name) {
-  const template = name ? variant.with : variant.without;
-  if (!template.includes('{name}')) return toSmallCaps(template);
-  const [before, after = ''] = template.split('{name}');
-  return toSmallCaps(before) + name + toSmallCaps(after);
+  const chosen = variantsFor(variant.key);
+  const source = chosen[variant.index];
+  const template = typeof source === 'string' ? source : (name ? source.with : source.without);
+  if (!name && /\{pushName\}/.test(String(template))) {
+    const fallback = BODIES[variant.key][variant.index];
+    return resolvePlaceholders(typeof fallback === 'string' ? fallback : fallback.without, {});
+  }
+  return resolvePlaceholders(String(template), { pushName: name || '' });
 }
 
 /** Usable display name, or null when there is nothing safe to show. */
@@ -167,7 +191,7 @@ function nameFor(user, livePushName, jid) {
  * @returns {{ category: 'A'|'B', variant: 'A1'|'A2'|'A3'|'A4'|'B1'|'B2'|'B3' }}
  */
 export function classifyWelcomeBack(user, gapMs) {
-  const { shortGapMs, dayGapMs, weekGapMs } = config.welcomeBack;
+  const { shortGapMs, dayGapMs, weekGapMs } = welcomeBackThresholds();
   if (!user?.language) {
     if (gapMs < shortGapMs) return { category: 'A', variant: 'A1' };
     if (gapMs < dayGapMs) return { category: 'A', variant: 'A2' };
@@ -180,6 +204,12 @@ export function classifyWelcomeBack(user, gapMs) {
 }
 
 /** Heading text for a variant, with the emoji and small caps applied. */
+/**
+ * Welcome-back headings are structural (they label a gap bucket), not editable
+ * copy: A4/B3 say "Long time no see" while the resume flow's headingLong says
+ * "Welcome back", so the two must not share a key. The prompt's content draft
+ * defines no heading for these, so they stay here.
+ */
 export function headingFor(variant) {
   return WAVE + ' ' + toSmallCaps(HEADING_TEXT[variant] || HEADING_TEXT.A2);
 }
@@ -194,7 +224,8 @@ export function headingFor(variant) {
 export function buildWelcomeBackMessage(user, gapMs, opts = {}) {
   const { category, variant } = classifyWelcomeBack(user, gapMs);
   const name = nameFor(user, opts.livePushName, opts.jid);
-  const body = fill(pick(BODIES[variant]), name);
+  const pool = variantsFor(variant);
+  const body = fill({ key: variant, index: Math.floor(Math.random() * pool.length) }, name);
   return {
     heading: headingFor(variant),
     body,
@@ -233,7 +264,7 @@ export function shouldWelcomeBack({ user, session, gap, enabled, previousLastSee
   const previous = previousLastSeen !== undefined ? previousLastSeen : user.lastSeen;
   if (typeof previous !== 'number' || previous <= 0) return { ok: false, reason: 'first_sighting' };
   const effectiveGap = Number.isFinite(gap) ? gap : now - previous;
-  if (!(effectiveGap >= config.welcomeBack.minGapMs)) return { ok: false, reason: 'gap_too_small', gap: effectiveGap };
+  if (!(effectiveGap >= welcomeBackThresholds().minGapMs)) return { ok: false, reason: 'gap_too_small', gap: effectiveGap };
   if (inCooldownLock(session, now)) return { ok: false, reason: 'cooldown_lock' };
   if (isWizardState(session?.currentMenu)) return { ok: false, reason: 'in_wizard', menu: session?.currentMenu };
   return { ok: true, gap: effectiveGap };

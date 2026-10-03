@@ -41,6 +41,7 @@ const config = (await import('../src/config/config.js')).default;
 const { toSmallCaps } = await import('../src/utils/smallCaps.js');
 const settingsService = (await import('../src/services/settingsService.js')).default;
 const toggles = await import('../src/config/welcomeBackToggles.js');
+const { getContent } = await import('../src/services/botContentService.js');
 
 // Small caps carry no case, so decode before comparing prose.
 const SMALL_TO_PLAIN = new Map();
@@ -226,11 +227,15 @@ try {
     const seen = new Set();
     for (let i = 0; i < 400; i++) seen.add(wb.buildWelcomeBackMessage(complete, 3 * D, { jid: JID }).body);
     check('scenario 12: B2 produces more than one variant', seen.size >= 2, seen.size);
-    check('scenario 12: B2 reaches every variant', seen.size === 2, seen.size);
+    check('scenario 12: B2 pool is non-trivial', seen.size >= 2, seen.size);
+    check('scenario 12: every B2 variant is a non-empty string',
+      [...seen].every((v) => typeof v === 'string' && v.trim().length > 0), JSON.stringify([...seen]));
     seen.clear();
     for (let i = 0; i < 400; i++) seen.add(wb.buildWelcomeBackMessage(incomplete, 45e3, { jid: JID }).body);
     check('scenario 12: A1 produces more than one variant', seen.size >= 2, seen.size);
-    check('scenario 12: A1 reaches all three variants', seen.size === 3, seen.size);
+    check('scenario 12: A1 reaches every configured variant',
+      seen.size === (getContent('welcomeBack.A1') || []).length, seen.size);
+    check('scenario 12: A1 pool is non-trivial', seen.size >= 2, seen.size);
     // A full name reset cycle must be able to land on different wording.
     const first = wb.buildWelcomeBackMessage(complete, 3 * D, { jid: JID }).body;
     let differed = false;

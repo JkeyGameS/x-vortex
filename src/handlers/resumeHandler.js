@@ -13,6 +13,9 @@ import { toSmallCaps } from '../utils/smallCaps.js';
 import { sendText } from '../services/messageService.js';
 import { preferredDisplayName } from '../utils/pushNameHelper.js';
 import { STAGE, ONBOARDING_MENU, buildDetectedMessage, buildUnsupportedMessage, deviceLanguageName } from './languageOnboardingHandler.js';
+import { getContent } from '../services/botContentService.js';
+import { resolvePlaceholders } from '../utils/placeholderResolver.js';
+import { idleCloseMs } from '../utils/botTiming.js';
 
 // Emojis are concatenated in code, never carried in translations.
 const EMOJI_OK = '\u2705';
@@ -22,13 +25,10 @@ const EMOJI_WAVE = '\u{1F44B}';
 const L = (language, key, params) => toSmallCaps(t(language, key, params));
 
 /**
- * Fill a template that may contain {name} without small-capping the name.
- * toSmallCaps runs only over the static fragments.
+ * Render a content template with the user's name spliced in raw.
  */
 function fill(template, name) {
-  if (!String(template).includes('{name}')) return toSmallCaps(template);
-  const [before, after = ''] = String(template).split('{name}');
-  return toSmallCaps(before) + (name || '') + toSmallCaps(after);
+  return resolvePlaceholders(template, { pushName: name || '' });
 }
 
 /** Flags owned by the resume flow, cleared together on every exit path. */
@@ -53,18 +53,22 @@ export async function sendResumePrompt(context, session, user, gapMs) {
   const name = preferredDisplayName(user, context.pushName, sender);
   const long = Number.isFinite(gapMs) && gapMs > config.welcomeBack.dayGapMs;
 
-  const heading = L(language, long ? 'onboarding.resumeHeadingLong' : 'onboarding.resumeHeading');
-  const body = fill(t(language, long ? 'onboarding.resumeBodyLong' : 'onboarding.resumeBody'), name);
+  const heading = L(language, getContent(long
+    ? 'onboarding.resumeMessage.headingLong'
+    : 'onboarding.resumeMessage.headingShort'));
+  const body = fill(getContent(long
+    ? 'onboarding.resumeMessage.bodyLong'
+    : 'onboarding.resumeMessage.bodyShort'), name);
 
   const text = [
     `> *${EMOJI_WAVE} ${heading}*`,
     '',
     body,
     '',
-    `1. ${EMOJI_OK} ${L(language, 'onboarding.resumeOptionYes')}`,
-    `2. ${EMOJI_NO} ${L(language, 'onboarding.resumeOptionNo')}`,
+    '1. ' + resolvePlaceholders(getContent('onboarding.resumeMessage.optionYes'), {}),
+    '2. ' + resolvePlaceholders(getContent('onboarding.resumeMessage.optionNo'), {}),
     '',
-    '_' + L(language, 'onboarding.resumeReplyHint') + '_'
+    '_' + resolvePlaceholders(getContent('onboarding.resumeMessage.replyHint'), {}) + '_'
   ].join('\n');
 
   await sendText(sock, sender, text);
@@ -79,19 +83,19 @@ export async function sendResumePrompt(context, session, user, gapMs) {
 function nudge(language, attempt) {
   if (attempt === 1) {
     return [
-      L(language, 'onboarding.resumeNudge1'),
+      resolvePlaceholders(getContent('onboarding.resumeMessage.unclearAttempt1'), {}),
       `1. ${EMOJI_OK} ${L(language, 'onboarding.resumeYesShort')}`,
       `2. ${EMOJI_NO} ${L(language, 'onboarding.resumeNoShort')}`
     ].join('\n');
   }
   if (attempt === 2) {
     return [
-      L(language, 'onboarding.resumeNudge2'),
+      resolvePlaceholders(getContent('onboarding.resumeMessage.unclearAttempt2'), {}),
       `1. ${EMOJI_OK} ${L(language, 'onboarding.resumeYesShort')}`,
       `2. ${EMOJI_NO} ${L(language, 'onboarding.resumeNoShort')}`
     ].join('\n');
   }
-  return L(language, 'onboarding.resumeNudge3');
+  return resolvePlaceholders(getContent('onboarding.resumeMessage.unclearAttempt3'), {});
 }
 
 const normalize = (input) => String(input ?? '')
@@ -159,16 +163,16 @@ export async function handleResumeReply(context, session, user) {
     clearResumeFlags(sender, chatId);
     sessionManager.setState(sender, chatId, {
       idleClose: true,
-      idleCloseUntil: Date.now() + (config.welcomeBack.idleCloseMs ?? 1800000)
+      idleCloseUntil: Date.now() + idleCloseMs()
     });
     const name = preferredDisplayName(user, context.pushName, sender);
-    const body = fill(t(language, 'onboarding.resumeCloseBody'), name);
+    const body = fill(getContent('onboarding.resumeMessage.resumeNoBody'), name);
     const text2 = [
-      `> *${EMOJI_WAVE} ${L(language, 'onboarding.resumeCloseHeading')}*`,
+      `> *${EMOJI_WAVE} ${L(language, getContent('onboarding.resumeMessage.resumeNoHeading'))}*`,
       '',
       body,
       '',
-      '_' + L(language, 'onboarding.resumeCloseHint') + '_'
+      '_' + L(language, getContent('onboarding.resumeMessage.resumeNoHint')) + '_'
     ].join('\n');
     await sendText(sock, sender, text2);
     logger.debug({ sender }, '[RESUME] closed politely');

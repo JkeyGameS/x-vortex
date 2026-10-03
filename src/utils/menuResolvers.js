@@ -6,6 +6,7 @@ import { hasPermission } from '../services/rolesService.js';
 import settingsService from '../services/settingsService.js';
 import { readBotNotifyToggles } from '../config/notificationToggles.js';
 import { isWelcomeBackEnabled } from '../config/welcomeBackToggles.js';
+import { getContent } from '../services/botContentService.js';
 import sessionManager from './sessionManager.js';
 import { getEntriesPage, getCurrentVersion } from '../services/changelogService.js';
 import { getPendingDrafts } from '../services/changelogDraftService.js';
@@ -353,6 +354,73 @@ export function registerDashboardResolver(name, fn) {
   dashboardResolvers[name] = fn;
   return true;
 }
+
+/** Compact "3h ago" style stamp for the Bot Content summary line. */
+function contentRelativeTime(iso) {
+  const then = new Date(iso).getTime();
+  if (!Number.isFinite(then)) return 'never';
+  const secs = Math.max(0, Math.round((Date.now() - then) / 1000));
+  if (secs < 60) return secs + 's ago';
+  const mins = Math.round(secs / 60);
+  if (mins < 60) return mins + 'm ago';
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return hours + 'h ago';
+  return Math.round(hours / 24) + 'd ago';
+}
+
+// ---------------------------------------------------------------------------
+// Bot Content & Timing (Admin editor). Registered with registerSummaryResolver
+// rather than added to the summaryResolvers literal, which is empty by design --
+// every other summary in the codebase registers the same way.
+// ---------------------------------------------------------------------------
+
+registerSummaryResolver('botContentSummary', () => {
+  const updatedAt = getContent('updatedAt', null);
+  return toSmallCaps(t('en', 'menu.bot_content.updated')) + ': '
+    + contentRelativeTime(updatedAt);
+});
+
+registerSuffixResolver('botContentVariantCount', (user, language, opt) => {
+  const key = opt?.suffixKey;
+  const pool = getContent('welcomeBack.' + key);
+  const count = Array.isArray(pool) ? pool.length : 0;
+  return ': ' + toSmallCaps(t(language || 'en', 'menu.bot_content.variantCount')
+    .replace('{count}', String(count)));
+});
+
+registerSuffixResolver('botContentTimingValue', (user, language, opt) => {
+  const key = opt?.suffixKey;
+  const map = {
+    typingIndicatorEnabled: 'timing.typingIndicatorEnabled',
+    typingMode: 'timing.typingMode',
+    typingDelayMs: 'timing.typingDelayMs',
+    typingTargeting: 'timing.typingTargeting',
+    welcomeBackThresholds: 'timing.welcomeBackThresholds.minGapMs',
+    cooldownLockMs: 'timing.cooldownLockMs',
+    onboardingRetryMaxAttempts: 'timing.onboardingRetryMaxAttempts'
+  };
+  const value = getContent(map[key]);
+  let shown;
+  if (typeof value === 'boolean') {
+    shown = t(language || 'en', value ? 'common.onFlag' : 'common.offFlag');
+  } else if (typeof value === 'number') {
+    shown = value >= 1000 ? (value / 1000) + 's' : String(value);
+  } else {
+    shown = String(value ?? '');
+  }
+  return ': ' + toSmallCaps(shown);
+});
+
+registerSuffixResolver('botContentLanguageRow', (user, language, opt) => {
+  const code = opt?.suffixKey;
+  const lang = getContent('languageDisplay.languages.' + code, {});
+  return ': ' + toSmallCaps(String(lang.name || code)) + ' ' + (lang.flag || '');
+});
+
+registerSuffixResolver('botContentBoolState', (user, language, opt) => {
+  const value = getContent(opt?.suffixKey);
+  return ': ' + toSmallCaps(t(language || 'en', value !== false ? 'common.onFlag' : 'common.offFlag'));
+});
 
 export function registerSummaryResolver(name, fn) {
   if (typeof name !== 'string' || !name || typeof fn !== 'function') {

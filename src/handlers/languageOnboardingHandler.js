@@ -17,6 +17,10 @@ import { t } from '../services/localeService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { getTimeOfDay } from '../utils/timeOfDay.js';
 import { sanitizePushName } from '../utils/pushNameHelper.js';
+import { getContent } from '../services/botContentService.js';
+import { resolvePlaceholders } from '../utils/placeholderResolver.js';
+import { getLanguageDisplay } from '../utils/languageHelper.js';
+import { cooldownLockMs, retryMaxAttempts } from '../utils/botTiming.js';
 
 // Re-exported so existing callers keep a single import site for the greeting
 // name validator; the implementation now lives in utils/pushNameHelper.js.
@@ -29,8 +33,10 @@ import { isBotNotifyEnabled } from '../config/notificationToggles.js';
 import * as userStats from '../services/userStatsService.js';
 
 export const ONBOARDING_MENU = 'language_onboarding';
-export const MAX_ATTEMPTS = 3;
-export const COOLDOWN_MS = 5 * 60 * 1000;
+// Admin-editable via System Settings -> Bot Content -> Timing. These are the
+// code fallbacks; botTiming prefers the content store when it has a value.
+export const MAX_ATTEMPTS = retryMaxAttempts();
+export const COOLDOWN_MS = cooldownLockMs();
 
 // Explicit sub-states. Without these, "no language yet" alone was enough for the
 // gate to restart onboarding, so a user who had already been handed the
@@ -276,11 +282,10 @@ function brandGreeting() {
  * @param {{ pushName?: string, timezone?: string, now?: Date }} opts
  */
 export function buildDetectedMessage(language, detectedLang, opts = {}) {
-  const name = LANGUAGE_NAMES[detectedLang] || detectedLang;
-  const flag = LANGUAGE_FLAGS[detectedLang] || '';
-  // Language names are small-capped everywhere (Prompt C), unlike the user's
-  // push name, which stays raw.
-  const withFlag = `${toSmallCaps(name)} ${flag}`.trim();
+  // Name and flag are admin-editable (botContent.languageDisplay); the code
+  // constants stay as the fallback. getLanguageDisplay applies the cap.
+  const display = getLanguageDisplay(detectedLang);
+  const withFlag = display.full || detectedLang;
   const clean = sanitizePushName(opts.pushName, opts.jid);
 
   const lines = [];
@@ -292,23 +297,31 @@ export function buildDetectedMessage(language, detectedLang, opts = {}) {
   } else {
     const bucket = getTimeOfDay(opts.now || new Date(), opts.timezone || 'UTC');
     const { prefix, fallback } = greetingFor(language, bucket, Boolean(clean));
-    const greeting = clean ? `${prefix} *${clean}* \u{1F44B}` : `${prefix} \u{1F44B}`;
+    const greeting = resolvePlaceholders(getContent('onboarding.firstMessage.greeting'), {
+      timeOfDay: prefix,
+      pushName: clean || ''
+    });
     lines.push(brandGreeting(), '', greeting, '');
   }
 
+  // The templates reference {languageName} / {languageFlag}, so pass the
+  // display parts (not the joined string) as the context.
+  const ctx = { languageName: display.name, languageFlag: display.flag };
   lines.push(
-    '\u{1F310} ' + detectedLineFor(language, withFlag),
+    detectedLineFor(language, display),
     '',
-    L(language, 'onboarding.langLanguagesAvailable') + ': ' + LANGUAGES.map((l) => LANGUAGE_FLAGS[l]).join(' '),
+    resolvePlaceholders(getContent('onboarding.firstMessage.languagesPreview'), ctx),
     '',
-    L(language, 'onboarding.langDetectQuestion'),
+    resolvePlaceholders(getContent('onboarding.firstMessage.question'), ctx),
     '',
-    '1. \u2705 ' + L(language, 'onboarding.langDetectYesShort') + ' ' + withFlag,
-    '2. \u{1F310} ' + L(language, 'onboarding.langDetectChoose'),
+    // The option NUMBERS stay in code: input handling accepts "1" and "2", so
+    // they are behaviour, not content.
+    '1. ' + resolvePlaceholders(getContent('onboarding.firstMessage.option1'), ctx),
+    '2. ' + resolvePlaceholders(getContent('onboarding.firstMessage.option2'), ctx),
     '',
-    L(language, 'onboarding.langNotSupportedHint'),
+    resolvePlaceholders(getContent('onboarding.firstMessage.notSupportedHint'), ctx),
     '',
-    '_' + L(language, 'onboarding.langReplyHint') + '_'
+    '_' + resolvePlaceholders(getContent('onboarding.firstMessage.replyHint'), ctx) + '_'
   );
   return lines.join('\n');
 }
@@ -316,14 +329,18 @@ export function buildDetectedMessage(language, detectedLang, opts = {}) {
 /**
  * "I detected your device language is *Français 🇫🇷*."
  *
- * The template is split on {language} rather than interpolated, so the static
- * wording is small-capped independently of the value.
+ * The template owns its own emoji and bolding. resolvePlaceholders caps the
+ * static runs and splices the name and flag in already-capped. `display` may be
+ * a {name, flag} object or a pre-joined "name flag" string.
  */
-export function detectedLineFor(language, nameWithFlag) {
-  const template = t(language, 'onboarding.langDetectedLine');
-  const [before, after = ''] = String(template).split('{language}');
-  // trimEnd guards against a template that already pads the placeholder.
-  return toSmallCaps(before.trimEnd()) + ' *' + nameWithFlag + '*' + toSmallCaps(after);
+export function detectedLineFor(language, display) {
+  const parts = typeof display === 'string'
+    ? { name: display, flag: '' }
+    : (display || { name: '', flag: '' });
+  return resolvePlaceholders(getContent('onboarding.firstMessage.detectedLine'), {
+    languageName: parts.name,
+    languageFlag: parts.flag
+  });
 }
 
 /** A4: device language is not one we support; ask for a number 1-5 in English. */
@@ -331,9 +348,7 @@ export function buildUnsupportedMessage(rawName) {
   return [
     brandGreeting(),
     '',
-    L('en', 'onboarding.langUnsupportedNotice', { raw: rawName }),
-    '',
-    L('en', 'onboarding.langUnsupportedPlease'),
+    resolvePlaceholders(getContent('onboarding.unsupportedLanguage.message'), { detectedRaw: rawName }),
     '',
     '1. ' + L('en', 'onboarding.languageEnglish'),
     '2. ' + L('en', 'onboarding.languageFrench'),
@@ -347,15 +362,17 @@ export function buildUnsupportedMessage(rawName) {
 
 /** A5: one of three rotating "I didn't get that" prompts. */
 export function buildRetryMessage(language, attemptIndex) {
-  return L(language || 'en', 'onboarding.langRetry' + ((attemptIndex % MAX_ATTEMPTS) + 1));
+  return resolvePlaceholders(
+    getContent(`onboarding.retry.attempt${(attemptIndex % MAX_ATTEMPTS) + 1}`)
+  );
 }
 
 /** A6: cooldown lock notice. */
 export function buildCooldownMessage(language, minutes) {
   return [
-    '⏳ *' + L(language || 'en', 'onboarding.langCooldownTitle') + '*',
+    '> *' + resolvePlaceholders(getContent('onboarding.cooldownLock.heading'), {}) + '*',
     '',
-    L(language || 'en', 'onboarding.langCooldownBody', { minutes: String(minutes) })
+    resolvePlaceholders(getContent('onboarding.cooldownLock.body'), { cooldownMinutes: minutes })
   ].join('\n');
 }
 

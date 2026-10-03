@@ -9,6 +9,7 @@ import { loadCommands } from './handlers/commandHandler.js';
 import { startHealthServer, stopHealthServer } from './healthServer.js';
 import { setQR, clearQR } from './utils/qrState.js';
 import { loadChangelog } from './services/changelogService.js';
+import { loadBotContent } from './services/botContentService.js';
 import { SUB_STATES as CHANGELOG_SUB_STATES } from './handlers/changelogManagerCommand.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
@@ -405,6 +406,11 @@ async function startBot() {
     { port: process.env.PORT || 3000 },
     `[HEALTH] QR page will be available at http://localhost:${process.env.PORT || 3000}/qr/page once Baileys generates a QR`
   );
+
+  // Admin-editable content. Must load before anything reads getContent(): the
+  // menu registry resolves labels through resolvers that read timing and
+  // language display, and every onboarding string resolves on first use.
+  loadBotContent();
 
   // Version history for the Info menu. Loaded eagerly so the first open does
   // not pay a disk read; a missing file degrades to an empty changelog.
@@ -3071,6 +3077,19 @@ async function startBot() {
         const { handleChangelogManagerReply } = await import('./handlers/changelogManagerCommand.js');
         await handleChangelogManagerReply({ sock, sender, chatId, pushName }, trimmedText);
         return;
+      }
+
+      // Bot Content & Timing sub-states (field input, confirm, import,
+      // snapshots, reset). Menus resolve through the config-driven cluster;
+      // only the parked free-text states land here.
+      if (typeof session?.pendingAction === 'string' && session.pendingAction.startsWith('bot_content_')) {
+        if (!isAdminOperator(sender)) return;
+        const { handleBotContentReply } = await import('./handlers/botContentReply.js');
+        const handled = await handleBotContentReply(
+          { sock, sender, chatId, pushName, trimmedText, documentBuffer, language },
+          session
+        );
+        if (handled) return;
       }
 
       // Profile-cluster menus: session keeps legacy ids, the registry speaks

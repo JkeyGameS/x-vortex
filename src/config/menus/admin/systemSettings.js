@@ -12,7 +12,9 @@ const OPTS = [
   ['8', 'logs', 'custom:sys_logs', 'admin.systemSettings.optionLogs', '❗'],
   ['9', 'bot_notifications', 'custom:sys_bot_notifications', 'admin.systemSettings.optionBotNotifications', '🔔'],
   ['10', 'custom_commands', 'custom:sys_custom_commands', 'admin.systemSettings.optionCustomCommands', '🛠️'],
-  ['11', 'changelog', 'open:changelog_manager', 'admin.systemSettings.optionChangelog', '📝']
+  ['11', 'changelog', 'open:changelog_manager', 'admin.systemSettings.optionChangelog', '📝'],
+  // 12: option 11 was already taken by the changelog manager.
+  ['12', 'bot_content', 'open:bot_content', 'admin.systemSettings.optionBotContent', '🎨']
 ];
 
 export default {
