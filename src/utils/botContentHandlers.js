@@ -26,6 +26,13 @@ export const botContentHandlers = {
   bot_content_timing_welcomeBackThresholds: (c) => timing(c, 'welcomeBackThresholds'),
   bot_content_timing_cooldownLockMs: (c) => timing(c, 'cooldownLockMs'),
   bot_content_timing_onboardingRetryMaxAttempts: (c) => timing(c, 'onboardingRetryMaxAttempts'),
+  // Idle-then-hint (added after the initial editor pass).
+  bot_content_timing_startHintEnabled: (c) => timing(c, 'startHintEnabled'),
+  bot_content_timing_startHintDelayMs: (c) => timing(c, 'startHintDelayMs'),
+  bot_content_timing_startHintCooldownMs: (c) => timing(c, 'startHintCooldownMs'),
+  bot_content_timing_startHintQuietHoursEnabled: (c) => timing(c, 'startHintQuietHoursEnabled'),
+  bot_content_timing_startHintText: (c) => timing(c, 'startHintText'),
+  bot_content_timing_startHintTextAfterWelcomeBack: (c) => timing(c, 'startHintTextAfterWelcomeBack'),
 
   // Language display
   bot_content_language_en: (c) => language(c, 'en'),

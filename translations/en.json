@@ -2631,7 +2631,7 @@
   },
   "menu": {
     "main": {
-      "heading": "Hello {username}",
+      "heading": "Main Menu",
       "replyPrompt": "Reply with the number of your choice.",
       "sleep": "Asleep 💤",
       "profile": "My Profile",
@@ -3303,9 +3303,25 @@
         "retryMaxAttempts": "Retry Max Attempts",
         "smallCapsEnabled": "Small Caps Language Names",
         "typingTargeting": "Typing Targeting",
-        "welcomeBackThresholds": "Welcome-Back Min Gap"
+        "welcomeBackThresholds": "Welcome-Back Min Gap",
+        "startHintEnabled": "Start Hint",
+        "startHintDelayMs": "Start Hint Delay (ms)",
+        "startHintCooldownMs": "Start Hint Cooldown (ms)",
+        "startHintQuietHoursEnabled": "Quiet Hours",
+        "startHintQuietHoursStart": "Quiet Hours Start",
+        "startHintQuietHoursEnd": "Quiet Hours End",
+        "startHintText": "Start Hint Text",
+        "startHintTextAfterWelcomeBack": "Welcome-Back Hint Text"
       },
-      "previewVariant": "Welcome-Back Example"
+      "previewVariant": "Welcome-Back Example",
+      "field_startHintEnabled": "Start Hint",
+      "field_startHintDelayMs": "Start Hint Delay (ms)",
+      "field_startHintCooldownMs": "Start Hint Cooldown (ms)",
+      "field_startHintQuietHoursEnabled": "Quiet Hours",
+      "field_startHintQuietHoursStart": "Quiet Hours Start",
+      "field_startHintQuietHoursEnd": "Quiet Hours End",
+      "field_startHintText": "Start Hint Text",
+      "field_startHintTextAfterWelcomeBack": "Welcome-Back Hint Text"
     }
   },
   "lifecycle": {

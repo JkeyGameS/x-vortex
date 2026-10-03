@@ -423,7 +423,15 @@ export async function botContentTimingValue(context, key) {
     typingTargeting: 'timing.typingTargeting',
     welcomeBackThresholds: 'timing.welcomeBackThresholds.minGapMs',
     cooldownLockMs: 'timing.cooldownLockMs',
-    onboardingRetryMaxAttempts: 'timing.onboardingRetryMaxAttempts'
+    onboardingRetryMaxAttempts: 'timing.onboardingRetryMaxAttempts',
+    startHintEnabled: 'timing.startHintEnabled',
+    startHintDelayMs: 'timing.startHintDelayMs',
+    startHintCooldownMs: 'timing.startHintCooldownMs',
+    startHintQuietHoursEnabled: 'timing.startHintQuietHoursEnabled',
+    startHintQuietHoursStart: 'timing.startHintQuietHoursStart',
+    startHintQuietHoursEnd: 'timing.startHintQuietHoursEnd',
+    startHintText: 'timing.startHintText',
+    startHintTextAfterWelcomeBack: 'timing.startHintTextAfterWelcomeBack'
   };
   const path = map[key];
   sessionManager.setState(sender, chatId, {

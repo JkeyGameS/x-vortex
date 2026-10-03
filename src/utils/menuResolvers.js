@@ -396,8 +396,16 @@ registerSuffixResolver('botContentTimingValue', (user, language, opt) => {
     typingDelayMs: 'timing.typingDelayMs',
     typingTargeting: 'timing.typingTargeting',
     welcomeBackThresholds: 'timing.welcomeBackThresholds.minGapMs',
-    cooldownLockMs: 'timing.cooldownLockMs',
-    onboardingRetryMaxAttempts: 'timing.onboardingRetryMaxAttempts'
+cooldownLockMs: 'timing.cooldownLockMs',
+    onboardingRetryMaxAttempts: 'timing.onboardingRetryMaxAttempts',
+    startHintEnabled: 'timing.startHintEnabled',
+    startHintDelayMs: 'timing.startHintDelayMs',
+    startHintCooldownMs: 'timing.startHintCooldownMs',
+    startHintQuietHoursEnabled: 'timing.startHintQuietHoursEnabled',
+    startHintQuietHoursStart: 'timing.startHintQuietHoursStart',
+    startHintQuietHoursEnd: 'timing.startHintQuietHoursEnd',
+    startHintText: 'timing.startHintText',
+    startHintTextAfterWelcomeBack: 'timing.startHintTextAfterWelcomeBack'
   };
   const value = getContent(map[key]);
   let shown;

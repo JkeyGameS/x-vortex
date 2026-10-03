@@ -121,7 +121,22 @@ export default {
       weekGapMs: 604800000
     },
     cooldownLockMs: 300000,
-    onboardingRetryMaxAttempts: 3
+    onboardingRetryMaxAttempts: 3,
+
+    // Idle-then-hint. After a chat reply or a welcome-back the bot waits this
+    // long for the user to go quiet, then suggests /start instead of pushing
+    // the main menu. These are runtime strings, deliberately not translations:
+    // the Bot Content editor owns them.
+    startHintEnabled: true,
+    startHintDelayMs: 60000,
+    startHintCooldownMs: 600000,
+    startHintSuppressDuringOnboarding: true,
+    startHintSuppressDuringWizard: true,
+    startHintText: '💡 Want to see the menu? Send /start.',
+    startHintTextAfterWelcomeBack: "💡 Welcome back! Send /start when you're ready.",
+    startHintQuietHoursEnabled: false,
+    startHintQuietHoursStart: '23:00',
+    startHintQuietHoursEnd: '07:00'
   },
 
   languageDisplay: {

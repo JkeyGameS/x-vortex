@@ -2606,7 +2606,7 @@
   },
   "menu": {
     "main": {
-      "heading": "مرحبًا {username}",
+      "heading": "القائمة الرئيسية",
       "replyPrompt": "أجب برقم خيارك.",
       "sleep": "نائم 💤",
       "profile": "ملفي الشخصي",
@@ -3278,9 +3278,25 @@
         "retryMaxAttempts": "أقصى محاولات",
         "smallCapsEnabled": "أحرف صغيرة",
         "typingTargeting": "أهداف الكتابة",
-        "welcomeBackThresholds": "أقل فاصل للعودة"
+        "welcomeBackThresholds": "أقل فاصل للعودة",
+        "startHintEnabled": "تلميح البدء",
+        "startHintDelayMs": "تأخير تلميح البدء (ms)",
+        "startHintCooldownMs": "فترة سماح تلميح البدء (ms)",
+        "startHintQuietHoursEnabled": "ساعات الهدوء",
+        "startHintQuietHoursStart": "بداية ساعات الهدوء",
+        "startHintQuietHoursEnd": "نهاية ساعات الهدوء",
+        "startHintText": "نص تلميح البدء",
+        "startHintTextAfterWelcomeBack": "نص تلميح العودة"
       },
-      "previewVariant": "مثال العودة"
+      "previewVariant": "مثال العودة",
+      "field_startHintEnabled": "تلميح البدء",
+      "field_startHintDelayMs": "تأخير تلميح البدء (ms)",
+      "field_startHintCooldownMs": "فترة سماح تلميح البدء (ms)",
+      "field_startHintQuietHoursEnabled": "ساعات الهدوء",
+      "field_startHintQuietHoursStart": "بداية ساعات الهدوء",
+      "field_startHintQuietHoursEnd": "نهاية ساعات الهدوء",
+      "field_startHintText": "نص تلميح البدء",
+      "field_startHintTextAfterWelcomeBack": "نص تلميح العودة"
     }
   },
   "lifecycle": {

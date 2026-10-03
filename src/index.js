@@ -224,6 +224,10 @@ import {
 } from './services/welcomeBackService.js';
 import { isWelcomeBackEnabled, welcomeBackTipShownPatch } from './config/welcomeBackToggles.js';
 import { pickSpeaker } from './utils/pickSpeaker.js';
+import { getMenu } from './config/menus/registry.js';
+import { resolveMenuOption, runMenuAction } from './utils/menuRouter.js';
+import { sendMenuById } from './utils/menuSender.js';
+import { cancelStartHint } from './services/startHintService.js';
 import { sendResumePrompt, handleResumeReply } from './handlers/resumeHandler.js';
 import * as blockedUsers from './services/blockedUsersService.js';
 import * as scheduleService from './services/scheduleService.js';
@@ -745,6 +749,10 @@ async function startBot() {
 
       if (session?.isEndingTestSession === true) return;
 
+      // Any new message cancels a pending /start hint: the user is demonstrably
+      // present, so nudging them to type /start would be noise.
+      cancelStartHint(sender);
+
       // /try end must interrupt anything (Part 1).
       //
       // The language-selection gate below rejects any input while a test user
@@ -836,6 +844,12 @@ async function startBot() {
               { sender, gapMs: gate.gap, variant: wb.variant, category: wb.category },
               '[WELCOME] greeted a returning user'
             );
+            // Welcome-back is one of the two things that schedules the /start
+            // hint. The menu below (or the command's own reply) cancels it.
+            try {
+              const { scheduleStartHint } = await import('./services/startHintService.js');
+              scheduleStartHint(sender, { sock, sender, chatId, user: userInfo, session }, 'welcomeBack');
+            } catch { /* a missing hint must never break a greeting */ }
           }
         }
       }
@@ -3362,6 +3376,36 @@ async function startBot() {
         return;
       }
 
+      // Generic menu guard -- the last gate before free text.
+      //
+      // Menu handling above is a long chain of per-menu `if (session.currentMenu
+      // === X)` blocks with richer behaviour (feature gating, admin checks,
+      // paginated help). A menu registered in the registry but absent from that
+      // chain -- the Bot Content screens, for one -- had no reply handler at
+      // all, so a numbered option fell straight through to the chat rules and
+      // "2" answered with a greeting. Anything still holding a registered
+      // currentMenu is therefore resolved here, before handleFreeText.
+      if (session?.currentMenu) {
+        if (!getMenu(session.currentMenu)) {
+          // Removed or renamed menu: clear it rather than stranding the user.
+          logger.warn({ currentMenuId: session.currentMenu, sender }, '[ROUTER] stale menu id; clearing');
+          sessionManager.setState(sender, chatId, { currentMenu: null });
+        } else {
+          const genericResult = resolveMenuOption(session.currentMenu, trimmedText, userInfo, language);
+          if (genericResult.kind === 'action') {
+            await runMenuAction(genericResult.action, { sock, sender, chatId, pushName, text: trimmedText, language, user: userInfo, session });
+            return;
+          }
+          if (genericResult.kind === 'back') {
+            await sendMenuById(genericResult.to, { sock, sender, chatId, user: userInfo, language }, genericResult.to);
+            return;
+          }
+          // Invalid inside a real menu: answer here, never with a chat rule.
+          await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: genericResult.max }));
+          return;
+        }
+      }
+
       // Free text (no prefix, nothing menu-related) goes to the conversational layer.
       await conversationService.handleFreeText({ sock, sender, chatId, pushName }, trimmedText);
     } catch (error) {
@@ -3378,6 +3422,14 @@ async function startBot() {
     { count: registeredMenus.length, ids: registeredMenus.map((m) => m.id).join(', ') },
     `[MENU_REGISTRY] ${registeredMenus.length} menus registered`
   );
+  // Structural audit: missing headings, options with no number or action,
+  // duplicate option numbers, and dangling backTo/open: targets. Complements
+  // the critical-menu and dangling-open checks below rather than replacing them.
+  {
+    const { auditMenus } = await import('./utils/menuAudit.js');
+    auditMenus();
+  }
+
   // Startup validation: every menu reachable from the main menu must resolve,
   // otherwise pressing that option would fail at runtime.
   const CRITICAL_MENUS = ['main_menu', 'profile', 'settings', 'statistics', 'tutorial', 'info', 'feedback', 'help', 'adminPanel'];

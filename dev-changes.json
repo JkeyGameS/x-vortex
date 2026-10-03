@@ -1,6 +1,46 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-03T20-53-40",
+      "timestamp": "2026-10-03T20:53:40Z",
+      "agent": "Cline",
+      "promptSummary": "Fix menu routing + static main menu + idle-then-hint flow",
+      "changes": [
+        "Added a router guard so a registered currentMenu is resolved before chat rules, fixing numbered options falling through to a greeting",
+        "Cleared stale menu ids with a warning instead of stranding the user",
+        "Added a second guard in handleFreeText so chat rules refuse to run while a menu is open",
+        "Reverted the main menu heading to a static translated Main Menu",
+        "Added an idle-then-hint flow that suggests /start after a chat reply or welcome-back, with delay, cooldown and quiet hours",
+        "Added six timing fields for the hint to the Bot Content editor",
+        "Added a startup menu audit for dangling references, duplicate option numbers and malformed options"
+      ],
+      "files": [
+        "src/index.js",
+        "src/services/startHintService.js",
+        "src/services/conversationService.js",
+        "src/utils/menuSender.js",
+        "src/utils/menuAudit.js",
+        "src/utils/menuResolvers.js",
+        "src/utils/botContentHandlers.js",
+        "src/handlers/botContentCommand.js",
+        "src/config/menus/mainMenu.js",
+        "src/config/menus/admin/botContentTiming.js",
+        "src/config/botContentFields.js",
+        "src/config/defaultBotContent.js",
+        "data/botContent.json",
+        "tests/routingAndHint.test.mjs",
+        "tests/part1TryAndHeading.test.mjs",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.5.1"
+    },
+    {
       "id": "chg-2026-10-03T18-37-56",
       "timestamp": "2026-10-03T18:37:56Z",
       "agent": "Cline",

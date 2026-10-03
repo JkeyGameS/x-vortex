@@ -31,6 +31,12 @@ export async function sendMenuById(menuId, context, transitionKey, opts = {}) {
     mode = resolveMessageMode(definition, user);
   } catch { /* mode layer is optional; fall back to transition behavior */ }
   await sendMenu({ sock, sender, chatId, text, transitionKey: key, type: opts.type || 'submenuTransition', mode });
+  // Opening a menu means the user is present and navigating, so any pending
+  // /start hint is now redundant.
+  try {
+    const { cancelStartHint } = await import('../services/startHintService.js');
+    cancelStartHint(sender);
+  } catch { /* the hint service is optional */ }
   try {
     if (sender && chatId && sessionManager && typeof sessionManager.setState === 'function') {
       sessionManager.setState(sender, chatId, { currentMenu: sessionState });

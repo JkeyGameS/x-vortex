@@ -2606,7 +2606,7 @@
   },
   "menu": {
     "main": {
-      "heading": "¡Hola {username}",
+      "heading": "Menu Principal",
       "replyPrompt": "Responde con el número de tu elección.",
       "sleep": "Dormido 💤",
       "profile": "Mi perfil",
@@ -3278,9 +3278,25 @@
         "retryMaxAttempts": "Intentos max",
         "smallCapsEnabled": "Versalitas",
         "typingTargeting": "Objetivos de escritura",
-        "welcomeBackThresholds": "Intervalo min bienvenida"
+        "welcomeBackThresholds": "Intervalo min bienvenida",
+        "startHintEnabled": "Aviso de inicio",
+        "startHintDelayMs": "Retardo del aviso (ms)",
+        "startHintCooldownMs": "Recarga del aviso (ms)",
+        "startHintQuietHoursEnabled": "Horario tranquilo",
+        "startHintQuietHoursStart": "Inicio horario tranquilo",
+        "startHintQuietHoursEnd": "Fin horario tranquilo",
+        "startHintText": "Texto del aviso",
+        "startHintTextAfterWelcomeBack": "Texto tras bienvenida"
       },
-      "previewVariant": "Ejemplo de bienvenida"
+      "previewVariant": "Ejemplo de bienvenida",
+      "field_startHintEnabled": "Aviso de inicio",
+      "field_startHintDelayMs": "Retardo del aviso (ms)",
+      "field_startHintCooldownMs": "Recarga del aviso (ms)",
+      "field_startHintQuietHoursEnabled": "Horario tranquilo",
+      "field_startHintQuietHoursStart": "Inicio horario tranquilo",
+      "field_startHintQuietHoursEnd": "Fin horario tranquilo",
+      "field_startHintText": "Texto del aviso",
+      "field_startHintTextAfterWelcomeBack": "Texto tras bienvenida"
     }
   },
   "lifecycle": {

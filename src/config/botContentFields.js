@@ -79,6 +79,22 @@ export const EDITABLE_TIMING = {
   'timing.welcomeBackThresholds.weekGapMs': { labelKey: 'menu.bot_content.field.weekGapMs', type: 'number' },
   'timing.cooldownLockMs': { labelKey: 'menu.bot_content.field.cooldownLockMs', type: 'number' },
   'timing.onboardingRetryMaxAttempts': { labelKey: 'menu.bot_content.field.retryMaxAttempts', type: 'number' },
+  'timing.startHintEnabled': { labelKey: 'menu.bot_content.field.startHintEnabled', type: 'bool' },
+  'timing.startHintDelayMs': { labelKey: 'menu.bot_content.field.startHintDelayMs', type: 'number' },
+  'timing.startHintCooldownMs': { labelKey: 'menu.bot_content.field.startHintCooldownMs', type: 'number' },
+  'timing.startHintQuietHoursEnabled': { labelKey: 'menu.bot_content.field.startHintQuietHoursEnabled', type: 'bool' },
+  'timing.startHintText': {
+    labelKey: 'menu.bot_content.field.startHintText',
+    type: 'text',
+    placeholders: ['botName', 'timeOfDay']
+  },
+  'timing.startHintTextAfterWelcomeBack': {
+    labelKey: 'menu.bot_content.field.startHintTextAfterWelcomeBack',
+    type: 'text',
+    placeholders: ['botName', 'timeOfDay']
+  },
+  'timing.startHintQuietHoursStart': { labelKey: 'menu.bot_content.field.startHintQuietHoursStart', type: 'text' },
+  'timing.startHintQuietHoursEnd': { labelKey: 'menu.bot_content.field.startHintQuietHoursEnd', type: 'text' },
   'timing.typingIndicatorEnabled': { labelKey: 'menu.bot_content.field.typingIndicatorEnabled', type: 'bool' },
   'timing.typingMode': { labelKey: 'menu.bot_content.field.typingMode', type: 'enum', values: ['adaptive', 'fixed'] },
   'languageDisplay.smallCapsEnabled': { labelKey: 'menu.bot_content.field.smallCapsEnabled', type: 'bool' }

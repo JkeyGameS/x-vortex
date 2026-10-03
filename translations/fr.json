@@ -2606,7 +2606,7 @@
   },
   "menu": {
     "main": {
-      "heading": "Bonjour {username}",
+      "heading": "Menu Principal",
       "replyPrompt": "Répondez avec le numéro de votre choix.",
       "sleep": "Endormi 💤",
       "profile": "Mon profil",
@@ -3278,9 +3278,25 @@
         "retryMaxAttempts": "Essais max",
         "smallCapsEnabled": "Petites capitales",
         "typingTargeting": "Cibles de frappe",
-        "welcomeBackThresholds": "Ecart min retour"
+        "welcomeBackThresholds": "Ecart min retour",
+        "startHintEnabled": "Indice de demarrage",
+        "startHintDelayMs": "Delai de l indice (ms)",
+        "startHintCooldownMs": "Recharge de l indice (ms)",
+        "startHintQuietHoursEnabled": "Heures calmes",
+        "startHintQuietHoursStart": "Debut heures calmes",
+        "startHintQuietHoursEnd": "Fin heures calmes",
+        "startHintText": "Texte de l indice",
+        "startHintTextAfterWelcomeBack": "Texte apres retour"
       },
-      "previewVariant": "Exemple de retour"
+      "previewVariant": "Exemple de retour",
+      "field_startHintEnabled": "Indice de demarrage",
+      "field_startHintDelayMs": "Delai de l indice (ms)",
+      "field_startHintCooldownMs": "Recharge de l indice (ms)",
+      "field_startHintQuietHoursEnabled": "Heures calmes",
+      "field_startHintQuietHoursStart": "Debut heures calmes",
+      "field_startHintQuietHoursEnd": "Fin heures calmes",
+      "field_startHintText": "Texte de l indice",
+      "field_startHintTextAfterWelcomeBack": "Texte apres retour"
     }
   },
   "lifecycle": {

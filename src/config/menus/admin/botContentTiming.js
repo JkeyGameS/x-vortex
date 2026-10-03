@@ -26,6 +26,12 @@ export default {
     T('4', 'typingTargeting'),
     T('5', 'welcomeBackThresholds'),
     T('6', 'cooldownLockMs'),
-    T('7', 'onboardingRetryMaxAttempts')
+    T('7', 'onboardingRetryMaxAttempts'),
+    T('8', 'startHintEnabled'),
+    T('9', 'startHintDelayMs'),
+    T('10', 'startHintCooldownMs'),
+    T('11', 'startHintQuietHoursEnabled'),
+    T('12', 'startHintText'),
+    T('13', 'startHintTextAfterWelcomeBack')
   ]
 };

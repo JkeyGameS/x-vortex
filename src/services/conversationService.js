@@ -379,6 +379,17 @@ export async function handleFreeText(context, text) {
   const language = user?.language || config.defaultLanguage;
   const session = sessionManager.getSession(sender, chatId) || {};
 
+  // Second line of defence for the router's generic menu guard: while a
+  // registered menu is open, free text belongs to that menu, never to a chat
+  // rule. Without this, any menu the router did not resolve answered "2" with
+  // a greeting.
+  if (session.currentMenu) {
+    try {
+      const { getMenu } = await import('../config/menus/registry.js');
+      if (getMenu(session.currentMenu)) return false;
+    } catch { /* registry unavailable: fall through to the normal path */ }
+  }
+
   // Strict language enforcement: no language selected -> everything is ignored.
   if (!user?.language) {
     await sendLanguageGate(context, language);
@@ -657,6 +668,13 @@ export async function handleFreeText(context, text) {
           } catch { /* analytics must never break replies */ }
         }
         markRuleResponded(sender, chatMatch.rule);
+        // Idle-then-hint: the reply has been sent, so nudge /start if the user
+        // goes quiet. Suppressed automatically when a menu, wizard, cooldown
+        // lock or resume confirmation is active.
+        try {
+          const { scheduleStartHint } = await import('./startHintService.js');
+          scheduleStartHint(sender, { sock: context.sock, user, chatId, session }, 'chat');
+        } catch { /* a missing hint must never break a reply */ }
         // Step 5 — post-reply context update.
         const pendingBefore = pendingContext;
         let pendingAfter = pendingBefore;

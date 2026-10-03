@@ -25,6 +25,7 @@ function check(name, cond, extra = '') {
 }
 
 const ADMIN = '127531067904055@lid';
+const { toSmallCaps } = await import('../src/utils/smallCaps.js');
 const JID = '920000000000001@lid';
 
 const { toSmallCaps: sc } = await import('../src/utils/smallCaps.js');
@@ -185,26 +186,34 @@ try {
   }
 
   // =====================================================================
-  // Section 2.3 -- personalized main-menu heading
+  // Main-menu heading. This was personalised ("Hello @user") when Part 1
+  // landed and has since been reverted to the static heading; the assertions
+  // below cover the current behaviour plus the renderer support that stays in
+  // place for future menus.
   // =====================================================================
   const headingOf = async (user, lang = 'en') => {
     const r = await renderMenu('main_menu', user, lang, { sender: user?.jid || '1@lid' });
     return r.text.split('\n')[0];
   };
 
-  check('1: username renders as @adminuser',
-    await headingOf({ jid: '1@lid', username: 'adminuser', name: 'Ignored' }) === '> *ʜᴇʟʟᴏ @adminuser*',
+  const STATIC_HEADING = '> *' + toSmallCaps('Main Menu') + '*';
+
+  check('2: a username user sees the static heading',
+    await headingOf({ jid: '1@lid', username: 'adminuser', name: 'Ignored' }) === STATIC_HEADING,
     await headingOf({ jid: '1@lid', username: 'adminuser', name: 'Ignored' }));
-  check('2: a name-only user renders raw',
-    await headingOf({ jid: '1@lid', username: null, name: 'BAMBA _ 𝕏' }) === '> *ʜᴇʟʟᴏ BAMBA _ 𝕏*',
+  check('2: a name-only user sees the static heading',
+    await headingOf({ jid: '1@lid', username: null, name: 'BAMBA _ 𝕏' }) === STATIC_HEADING,
     await headingOf({ jid: '1@lid', username: null, name: 'BAMBA _ 𝕏' }));
-  check('3: a user with neither renders the bare greeting',
-    await headingOf({ jid: '1@lid', username: null, name: '' }) === '> *ʜᴇʟʟᴏ*',
+  check('2: a user with neither sees the static heading',
+    await headingOf({ jid: '1@lid', username: null, name: '' }) === STATIC_HEADING,
     await headingOf({ jid: '1@lid', username: null, name: '' }));
-  check('a null user renders the bare greeting', await headingOf(null) === '> *ʜᴇʟʟᴏ*', await headingOf(null));
-  check('username wins over name', mainMenuHeading({ username: 'u', name: 'n' }) === 'ʜᴇʟʟᴏ @u', mainMenuHeading({ username: 'u', name: 'n' }));
-  check('the name is not small-capped', !mainMenuHeading({ name: 'BAMBA' }).includes(toLowerSafe('BAMBA')), mainMenuHeading({ name: 'BAMBA' }));
-  check('the greeting is small-capped', mainMenuHeading({ name: 'x' }).startsWith('ʜᴇʟʟᴏ'), mainMenuHeading({ name: 'x' }));
+  check('2: a null user sees the static heading', await headingOf(null) === STATIC_HEADING, await headingOf(null));
+  check('2: the heading carries no username', !STATIC_HEADING.includes('adminuser') && !STATIC_HEADING.includes('BAMBA'));
+  check('2: mainMenuHeading still exists for future menus',
+    typeof mainMenuHeading({ username: 'u' }) === 'string' && mainMenuHeading({ username: 'u' }).length > 0,
+    typeof mainMenuHeading);
+  check('2: the definition no longer opts into a dynamic heading',
+    (await import('../src/config/menus/registry.js')).getMenu('main_menu').dynamicHeading !== true);
 
   // 6 -- option numbers and labels unchanged. Asserted on the definition
   // rather than the render, because the admin row (A) is feature-gated and
@@ -236,12 +245,14 @@ try {
       adminRender.text.includes('\n' + sc('A') + '. '), adminRender.text.split('\n').pop());
   }
 
-  // 7 -- the greeting is not translated.
+  // 7 -- the heading follows the user language.
   {
     const fr = await headingOf({ jid: '1@lid', username: 'adminuser', name: 'x' }, 'fr');
     const ar = await headingOf({ jid: '1@lid', username: 'adminuser', name: 'x' }, 'ar');
-    check('7: French still shows the same greeting header', fr === '> *ʜᴇʟʟᴏ @adminuser*', fr);
-    check('7: Arabic still shows the same greeting header', ar === '> *ʜᴇʟʟᴏ @adminuser*', ar);
+    check('7: the French heading is translated and static',
+      fr === '> *' + toSmallCaps('Menu Principal') + '*' && !fr.includes('adminuser'), fr);
+    check('7: the Arabic heading is translated and static',
+      ar === '> *' + toSmallCaps('القائمة الرئيسية') + '*' && !ar.includes('adminuser'), ar);
   }
 
   // Backward compatibility: a definition without dynamicHeading keeps the old
@@ -249,10 +260,12 @@ try {
   {
     const other = await renderMenu('preferences', { jid: '1@lid', name: 'x' }, 'en', { sender: '1@lid' });
     check('other menus still use their translated heading', other.text.startsWith('> *'), other.text.split('\n')[0]);
-    check('the main_menu definition is flagged dynamicHeading',
-      (await import('../src/config/menus/registry.js')).getMenu('main_menu').dynamicHeading === true);
-    check('the main_menu definition carries a headingResolver',
-      typeof (await import('../src/config/menus/registry.js')).getMenu('main_menu').headingResolver === 'function');
+    check('the main_menu definition opts out of a dynamic heading',
+      (await import('../src/config/menus/registry.js')).getMenu('main_menu').dynamicHeading !== true);
+    check('the main_menu definition has no headingResolver',
+      (await import('../src/config/menus/registry.js')).getMenu('main_menu').headingResolver === undefined);
+    check('the renderer still supports dynamicHeading for other menus',
+      fs.readFileSync(path.join(root, 'src/utils/menuRenderer.js'), 'utf8').includes('definition.dynamicHeading === true'));
   }
 
   // =====================================================================

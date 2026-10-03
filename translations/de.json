@@ -2606,7 +2606,7 @@
   },
   "menu": {
     "main": {
-      "heading": "Hallo {username}",
+      "heading": "Hauptmenü",
       "replyPrompt": "Antworte mit der Nummer deiner Wahl.",
       "sleep": "Schlafend 💤",
       "profile": "Mein Profil",
@@ -3278,9 +3278,25 @@
         "retryMaxAttempts": "Max Versuche",
         "smallCapsEnabled": "Kapitaelchen",
         "typingTargeting": "Tipp-Ziele",
-        "welcomeBackThresholds": "Min-Abstand Willkommen"
+        "welcomeBackThresholds": "Min-Abstand Willkommen",
+        "startHintEnabled": "Start-Hinweis",
+        "startHintDelayMs": "Start-Hinweis Verzoegerung (ms)",
+        "startHintCooldownMs": "Start-Hinweis Abklingzeit (ms)",
+        "startHintQuietHoursEnabled": "Ruhezeiten",
+        "startHintQuietHoursStart": "Ruhezeit Beginn",
+        "startHintQuietHoursEnd": "Ruhezeit Ende",
+        "startHintText": "Start-Hinweis Text",
+        "startHintTextAfterWelcomeBack": "Text nach Willkommen"
       },
-      "previewVariant": "Willkommens-Beispiel"
+      "previewVariant": "Willkommens-Beispiel",
+      "field_startHintEnabled": "Start-Hinweis",
+      "field_startHintDelayMs": "Start-Hinweis Verzoegerung (ms)",
+      "field_startHintCooldownMs": "Start-Hinweis Abklingzeit (ms)",
+      "field_startHintQuietHoursEnabled": "Ruhezeiten",
+      "field_startHintQuietHoursStart": "Ruhezeit Beginn",
+      "field_startHintQuietHoursEnd": "Ruhezeit Ende",
+      "field_startHintText": "Start-Hinweis Text",
+      "field_startHintTextAfterWelcomeBack": "Text nach Willkommen"
     }
   },
   "lifecycle": {
