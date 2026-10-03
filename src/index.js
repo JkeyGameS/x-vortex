@@ -739,6 +739,24 @@ async function startBot() {
 
       if (session?.isEndingTestSession === true) return;
 
+      // /try end must interrupt anything (Part 1).
+      //
+      // The language-selection gate below rejects any input while a test user
+      // has no language, which trapped the admin: they could not leave try mode
+      // from the exact screen they were trying to leave. This intercept sits
+      // ahead of the cooldown check, the onboarding stage check, language
+      // enforcement, chat-rule matching and command dispatch, and the return
+      // guarantees no other handler sees the message.
+      if (/^\/try[\s]+(end|exit|stop)$/i.test(trimmedText) && session?.isTestActive) {
+        try {
+          const { endTrySession } = await import('./handlers/tryCommand.js');
+          await endTrySession({ sock, sender, chatId, pushName, text: trimmedText });
+        } catch (err) {
+          logger.error({ err, sender }, '[TRY] endTrySession failed');
+        }
+        return;
+      }
+
       // Resolve the user's language once per message for localized feedback.
       const userInfo = await getUserByJid(sender);
       const language = userInfo?.language || config.defaultLanguage;
@@ -830,8 +848,13 @@ async function startBot() {
       }
 
       if (isCommand && session?.currentMenu === 'language_selection' && !userInfo?.language) {
-        await sendText(sock, sender, tr('conversation.languageGate'));
-        await sendMenu({ sock, sender, chatId, text: buildLanguageMenu(), transitionKey: 'language_selection' });
+        // A /try control command must never be swallowed by the language gate
+        // (Part 1): during try mode the test user has no language, so this is
+        // exactly where "/try end" used to die.
+        if (!/^\/try(\s|$)/i.test(trimmedText)) {
+          await sendText(sock, sender, tr('conversation.languageGate'));
+          await sendMenu({ sock, sender, chatId, text: buildLanguageMenu(), transitionKey: 'language_selection' });
+        }
         sessionManager.setState(sender, chatId, { currentMenu: 'language_selection', isLanguageSelectionPending: true });
         return;
       }
@@ -1272,9 +1295,13 @@ async function startBot() {
         if (/^[1-5]$/.test(trimmedText)) {
           await handleLanguageSelection({ sock, sender, chatId, pushName }, trimmedText);
         } else if (!userInfo?.language) {
-          sessionManager.setState(sender, chatId, { isLanguageSelectionPending: true });
-          await sendText(sock, sender, tr('conversation.languageGate'));
-          await sendMenu({ sock, sender, chatId, text: buildLanguageMenu(), transitionKey: 'language_selection' });
+          // Safety net: never trap a /try control command behind the language
+          // gate (Part 1). It falls through to command dispatch instead.
+          if (!/^\/try(\s|$)/i.test(trimmedText)) {
+            sessionManager.setState(sender, chatId, { isLanguageSelectionPending: true });
+            await sendText(sock, sender, tr('conversation.languageGate'));
+            await sendMenu({ sock, sender, chatId, text: buildLanguageMenu(), transitionKey: 'language_selection' });
+          }
         } else {
           await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 1, max: 5 }));
         }

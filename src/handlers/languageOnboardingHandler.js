@@ -733,6 +733,12 @@ export async function handleLanguageOnboardingGate(context, session, user) {
   const input = String(context.text ?? '').trim();
   logger.debug({ sender, stage, currentMenu: session?.currentMenu, input }, '[ONBOARD] input');
 
+  // Safety net for the /try control commands (Part 1). The router intercept
+  // handles these first, but if it ever misses, onboarding must not consume the
+  // message -- otherwise the admin is locked out of try mode by a prompt asking
+  // them to pick a language. Covers the cooldown lock too, since it lives here.
+  if (/^\/try(\s|$)/i.test(input)) return false;
+
   // Cooldown lock: silently ignore everything until it expires (C3).
   if (isOnboardingLocked(session)) return true;
 

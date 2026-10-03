@@ -9,10 +9,17 @@
 // - The admin row is feature-gated (visible iff adminPanel is available),
 //   exactly like the old builder — NOT admin-gated. The admin check happens
 //   at click time in the router branch, as before.
+import { mainMenuHeading } from '../../utils/menuResolvers.js';
+
 export default {
   id: 'main_menu',
   headingKey: 'menu.main.heading',
   headingEmoji: null,
+  // The greeting is personalized per user (Part 1). Rendered by
+  // menuRenderer.renderMenu via mainMenuHeading(); the headingKey above stays
+  // as the fallback for any definition that lacks this flag.
+  dynamicHeading: true,
+  headingResolver: mainMenuHeading,
   standaloneCommand: '/start',
   aliases: ['/begin', '/menu'],
   parent: null,

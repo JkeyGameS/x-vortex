@@ -19,6 +19,20 @@ import * as customCommandStore from '../services/customCommandService.js';
  * Registered by name; referenced from definitions via option.dynamicSuffix.
  * Values are pre-formatted (small caps applied here, mirroring legacy code).
  */
+/**
+ * Personalized main-menu heading (Part 1).
+ *
+ * The name is a dynamic value and must NOT be small-capped: "@adminuser" and
+ * "BAMBA _ 𝕏" both have to come out exactly as the user typed them, so this
+ * returns raw text and the renderer skips toSmallCaps for it.
+ */
+export function mainMenuHeading(user) {
+  const greeting = toSmallCaps('Hello');
+  if (!user) return greeting;
+  const displayName = user.username ? '@' + user.username : (user.name || '');
+  return displayName ? `${greeting} ${displayName}` : greeting;
+}
+
 export const dynamicSuffixResolvers = {
   notificationsState: (user, language) => {
     const on = user?.preferences?.notifications ? true : false;

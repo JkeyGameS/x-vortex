@@ -90,7 +90,13 @@ export async function renderMenu(menuId, user, language, options = {}) {
   const displayName = user?.username ? `@${user.username}` : (user?.name || 'User');
   const headingParams = { username: displayName, ...(options.headingParams || {}) };
   const headingTemplate = tx(lang, definition.headingKey, definition.fallbackHeadingKey);
-  const heading = `${definition.headingEmoji ? definition.headingEmoji + ' ' : ''}${renderTemplate(headingTemplate, headingParams)}`;
+  // Part 1: menus flagged dynamicHeading build their heading from the user
+  // record instead of a translation, so the display name can be spliced in
+  // raw. Anything without the flag falls through to the original path
+  // unchanged.
+  const heading = definition.dynamicHeading === true && typeof definition.headingResolver === 'function'
+    ? definition.headingResolver(user)
+    : `${definition.headingEmoji ? definition.headingEmoji + ' ' : ''}${renderTemplate(headingTemplate, headingParams)}`;
   const lines = [`> *${heading}*`, ''];
   if (Array.isArray(options.prefixLines)) {
     for (const line of options.prefixLines) {

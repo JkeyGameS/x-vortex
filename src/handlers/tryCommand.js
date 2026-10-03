@@ -255,7 +255,23 @@ export async function endTrySession(context, automatic = false) {
     currentUserJid: sender,
     isTestActive: false,
     testSession: null,
-    lastMenuKey: currentMenuKey
+    lastMenuKey: currentMenuKey,
+    // Part 1: leaving try mode mid-onboarding must not strand the restored
+    // admin behind a resume prompt, a cooldown lock or a stale menu. The test
+    // user record itself is deleted below.
+    awaitingResumeConfirmation: false,
+    cooldownJustExpired: false,
+    resumeFromStage: null,
+    resumeAttempts: 0,
+    onboardingStage: null,
+    languageOnboardingLockedUntil: 0,
+    onboardingAttempts: 0,
+    onboardingLastRetry: -1,
+    detectedLanguage: null,
+    detectedLanguageRaw: null,
+    detectedLanguageSource: null,
+    idleClose: false,
+    idleCloseUntil: null
   });
   for (let attempt = 0; attempt < 50; attempt++) {
     if (!sessionManager.getSession(sender, chatId)?.testAnimationBusy) break;

@@ -1,6 +1,30 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-03T13-17-50",
+      "timestamp": "2026-10-03T13:17:50Z",
+      "agent": "Cline",
+      "promptSummary": "Part 1: /try end fix + main menu greeting header",
+      "changes": [
+        "Made /try end interrupt onboarding, the language menu and the cooldown lock",
+        "Cleared onboarding and resume session flags when a try session ends",
+        "Added a personalized Hello heading to the main menu",
+        "Added dynamicHeading support to the menu renderer with a headingKey fallback"
+      ],
+      "files": [
+        "src/index.js",
+        "src/handlers/tryCommand.js",
+        "src/handlers/languageOnboardingHandler.js",
+        "src/utils/menuRenderer.js",
+        "src/utils/menuResolvers.js",
+        "src/config/menus/mainMenu.js",
+        "tests/part1TryAndHeading.test.mjs",
+        "package.json"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.4.2"
+    },
+    {
       "id": "chg-2026-10-02T16-40-36",
       "timestamp": "2026-10-02T16:40:36Z",
       "agent": "Cline",
