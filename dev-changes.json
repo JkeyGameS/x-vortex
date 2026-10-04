@@ -1,6 +1,43 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-04T00-30-00",
+      "timestamp": "2026-10-04T00:36:02Z",
+      "agent": "Cline",
+      "promptSummary": "Fix Missing Translations and Unregistered Handlers",
+      "changes": [
+        "Added the 24 missing Bot Content translation keys that the menus actually reference (group.*, variant.*, language.*, field.onboardingRetryMaxAttempts, admin.systemSettings.optionBotContent) to all five locales, fixing menu rows that rendered as raw dotted key paths",
+        "Made t() fall back to the last key segment in small caps instead of returning the raw dotted key, so a missing translation can never leak a path like menu.bot_content.variant.a1 into a menu",
+        "Registered every custom menu action handler into menuRouter's own registry at startup, so a custom: action resolves regardless of which router path reached it",
+        "Fixed Bot Content options 5-9 (preview, export, import, snapshots, reset) reporting \"this menu is unavailable right now\" when reached through the generic menu guard, which passed no handlers map",
+        "Fixed the Custom Commands menu, whose six handlers lived in a handler map that no runtime caller passed while auditMenus() aggregated all of them and so reported the menu healthy",
+        "Added allMenuCustomHandlers as the single aggregate handler export, used by the router, the runtime registration and the menu audit so they cannot drift apart again",
+        "Fixed bot_content_toggle_smallcaps calling a non-existent export (botContentToggleSmallcaps) and throwing a TypeError that surfaced as \"unavailable\"",
+        "Gave menu action failures a reason code and, for admins, an on-chat diagnostic naming the action, the reason and any error text, instead of one indistinguishable message",
+        "Reworked scripts/auditTranslations.mjs to simulate startup registration and report resolvable, inline-branch and genuinely-missing tiers separately; it now exits non-zero only on a real defect",
+        "Pinned the clock in a time-of-day dependent onboarding assertion that only passed during part of the day (French night greeting is \"Salut\", not \"Bonjour\")"
+      ],
+      "files": [
+        "src/services/localeService.js",
+        "src/utils/menuRouter.js",
+        "src/utils/menuCustomHandlers.js",
+        "src/utils/botContentHandlers.js",
+        "src/scripts/auditMenus.js",
+        "src/index.js",
+        "scripts/auditTranslations.mjs",
+        "tests/i18nAndHandlers.test.mjs",
+        "tests/languageOnboarding.test.mjs",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.5.2"
+    },
+    {
       "id": "chg-2026-10-03T20-53-40",
       "timestamp": "2026-10-03T20:53:40Z",
       "agent": "Cline",

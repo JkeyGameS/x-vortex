@@ -751,7 +751,8 @@
       "optionChangelog": "Anderungsprotokoll",
       "optionWelcomeBack": "Willkommensnachrichten",
       "welcomeBackOn": "Willkommensnachrichten aktiviert.",
-      "welcomeBackOff": "Willkommensnachrichten deaktiviert."
+      "welcomeBackOff": "Willkommensnachrichten deaktiviert.",
+      "optionBotContent": "Bot-Inhalte"
     },
     "optionAnalytics": "Befehlsanalyse",
     "stats": {
@@ -3147,7 +3148,26 @@
       "onboarding": "Onboarding-Nachrichten",
       "welcome_back": "Willkommensnachrichten",
       "timing": "Verzoegerungen",
-      "language": "Sprachanzeige",
+      "language": {
+        "0": "S",
+        "1": "p",
+        "2": "r",
+        "3": "a",
+        "4": "c",
+        "5": "h",
+        "6": "a",
+        "7": "n",
+        "8": "z",
+        "9": "e",
+        "10": "i",
+        "11": "g",
+        "12": "e",
+        "en": "Englisch",
+        "fr": "Franzoesisch",
+        "de": "Deutsch",
+        "es": "Spanisch",
+        "ar": "Arabisch"
+      },
       "preview": "Vollstaendige Vorschau",
       "export": "Als JSON exportieren",
       "import": "Aus JSON importieren",
@@ -3286,7 +3306,8 @@
         "startHintQuietHoursStart": "Ruhezeit Beginn",
         "startHintQuietHoursEnd": "Ruhezeit Ende",
         "startHintText": "Start-Hinweis Text",
-        "startHintTextAfterWelcomeBack": "Text nach Willkommen"
+        "startHintTextAfterWelcomeBack": "Text nach Willkommen",
+        "onboardingRetryMaxAttempts": "Onboarding-Versuche"
       },
       "previewVariant": "Willkommens-Beispiel",
       "field_startHintEnabled": "Start-Hinweis",
@@ -3296,7 +3317,32 @@
       "field_startHintQuietHoursStart": "Ruhezeit Beginn",
       "field_startHintQuietHoursEnd": "Ruhezeit Ende",
       "field_startHintText": "Start-Hinweis Text",
-      "field_startHintTextAfterWelcomeBack": "Text nach Willkommen"
+      "field_startHintTextAfterWelcomeBack": "Text nach Willkommen",
+      "group": {
+        "onboarding": "Onboarding-Nachrichten",
+        "firstMessage": "Erste Nachricht",
+        "resumeMessage": "Fortsetzen-Nachricht",
+        "welcomeMessage": "Willkommensnachricht",
+        "unsupportedLanguage": "Nicht unterstuetzte Sprache",
+        "retry": "Wiederholungsnachrichten",
+        "cooldownLock": "Sperr-Nachricht",
+        "welcomeBack": "Willkommensnachrichten",
+        "timing": "Verzoegerungen",
+        "language": "Sprachanzeige"
+      },
+      "variant": {
+        "A1": "A1 (5M-1Std)",
+        "A2": "A2 (1-24 Std)",
+        "A3": "A3 (24 Std-7 T)",
+        "A4": "A4 (7 T+)",
+        "B1": "B1 (<24 Std)",
+        "B2": "B2 (24 Std-7 T)",
+        "B3": "B3 (7 T+)"
+      },
+      "unavailableTitle": "Menue nicht verfuegbar",
+      "unavailableAction": "Aktion",
+      "unavailableReason": "Grund",
+      "unavailableDetails": "Details"
     }
   },
   "lifecycle": {

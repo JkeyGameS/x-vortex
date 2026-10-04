@@ -1083,7 +1083,7 @@ async function startBot() {
         }
         const { resolveMenuOption, runMenuAction } = await import('./utils/menuRouter.js');
         const { sendMenuById } = await import('./utils/menuSender.js');
-        const { chatFaqCustomHandlers, adminCustomHandlers } = await import('./utils/menuCustomHandlers.js');
+        const { allMenuCustomHandlers } = await import('./utils/menuCustomHandlers.js');
         const { sendText: clusterSendText } = await import('./services/messageService.js');
         const { toSmallCaps: clusterCaps } = await import('./utils/smallCaps.js');
         const { t: clusterT } = await import('./services/localeService.js');
@@ -1151,11 +1151,10 @@ async function startBot() {
           return;
         }
         if (clusterResult.kind === 'action') {
-          const { userCustomHandlers, botNotificationCustomHandlers, messageDisplayCustomHandlers, customCommandCustomHandlers } = await import('./utils/menuCustomHandlers.js');
           await runMenuAction(clusterResult.action, {
             sock, sender, chatId, pushName, user: clusterUser, language: clusterLang, commands,
             sendMenuFn: async (menuId) => sendMenuById(menuId, { sock, sender, chatId, user: clusterUser, language: clusterLang }),
-            handlers: { ...chatFaqCustomHandlers, ...adminCustomHandlers, ...userCustomHandlers, ...botNotificationCustomHandlers, ...messageDisplayCustomHandlers, ...customCommandCustomHandlers }
+            handlers: allMenuCustomHandlers
           });
           return;
         }
@@ -3393,7 +3392,14 @@ async function startBot() {
         } else {
           const genericResult = resolveMenuOption(session.currentMenu, trimmedText, userInfo, language);
           if (genericResult.kind === 'action') {
-            await runMenuAction(genericResult.action, { sock, sender, chatId, pushName, text: trimmedText, language, user: userInfo, session });
+            // The handler map is registered into menuRouter at startup, but
+            // passing it here as well keeps this path self-sufficient.
+            const { allMenuCustomHandlers } = await import('./utils/menuCustomHandlers.js');
+            await runMenuAction(genericResult.action, {
+              sock, sender, chatId, pushName, text: trimmedText,
+              language, user: userInfo, session,
+              handlers: allMenuCustomHandlers
+            });
             return;
           }
           if (genericResult.kind === 'back') {
@@ -3422,6 +3428,17 @@ async function startBot() {
     { count: registeredMenus.length, ids: registeredMenus.map((m) => m.id).join(', ') },
     `[MENU_REGISTRY] ${registeredMenus.length} menus registered`
   );
+  // Custom menu actions are published into menuRouter's registry so that a
+  // custom: action resolves no matter which router path reached it. Without this
+  // the handlers were only visible to the router paths that pass `handlers`, and
+  // everything else answered "menu unavailable".
+  {
+    const { registerAllMenuActionHandlers } = await import('./utils/menuRouter.js');
+    const { allMenuCustomHandlers } = await import('./utils/menuCustomHandlers.js');
+    const count = registerAllMenuActionHandlers(allMenuCustomHandlers);
+    logger.info({ count }, '[MENU] custom action handlers registered');
+  }
+
   // Structural audit: missing headings, options with no number or action,
   // duplicate option numbers, and dangling backTo/open: targets. Complements
   // the critical-menu and dangling-open checks below rather than replacing them.

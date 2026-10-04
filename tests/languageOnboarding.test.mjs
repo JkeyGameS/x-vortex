@@ -625,7 +625,10 @@ try {
     const sock = makeSock();
     await makeNewUser(jid);
     await onboard.handleLanguageOnboardingGate(
-      newContext(sock, jid, 'bonjour', 'en-US', { typingDelayMs: 0 }),
+      // Pin the clock: the greeting is time-of-day dependent, and the French
+      // "night" greeting is "Salut", not "Bonjour". Without a fixed `now` this
+      // assertion only held during part of the day.
+      newContext(sock, jid, 'bonjour', 'en-US', { typingDelayMs: 0, now: new Date('2026-01-15T09:00:00Z'), timezone: 'UTC' }),
       sessionManager.getSession(jid, jid), await getUserByJid(jid));
     // The admin notification may be the last message, so target the user's own.
     const out = toUser(sock)[0].text;

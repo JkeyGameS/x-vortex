@@ -590,3 +590,24 @@ export const customCommandCustomHandlers = {
     return sendMenuById('custom_commands', { sock: context.sock, sender: context.sender, chatId, user: context.user || null, language }, 'system_custom_commands', { sessionMenu: 'custom_commands' });
   }
 };
+
+// ---------------------------------------------------------------------------
+// The complete set of custom menu action handlers.
+//
+// Six separate maps exist above, and the clusters that used to be the only
+// consumers passed a subset of them. The Custom Commands map was in none of
+// them, so all six of its menu options answered "menu unavailable" even though
+// auditMenus() -- which aggregates every map -- reported the menu as healthy.
+//
+// Anything that needs a complete handler set must import this, not hand-pick
+// maps. Declared last so every map above is initialised.
+// ---------------------------------------------------------------------------
+export const allMenuCustomHandlers = {
+  ...profileCustomHandlers,
+  ...chatFaqCustomHandlers,
+  ...adminCustomHandlers,
+  ...userCustomHandlers,
+  ...botNotificationCustomHandlers,
+  ...messageDisplayCustomHandlers,
+  ...customCommandCustomHandlers
+};

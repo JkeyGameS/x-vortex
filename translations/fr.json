@@ -751,7 +751,8 @@
       "optionChangelog": "Journal des modifications",
       "optionWelcomeBack": "Messages de retour",
       "welcomeBackOn": "Messages de retour activees.",
-      "welcomeBackOff": "Messages de retour desactives."
+      "welcomeBackOff": "Messages de retour desactives.",
+      "optionBotContent": "Contenu du bot"
     },
     "optionAnalytics": "Analyse des commandes",
     "stats": {
@@ -3147,7 +3148,34 @@
       "onboarding": "Messages d onboarding",
       "welcome_back": "Messages de retour",
       "timing": "Delais",
-      "language": "Affichage des langues",
+      "language": {
+        "0": "A",
+        "1": "f",
+        "2": "f",
+        "3": "i",
+        "4": "c",
+        "5": "h",
+        "6": "a",
+        "7": "g",
+        "8": "e",
+        "9": " ",
+        "10": "d",
+        "11": "e",
+        "12": "s",
+        "13": " ",
+        "14": "l",
+        "15": "a",
+        "16": "n",
+        "17": "g",
+        "18": "u",
+        "19": "e",
+        "20": "s",
+        "en": "Anglais",
+        "fr": "Francais",
+        "de": "Allemand",
+        "es": "Espagnol",
+        "ar": "Arabe"
+      },
       "preview": "Apercu complet",
       "export": "Exporter en JSON",
       "import": "Importer du JSON",
@@ -3286,7 +3314,8 @@
         "startHintQuietHoursStart": "Debut heures calmes",
         "startHintQuietHoursEnd": "Fin heures calmes",
         "startHintText": "Texte de l indice",
-        "startHintTextAfterWelcomeBack": "Texte apres retour"
+        "startHintTextAfterWelcomeBack": "Texte apres retour",
+        "onboardingRetryMaxAttempts": "Essais max onboarding"
       },
       "previewVariant": "Exemple de retour",
       "field_startHintEnabled": "Indice de demarrage",
@@ -3296,7 +3325,32 @@
       "field_startHintQuietHoursStart": "Debut heures calmes",
       "field_startHintQuietHoursEnd": "Fin heures calmes",
       "field_startHintText": "Texte de l indice",
-      "field_startHintTextAfterWelcomeBack": "Texte apres retour"
+      "field_startHintTextAfterWelcomeBack": "Texte apres retour",
+      "group": {
+        "onboarding": "Messages d onboarding",
+        "firstMessage": "Premier message",
+        "resumeMessage": "Message de reprise",
+        "welcomeMessage": "Message de bienvenue",
+        "unsupportedLanguage": "Langue non prise en charge",
+        "retry": "Messages de relance",
+        "cooldownLock": "Message de blocage",
+        "welcomeBack": "Messages de retour",
+        "timing": "Delais",
+        "language": "Affichage des langues"
+      },
+      "variant": {
+        "A1": "A1 (5m-1h)",
+        "A2": "A2 (1h-24h)",
+        "A3": "A3 (24h-7j)",
+        "A4": "A4 (7j+)",
+        "B1": "B1 (moins de 24h)",
+        "B2": "B2 (24h-7j)",
+        "B3": "B3 (7j+)"
+      },
+      "unavailableTitle": "Menu indisponible",
+      "unavailableAction": "Action",
+      "unavailableReason": "Raison",
+      "unavailableDetails": "Details"
     }
   },
   "lifecycle": {

@@ -751,7 +751,8 @@
       "optionChangelog": "سجل التغييرات",
       "optionWelcomeBack": "رسائل العودة",
       "welcomeBackOn": "تم تفعيل رسائل العودة.",
-      "welcomeBackOff": "تم تعطيل رسائل العودة."
+      "welcomeBackOff": "تم تعطيل رسائل العودة.",
+      "optionBotContent": "محتوى البوت"
     },
     "optionAnalytics": "تحليل الأوامر",
     "stats": {
@@ -3147,7 +3148,23 @@
       "onboarding": "رسائل الإعداد",
       "welcome_back": "رسائل العودة",
       "timing": "التأخير",
-      "language": "عرض اللغات",
+      "language": {
+        "0": "ع",
+        "1": "ر",
+        "2": "ض",
+        "3": " ",
+        "4": "ا",
+        "5": "ل",
+        "6": "ل",
+        "7": "غ",
+        "8": "ا",
+        "9": "ت",
+        "en": "الإنجليزية",
+        "fr": "الفرنسية",
+        "de": "الألمانية",
+        "es": "الإسبانية",
+        "ar": "العربية"
+      },
       "preview": "معاينة كاملة",
       "export": "تصدير JSON",
       "import": "استيراد JSON",
@@ -3286,7 +3303,8 @@
         "startHintQuietHoursStart": "بداية ساعات الهدوء",
         "startHintQuietHoursEnd": "نهاية ساعات الهدوء",
         "startHintText": "نص تلميح البدء",
-        "startHintTextAfterWelcomeBack": "نص تلميح العودة"
+        "startHintTextAfterWelcomeBack": "نص تلميح العودة",
+        "onboardingRetryMaxAttempts": "محاولات الإعداد"
       },
       "previewVariant": "مثال العودة",
       "field_startHintEnabled": "تلميح البدء",
@@ -3296,7 +3314,32 @@
       "field_startHintQuietHoursStart": "بداية ساعات الهدوء",
       "field_startHintQuietHoursEnd": "نهاية ساعات الهدوء",
       "field_startHintText": "نص تلميح البدء",
-      "field_startHintTextAfterWelcomeBack": "نص تلميح العودة"
+      "field_startHintTextAfterWelcomeBack": "نص تلميح العودة",
+      "group": {
+        "onboarding": "رسائل الإعداد",
+        "firstMessage": "الرسالة الأولى",
+        "resumeMessage": "رسالة الاستئناف",
+        "welcomeMessage": "رسالة الترحيب",
+        "unsupportedLanguage": "رسالة اللغة غير المدعومة",
+        "retry": "رسائل إعادة المحاولة",
+        "cooldownLock": "رسالة القفل",
+        "welcomeBack": "رسائل العودة",
+        "timing": "التأخير",
+        "language": "عرض اللغات"
+      },
+      "variant": {
+        "A1": "A1 (5د-1س)",
+        "A2": "A2 (1س-24س)",
+        "A3": "A3 (24س-7ي)",
+        "A4": "A4 (+7ي)",
+        "B1": "B1 (أقل من 24س)",
+        "B2": "B2 (24س-7ي)",
+        "B3": "B3 (+7ي)"
+      },
+      "unavailableTitle": "القائمة غير متاحة",
+      "unavailableAction": "الإجراء",
+      "unavailableReason": "السبب",
+      "unavailableDetails": "التفاصيل"
     }
   },
   "lifecycle": {

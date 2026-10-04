@@ -776,7 +776,8 @@
       "optionChangelog": "Changelog",
       "optionWelcomeBack": "Welcome back messages",
       "welcomeBackOn": "Welcome-back messages enabled.",
-      "welcomeBackOff": "Welcome-back messages disabled."
+      "welcomeBackOff": "Welcome-back messages disabled.",
+      "optionBotContent": "Bot Content"
     },
     "optionAnalytics": "Command Analytics",
     "stats": {
@@ -3172,7 +3173,29 @@
       "onboarding": "Onboarding Messages",
       "welcome_back": "Welcome-Back Messages",
       "timing": "Timing & Delays",
-      "language": "Language Display",
+      "language": {
+        "0": "L",
+        "1": "a",
+        "2": "n",
+        "3": "g",
+        "4": "u",
+        "5": "a",
+        "6": "g",
+        "7": "e",
+        "8": " ",
+        "9": "D",
+        "10": "i",
+        "11": "s",
+        "12": "p",
+        "13": "l",
+        "14": "a",
+        "15": "y",
+        "en": "English",
+        "fr": "French",
+        "de": "German",
+        "es": "Spanish",
+        "ar": "Arabic"
+      },
       "preview": "Preview Full Flow",
       "export": "Export as JSON",
       "import": "Import from JSON",
@@ -3311,7 +3334,8 @@
         "startHintQuietHoursStart": "Quiet Hours Start",
         "startHintQuietHoursEnd": "Quiet Hours End",
         "startHintText": "Start Hint Text",
-        "startHintTextAfterWelcomeBack": "Welcome-Back Hint Text"
+        "startHintTextAfterWelcomeBack": "Welcome-Back Hint Text",
+        "onboardingRetryMaxAttempts": "Onboarding Retry Attempts"
       },
       "previewVariant": "Welcome-Back Example",
       "field_startHintEnabled": "Start Hint",
@@ -3321,7 +3345,32 @@
       "field_startHintQuietHoursStart": "Quiet Hours Start",
       "field_startHintQuietHoursEnd": "Quiet Hours End",
       "field_startHintText": "Start Hint Text",
-      "field_startHintTextAfterWelcomeBack": "Welcome-Back Hint Text"
+      "field_startHintTextAfterWelcomeBack": "Welcome-Back Hint Text",
+      "group": {
+        "onboarding": "Onboarding Messages",
+        "firstMessage": "First Message",
+        "resumeMessage": "Resume Message",
+        "welcomeMessage": "Welcome Message",
+        "unsupportedLanguage": "Unsupported Language Message",
+        "retry": "Retry Messages",
+        "cooldownLock": "Cooldown Message",
+        "welcomeBack": "Welcome-Back Messages",
+        "timing": "Timing & Delays",
+        "language": "Language Display"
+      },
+      "variant": {
+        "A1": "A1 (5m-1h)",
+        "A2": "A2 (1h-24h)",
+        "A3": "A3 (24h-7d)",
+        "A4": "A4 (7d+)",
+        "B1": "B1 (under 24h)",
+        "B2": "B2 (24h-7d)",
+        "B3": "B3 (7d+)"
+      },
+      "unavailableTitle": "Menu unavailable",
+      "unavailableAction": "Action",
+      "unavailableReason": "Reason",
+      "unavailableDetails": "Details"
     }
   },
   "lifecycle": {

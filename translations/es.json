@@ -751,7 +751,8 @@
       "optionChangelog": "Registro de cambios",
       "optionWelcomeBack": "Mensajes de bienvenida",
       "welcomeBackOn": "Mensajes de bienvenida activados.",
-      "welcomeBackOff": "Mensajes de bienvenida desactivados."
+      "welcomeBackOff": "Mensajes de bienvenida desactivados.",
+      "optionBotContent": "Contenido del bot"
     },
     "optionAnalytics": "Análisis de comandos",
     "stats": {
@@ -3147,7 +3148,28 @@
       "onboarding": "Mensajes de onboarding",
       "welcome_back": "Mensajes de bienvenida",
       "timing": "Tiempos",
-      "language": "Mostrar idiomas",
+      "language": {
+        "0": "M",
+        "1": "o",
+        "2": "s",
+        "3": "t",
+        "4": "r",
+        "5": "a",
+        "6": "r",
+        "7": " ",
+        "8": "i",
+        "9": "d",
+        "10": "i",
+        "11": "o",
+        "12": "m",
+        "13": "a",
+        "14": "s",
+        "en": "Ingles",
+        "fr": "Frances",
+        "de": "Aleman",
+        "es": "Espanol",
+        "ar": "Arabe"
+      },
       "preview": "Vista completa",
       "export": "Exportar JSON",
       "import": "Importar JSON",
@@ -3286,7 +3308,8 @@
         "startHintQuietHoursStart": "Inicio horario tranquilo",
         "startHintQuietHoursEnd": "Fin horario tranquilo",
         "startHintText": "Texto del aviso",
-        "startHintTextAfterWelcomeBack": "Texto tras bienvenida"
+        "startHintTextAfterWelcomeBack": "Texto tras bienvenida",
+        "onboardingRetryMaxAttempts": "Intentos de onboarding"
       },
       "previewVariant": "Ejemplo de bienvenida",
       "field_startHintEnabled": "Aviso de inicio",
@@ -3296,7 +3319,32 @@
       "field_startHintQuietHoursStart": "Inicio horario tranquilo",
       "field_startHintQuietHoursEnd": "Fin horario tranquilo",
       "field_startHintText": "Texto del aviso",
-      "field_startHintTextAfterWelcomeBack": "Texto tras bienvenida"
+      "field_startHintTextAfterWelcomeBack": "Texto tras bienvenida",
+      "group": {
+        "onboarding": "Mensajes de onboarding",
+        "firstMessage": "Primer mensaje",
+        "resumeMessage": "Mensaje de reanudacion",
+        "welcomeMessage": "Mensaje de bienvenida",
+        "unsupportedLanguage": "Idioma no compatible",
+        "retry": "Mensajes de reintento",
+        "cooldownLock": "Mensaje de bloqueo",
+        "welcomeBack": "Mensajes de bienvenida",
+        "timing": "Tiempos",
+        "language": "Mostrar idiomas"
+      },
+      "variant": {
+        "A1": "A1 (5m-1h)",
+        "A2": "A2 (1h-24h)",
+        "A3": "A3 (24h-7d)",
+        "A4": "A4 (7d+)",
+        "B1": "B1 (menos de 24h)",
+        "B2": "B2 (24h-7d)",
+        "B3": "B3 (7d+)"
+      },
+      "unavailableTitle": "Menu no disponible",
+      "unavailableAction": "Accion",
+      "unavailableReason": "Motivo",
+      "unavailableDetails": "Detalles"
     }
   },
   "lifecycle": {

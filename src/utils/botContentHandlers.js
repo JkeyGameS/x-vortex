@@ -40,7 +40,9 @@ export const botContentHandlers = {
   bot_content_language_de: (c) => language(c, 'de'),
   bot_content_language_es: (c) => language(c, 'es'),
   bot_content_language_ar: (c) => language(c, 'ar'),
-  bot_content_toggle_smallcaps: (c) => impl(c).then((m) => m.botContentToggleSmallcaps(c)),
+  // botContentCommand exports ...ToggleSmallCaps (capital C); the lowercase
+  // spelling threw a TypeError and surfaced as "menu unavailable".
+  bot_content_toggle_smallcaps: (c) => impl(c).then((m) => m.botContentToggleSmallCaps(c)),
 
   // Tools
   bot_content_preview: (c) => impl(c).then((m) => m.botContentPreview(c)),

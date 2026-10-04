@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import config from '../config/config.js';
 import logger from '../utils/logger.js';
+import { toSmallCaps } from '../utils/smallCaps.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const translationsDir = path.join(__dirname, '../../translations');
@@ -43,8 +44,13 @@ export function t(lang, key, params = {}) {
 
   if (value === undefined) {
     // Missing in the default language as well.
+    //
+    // Returning the raw key leaked dotted paths like
+    // "menu.bot_content.variant.a1" into menus as small caps. Fall back to the
+    // last key segment instead, which stays recognisable without looking like a
+    // file path. The key is still logged in full so it can be fixed.
     logger.error({ lang, key }, 'Translation key missing in all languages');
-    return key; // return key if not found
+    return humanizeMissingKey(key);
   }
 
   // Replace placeholders like {username}
@@ -55,4 +61,16 @@ export function t(lang, key, params = {}) {
     );
   }
   return value;
+}
+
+/**
+ * Render a missing key as its last dotted segment, in small caps.
+ * "menu.bot_content.variant.a1" -> "ᴀ1"
+ */
+export function humanizeMissingKey(key) {
+  const last = String(key ?? '').split('.').pop() || String(key ?? '');
+  // Replace _ and - with spaces so "option_bot_content" reads as words rather
+  // than one long token.
+  const words = last.replace(/[_-]+/g, ' ').trim();
+  return toSmallCaps(words || last);
 }

@@ -12,17 +12,11 @@
  */
 import '../config/menus/index.js';
 import { getAllMenus, getMenu } from '../config/menus/registry.js';
-import {
-  profileCustomHandlers, chatFaqCustomHandlers, adminCustomHandlers,
-  userCustomHandlers, botNotificationCustomHandlers, messageDisplayCustomHandlers,
-  customCommandCustomHandlers
-} from '../utils/menuCustomHandlers.js';
+import { allMenuCustomHandlers } from '../utils/menuCustomHandlers.js';
 
-const HANDLERS = {
-  ...profileCustomHandlers, ...chatFaqCustomHandlers, ...adminCustomHandlers,
-  ...userCustomHandlers, ...botNotificationCustomHandlers, ...messageDisplayCustomHandlers,
-  ...customCommandCustomHandlers
-};
+// Same aggregate the runtime registers, so this audit cannot pass while a
+// handler is unreachable at runtime.
+const HANDLERS = allMenuCustomHandlers;
 const BUILTIN_ACTIONS = new Set(['sleep', 'copy_id']);
 
 const errors = [];
