@@ -3353,7 +3353,22 @@
       "activate": "Activar un grupo",
       "deactivate": "Desactivar un grupo",
       "defaults": "Ajustes predeterminados",
-      "enabled": "Activados"
+      "enabled": "Activados",
+      "settings": {
+        "heading": "Ajustes del grupo",
+        "mention_only": "Solo menciones",
+        "chat_rules": "Reglas de chat",
+        "welcome": "Mensaje de bienvenida",
+        "goodbye": "Mensaje de despedida",
+        "anti_spam": "Anti-spam",
+        "anti_link": "Anti-enlace",
+        "language": "Idioma",
+        "deactivate": "Desactivar grupo",
+        "defaults_heading": "Ajustes predeterminados",
+        "defaults_note": "Se aplican a los grupos activados recientemente.",
+        "permission_denied": "No tienes permiso para gestionar este grupo.",
+        "bot_admin_only": "Los ajustes predeterminados son solo para administradores."
+      }
     }
   },
   "lifecycle": {

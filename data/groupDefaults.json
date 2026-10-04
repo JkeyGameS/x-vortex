@@ -1,0 +1,9 @@
+{
+  "mentionOnly": true,
+  "chatRules": false,
+  "welcome": false,
+  "goodbye": false,
+  "antiSpam": true,
+  "antiLink": false,
+  "respondToCommands": true
+}

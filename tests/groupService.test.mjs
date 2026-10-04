@@ -10,7 +10,11 @@ import path from 'path';
 
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'groups-test-'));
 const tmpFile = path.join(tmpDir, 'groups.json');
+// Phase 2 added an editable defaults file that activateGroup reads. Point it at
+// a temp file too, so this suite never reads the live data/groupDefaults.json.
+const tmpDefaults = path.join(tmpDir, 'groupDefaults.json');
 process.env.GROUPS_DATA_PATH = tmpFile;
+process.env.GROUP_DEFAULTS_DATA_PATH = tmpDefaults;
 
 const svc = await import('../src/services/groupService.js');
 const {
@@ -32,7 +36,9 @@ const A = '111111111111@group.g.us';
 const B = '222222222222@group.g.us';
 
 before(() => {
+  fs.writeFileSync(tmpDefaults, JSON.stringify(svc.defaultGroupSettings(), null, 2), 'utf8');
   reload();
+  svc.loadGroupDefaults();
 });
 after(() => {
   fs.rmSync(tmpDir, { recursive: true, force: true });

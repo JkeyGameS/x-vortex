@@ -1,6 +1,40 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-04T23-40-00",
+      "timestamp": "2026-10-04T23:23:04Z",
+      "agent": "Cline",
+      "promptSummary": "Group Management Phase 2: per-group settings + editable defaults",
+      "changes": [
+        "Added per-group settings panel with six toggles for mention-only, chat rules, welcome, goodbye, anti-spam and anti-link",
+        "Added per-group language selection, shown with the native language name and flag",
+        "Added an editable new-group defaults file that activateGroup reads when seeding a group, filling only keys the group is missing",
+        "Replaced the read-only Defaults placeholder with a working editor restricted to bot admins",
+        "Added the /groupsettings command with a gset alias, DM-only so it can never run in a group",
+        "Wired settings, language, defaults and deactivate changes into the admin log with stringified payloads, reusing the existing group_deactivated action",
+        "Added 15 unit tests for per-group settings and defaults, running against temporary files so live group data is never touched"
+      ],
+      "files": [
+        "data/groupDefaults.json",
+        "src/services/groupService.js",
+        "src/handlers/groupManagementHandlers.js",
+        "src/utils/menuCustomHandlers.js",
+        "src/index.js",
+        "tests/groupSettings.test.mjs",
+        "tests/groupService.test.mjs",
+        "package.json",
+        ".gitignore",
+        "dev-changes.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.7.1"
+    },
+    {
       "id": "chg-2026-10-04T22-05-00",
       "timestamp": "2026-10-04T22:24:51Z",
       "agent": "Cline",

@@ -10,7 +10,7 @@ import { startHealthServer, stopHealthServer } from './healthServer.js';
 import { setQR, clearQR } from './utils/qrState.js';
 import { loadChangelog } from './services/changelogService.js';
 import { loadBotContent } from './services/botContentService.js';
-import { loadGroups } from './services/groupService.js';
+import { loadGroups, loadGroupDefaults } from './services/groupService.js';
 import { SUB_STATES as CHANGELOG_SUB_STATES } from './handlers/changelogManagerCommand.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
@@ -421,6 +421,7 @@ async function startBot() {
   // is already enabled is recognised on the very first message; a missing file
   // degrades to an empty registry, which means every group is ignored.
   loadGroups();
+  loadGroupDefaults();
 
   // Version history for the Info menu. Loaded eagerly so the first open does
   // not pay a disk read; a missing file degrades to an empty changelog.
@@ -3048,8 +3049,10 @@ if (isGroup) {
         return;
       }
 
-      // Group Management sub-states: pickers and confirmations own their input.
-      if (session?.currentMenu && session.currentMenu.startsWith('group_management')) {
+      // Group Management sub-states: pickers, the per-group settings panel and the
+      // defaults editor own their input. Three prefixes, because the settings and
+      // defaults states are not nested under group_management by name.
+      if (session?.currentMenu && ['group_management', 'group_settings', 'group_defaults'].some((p) => session.currentMenu.startsWith(p))) {
         const { handleGroupManagementReply } = await import('./handlers/groupManagementHandlers.js');
         const handled = await handleGroupManagementReply(
           { sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage, session },

@@ -3359,7 +3359,22 @@
       "activate": "Activer un groupe",
       "deactivate": "Desactiver un groupe",
       "defaults": "Parametres par defaut",
-      "enabled": "Actives"
+      "enabled": "Actives",
+      "settings": {
+        "heading": "Parametres du groupe",
+        "mention_only": "Mention uniquement",
+        "chat_rules": "Regles de chat",
+        "welcome": "Message de bienvenue",
+        "goodbye": "Message de depart",
+        "anti_spam": "Anti-spam",
+        "anti_link": "Anti-lien",
+        "language": "Langue",
+        "deactivate": "Desactiver le groupe",
+        "defaults_heading": "Parametres par defaut",
+        "defaults_note": "Ces reglages sappliquent aux nouveaux groupes actives.",
+        "permission_denied": "Vous n'avez pas la permission de gerer ce groupe.",
+        "bot_admin_only": "Les parametres par defaut sont reserves aux administrateurs."
+      }
     }
   },
   "lifecycle": {

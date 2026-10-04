@@ -3379,7 +3379,22 @@
       "activate": "Activate a Group",
       "deactivate": "Deactivate a Group",
       "defaults": "Default Settings",
-      "enabled": "Enabled"
+      "enabled": "Enabled",
+      "settings": {
+        "heading": "Group Settings",
+        "mention_only": "Mention Only",
+        "chat_rules": "Chat Rules",
+        "welcome": "Welcome Message",
+        "goodbye": "Goodbye Message",
+        "anti_spam": "Anti-Spam",
+        "anti_link": "Anti-Link",
+        "language": "Language",
+        "deactivate": "Deactivate Group",
+        "defaults_heading": "Default Settings",
+        "defaults_note": "These apply to newly activated groups.",
+        "permission_denied": "You don't have permission to manage this group.",
+        "bot_admin_only": "Default settings are restricted to bot admins."
+      }
     }
   },
   "lifecycle": {

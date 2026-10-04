@@ -12,11 +12,13 @@ auth/
 #   botContent.json  the admin Content & Timing editor's live values
 #   groups.json      activated-group registry (group JIDs, no personal data)
 #   groupStats.json  reserved for Phase 6 group stats
+#   groupDefaults.json  defaults applied to newly activated groups
 data/*
 !data/changelog.json
 !data/botContent.json
 !data/groups.json
 !data/groupStats.json
+!data/groupDefaults.json
 
 # Environment-specific notification bookkeeping (never shared between hosts)
 data/lastNotifiedChangeId.json

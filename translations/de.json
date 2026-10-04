@@ -3351,7 +3351,22 @@
       "activate": "Gruppe aktivieren",
       "deactivate": "Gruppe deaktivieren",
       "defaults": "Standardeinstellungen",
-      "enabled": "Aktiviert"
+      "enabled": "Aktiviert",
+      "settings": {
+        "heading": "Gruppeneinstellungen",
+        "mention_only": "Nur Erwaehnung",
+        "chat_rules": "Chatregeln",
+        "welcome": "Willkommensnachricht",
+        "goodbye": "Abschiedsnachricht",
+        "anti_spam": "Anti-Spam",
+        "anti_link": "Anti-Link",
+        "language": "Sprache",
+        "deactivate": "Gruppe deaktivieren",
+        "defaults_heading": "Standardeinstellungen",
+        "defaults_note": "Diese gelten fuer neu aktivierte Gruppen.",
+        "permission_denied": "Sie haben keine Berechtigung fuer diese Gruppe.",
+        "bot_admin_only": "Standardeinstellungen sind Administratoren vorbehalten."
+      }
     }
   },
   "lifecycle": {

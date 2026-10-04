@@ -10,14 +10,23 @@ import logger from '../utils/logger.js';
  * file, or present with enabled: false, is ignored entirely by the router.
  *
  * Path follows the repo convention (see botContentService): relative to the
- * process CWD. GROUPS_DATA_PATH overrides it so tests can run against a
- * temporary file instead of the live registry.
+ * process CWD. GROUPS_DATA_PATH (or GROUP_DATA_PATH) overrides the registry
+ * path and GROUP_DEFAULTS_DATA_PATH overrides the defaults path, so tests can
+ * run against temporary files instead of the live data.
  */
-const GROUPS_PATH = process.env.GROUPS_DATA_PATH
-  ? path.resolve(process.env.GROUPS_DATA_PATH)
-  : path.resolve('data/groups.json');
+function resolveDataPath(envKeys, fallback) {
+  for (const key of envKeys) {
+    const v = process.env[key];
+    if (v) return path.resolve(v);
+  }
+  return path.resolve(fallback);
+}
+
+const GROUPS_PATH = resolveDataPath(['GROUPS_DATA_PATH', 'GROUP_DATA_PATH'], 'data/groups.json');
+const DEFAULTS_PATH = resolveDataPath(['GROUP_DEFAULTS_DATA_PATH'], 'data/groupDefaults.json');
 
 let cache = null;
+let defaultsCache = null;
 
 /** Phase 1 defaults. Do not enable behaviour here beyond what Phase 1 stores. */
 export function defaultGroupSettings() {
@@ -86,8 +95,89 @@ export function isGroupEnabled(groupJid) {
   return !!(g && g.enabled === true);
 }
 
+// ---------------------------------------------------------------------------
+// New-group defaults (Phase 2). Editable by bot admins via /groups -> Defaults
+// and applied when a group is first activated. Existing groups keep whatever
+// they already have; defaults only fill in keys they are missing.
+// ---------------------------------------------------------------------------
+
+function ensureDefaultsFile() {
+  const dir = path.dirname(DEFAULTS_PATH);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(DEFAULTS_PATH)) {
+    fs.writeFileSync(DEFAULTS_PATH, JSON.stringify(defaultGroupSettings(), null, 2), 'utf8');
+  }
+}
+
+function persistDefaults() {
+  try {
+    ensureDefaultsFile();
+    fs.writeFileSync(DEFAULTS_PATH, JSON.stringify(defaultsCache, null, 2), 'utf8');
+  } catch (err) {
+    logger.error({ err }, '[GROUP_DEFAULTS] persist failed');
+  }
+}
+
+export function loadGroupDefaults() {
+  try {
+    ensureDefaultsFile();
+    const parsed = JSON.parse(fs.readFileSync(DEFAULTS_PATH, 'utf8') || '{}');
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      defaultsCache = defaultGroupSettings();
+    } else {
+      // Merge so a partial file can never leave the cache missing a key. This
+      // also makes the next persist write a complete object.
+      defaultsCache = { ...defaultGroupSettings(), ...parsed };
+    }
+    logger.info({ count: Object.keys(defaultsCache).length }, '[GROUP_DEFAULTS] loaded');
+    return defaultsCache;
+  } catch (err) {
+    logger.error({ err }, '[GROUP_DEFAULTS] load failed, using fallback');
+    defaultsCache = defaultGroupSettings();
+    return defaultsCache;
+  }
+}
+
+function ensureDefaultsCache() {
+  if (!defaultsCache) loadGroupDefaults();
+}
+
+/** A copy, so callers cannot mutate the cache by accident. */
+export function getGroupDefaults() {
+  ensureDefaultsCache();
+  // Always carry all seven keys even if the file is missing one.
+  return { ...defaultGroupSettings(), ...defaultsCache };
+}
+
+/** Keys the admin Defaults editor may change. respondToCommands is implicit. */
+export const EDITABLE_GROUP_DEFAULTS = [
+  'mentionOnly',
+  'chatRules',
+  'welcome',
+  'goodbye',
+  'antiSpam',
+  'antiLink'
+];
+
+export function setGroupDefault(key, value) {
+  ensureDefaultsCache();
+  if (!EDITABLE_GROUP_DEFAULTS.includes(key)) {
+    logger.warn({ key }, '[GROUP_DEFAULTS] refusing unknown key');
+    return null;
+  }
+  defaultsCache[key] = value;
+  persistDefaults();
+  return getGroupDefaults();
+}
+
+/** Test helper: point the defaults cache at an arbitrary object. */
+export function __setDefaultsCacheForTests(obj) {
+  defaultsCache = obj;
+}
+
 export function activateGroup(groupJid, { name, activatedBy, language = 'en' } = {}) {
   ensureCache();
+  const defaults = getGroupDefaults();
   const existing = cache[groupJid];
   if (existing) {
     existing.enabled = true;
@@ -95,8 +185,8 @@ export function activateGroup(groupJid, { name, activatedBy, language = 'en' } =
     existing.activatedBy = activatedBy || existing.activatedBy;
     if (name) existing.name = name;
     if (language) existing.language = language;
-    // Backfill settings for entries written before a key existed.
-    existing.settings = { ...defaultGroupSettings(), ...(existing.settings || {}) };
+    // Only missing keys fall back to the current defaults; stored values win.
+    existing.settings = { ...defaults, ...(existing.settings || {}) };
     if (!existing.moderation) existing.moderation = { warnings: {}, mutes: {}, bans: {} };
     persist();
     return existing;
@@ -108,7 +198,7 @@ export function activateGroup(groupJid, { name, activatedBy, language = 'en' } =
     activatedAt: new Date().toISOString(),
     activatedBy: activatedBy || null,
     language: language || 'en',
-    settings: defaultGroupSettings(),
+    settings: { ...defaults },
     moderation: { warnings: {}, mutes: {}, bans: {} }
   };
   cache[groupJid] = entry;
@@ -170,4 +260,4 @@ export function __setCacheForTests(obj) {
   cache = obj;
 }
 
-export { GROUPS_PATH };
+export { GROUPS_PATH, DEFAULTS_PATH };
