@@ -160,6 +160,39 @@ export async function sendMenu({ sock, sender, chatId, text, transitionKey, skip
   return { key, action };
 }
 
+/**
+ * True for a WhatsApp group JID. Used by the router to divert group messages
+ * before any DM handling runs.
+ */
+export function isGroupMessage(jid) {
+  return typeof jid === 'string' && jid.endsWith('@g.us');
+}
+
+/** All @mentions attached to a message, normalised. */
+export function extractMentionedJids(msg) {
+  const ctx =
+    msg?.message?.extendedTextMessage?.contextInfo ||
+    msg?.message?.imageMessage?.contextInfo ||
+    msg?.message?.videoMessage?.contextInfo ||
+    msg?.message?.documentMessage?.contextInfo;
+  const list = ctx?.mentionedJid;
+  return Array.isArray(list) ? list : [];
+}
+
+/**
+ * True when the bot is mentioned. Compares on the bare number so a JID stored
+ * as "123:4@s.whatsapp.net" still matches a mention of "123@s.whatsapp.net".
+ */
+export function isBotMentioned(msg, botJid) {
+  if (!botJid) return false;
+  const mentions = extractMentionedJids(msg);
+  if (mentions.includes(botJid)) return true;
+  const bare = (jid) => String(jid || '').split('@')[0].split(':')[0];
+  const botNumber = bare(botJid);
+  if (!botNumber) return false;
+  return mentions.some((j) => bare(j) === botNumber);
+}
+
 export function buildFarewell(language = config.defaultLanguage) {
   return [
     `> *${toSmallCaps('x vortex')}*`,

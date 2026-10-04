@@ -2617,7 +2617,8 @@
       "info": "معلومات",
       "feedback": "ملاحظات",
       "help": "مساعدة",
-      "admin": "لوحة الإدارة"
+      "admin": "لوحة الإدارة",
+      "groups": "المجموعات"
     },
     "common": {
       "back": "رجوع"
@@ -3340,6 +3341,14 @@
       "unavailableAction": "الإجراء",
       "unavailableReason": "السبب",
       "unavailableDetails": "التفاصيل"
+    },
+    "group_management": {
+      "heading": "إدارة المجموعات",
+      "my_groups": "مجموعاتي",
+      "activate": "تفعيل مجموعة",
+      "deactivate": "تعطيل مجموعة",
+      "defaults": "الإعدادات الافتراضية",
+      "enabled": "مفعّلة"
     }
   },
   "lifecycle": {

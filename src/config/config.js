@@ -152,6 +152,9 @@ sessionTimeoutMinutes: 5,
     adminWarnCooldownMs: 900000, // min gap between admin warnings
     bypassForAdminNotifications: true
   },
+  // Group Management Phase 1. Global kill switch: when false every group
+  // message is ignored, which restores the pre-Phase-1 behaviour.
+  groupManagementEnabled: true,
   // Admin-defined custom commands (data/customCommands.json)
   customCommands: {
     enabled: true,

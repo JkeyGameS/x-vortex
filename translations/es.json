@@ -2617,7 +2617,8 @@
       "info": "Info",
       "feedback": "Opiniones",
       "help": "Ayuda",
-      "admin": "Panel de administración"
+      "admin": "Panel de administración",
+      "groups": "Grupos"
     },
     "common": {
       "back": "Volver"
@@ -3345,6 +3346,14 @@
       "unavailableAction": "Accion",
       "unavailableReason": "Motivo",
       "unavailableDetails": "Detalles"
+    },
+    "group_management": {
+      "heading": "Gestion de grupos",
+      "my_groups": "Mis grupos",
+      "activate": "Activar un grupo",
+      "deactivate": "Desactivar un grupo",
+      "defaults": "Ajustes predeterminados",
+      "enabled": "Activados"
     }
   },
   "lifecycle": {

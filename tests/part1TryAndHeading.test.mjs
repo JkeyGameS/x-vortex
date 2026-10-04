@@ -221,14 +221,16 @@ try {
   {
     const { getMenu } = await import('../src/config/menus/registry.js');
     const def = getMenu('main_menu');
+    // Group Management Phase 1 added option 7 (open:group_management), which
+    // previously was a gap between 6 and 9. Nothing else moved.
     check('6: the option numbers are unchanged',
-      JSON.stringify(def.options.map((o) => o.number)) === JSON.stringify(['0', '1', '2', '3', '4', '5', '6', '9', 'A']),
+      JSON.stringify(def.options.map((o) => o.number)) === JSON.stringify(['0', '1', '2', '3', '4', '5', '6', '7', '9', 'A']),
       JSON.stringify(def.options.map((o) => o.number)));
     check('6: the option actions are unchanged',
       def.options.every((o) => o.action !== undefined && o.labelKey),
       JSON.stringify(def.options.map((o) => o.action)));
     const r = await renderMenu('main_menu', { jid: '1@lid', username: 'adminuser', name: 'x' }, 'en', { sender: '1@lid' });
-    for (const n of ['0.', '1.', '2.', '3.', '4.', '5.', '6.', '9.']) {
+    for (const n of ['0.', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '9.']) {
       check(`6: option ${n} renders`, r.text.includes('\n' + n), n);
     }
     // The admin row is gated by the adminPanel FEATURE flag only, not

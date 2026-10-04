@@ -29,6 +29,7 @@ export default {
     { number: '4', labelKey: 'menu.main.tutorial', emoji: '📚', action: 'open:tutorial', featureId: 'tutorial', fallbackKey: 'onboarding.menuTutorial' },
     { number: '5', labelKey: 'menu.main.info', emoji: 'ℹ️', action: 'open:info', featureId: 'info', fallbackKey: 'onboarding.menuAbout' },
     { number: '6', labelKey: 'menu.main.feedback', emoji: '📮', action: 'open:feedback', featureId: 'feedback', fallbackKey: 'onboarding.menuFeedback' },
+    { number: '7', labelKey: 'menu.main.groups', emoji: '👥', action: 'open:group_management' },
     { number: '9', labelKey: 'menu.main.help', emoji: '❓', action: 'open:help', breakBefore: true, fallbackKey: 'menuHelp.option' },
     { number: 'A', labelKey: 'menu.main.admin', emoji: '🧰', action: 'open:adminPanel', featureId: 'adminPanel', hideWhenUnavailable: true, breakBefore: true, fallbackKey: 'onboarding.menuAdmin' }
   ]

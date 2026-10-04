@@ -2617,7 +2617,8 @@
       "info": "Info",
       "feedback": "Feedback",
       "help": "Hilfe",
-      "admin": "Admin-Bereich"
+      "admin": "Admin-Bereich",
+      "groups": "Gruppen"
     },
     "common": {
       "back": "Zurück"
@@ -3343,6 +3344,14 @@
       "unavailableAction": "Aktion",
       "unavailableReason": "Grund",
       "unavailableDetails": "Details"
+    },
+    "group_management": {
+      "heading": "Gruppenverwaltung",
+      "my_groups": "Meine Gruppen",
+      "activate": "Gruppe aktivieren",
+      "deactivate": "Gruppe deaktivieren",
+      "defaults": "Standardeinstellungen",
+      "enabled": "Aktiviert"
     }
   },
   "lifecycle": {

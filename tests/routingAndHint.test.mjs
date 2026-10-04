@@ -139,7 +139,9 @@ try {
     check('2: no headingResolver is wired', def.headingResolver === undefined, typeof def.headingResolver);
     check('2: headingKey is unchanged', def.headingKey === 'menu.main.heading', def.headingKey);
     check('2: headingEmoji is unchanged', def.headingEmoji === null, String(def.headingEmoji));
-    check('2: options are unchanged', def.options.map((o) => o.number).join(',') === '0,1,2,3,4,5,6,9,A', def.options.map((o) => o.number).join(','));
+    // 7 is open:group_management, added by Group Management Phase 1 into the
+  // previously unused gap between 6 and 9. No other option moved.
+  check('2: options are unchanged', def.options.map((o) => o.number).join(',') === '0,1,2,3,4,5,6,7,9,A', def.options.map((o) => o.number).join(','));
 
     const rendered = await renderMenu('main_menu', { jid: JID, username: 'adminuser', name: 'BAMBA _ 𝕏' }, 'en', { sender: JID });
     check('2: the heading is the static Main Menu', rendered.text.split('\n')[0] === '> *' + 'ᴍᴀɪɴ ᴍᴇɴᴜ' + '*', rendered.text.split('\n')[0]);

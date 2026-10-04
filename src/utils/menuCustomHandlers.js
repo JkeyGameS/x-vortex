@@ -5,6 +5,7 @@ import { handleInfoReply } from '../handlers/infoCommand.js';
 import { handleFeedbackReply } from '../handlers/feedbackCommand.js';
 import { handleFaqMain } from '../handlers/faqCommand.js';
 import { changelogManagerHandlers } from '../handlers/changelogManagerCommand.js';
+import { groupManagementCustomHandlers } from '../handlers/groupManagementHandlers.js';
 import { botContentHandlers } from './botContentHandlers.js';
 import { handleSnippetImpex } from '../handlers/chatCommand.js';
 import config from '../config/config.js';
@@ -609,5 +610,6 @@ export const allMenuCustomHandlers = {
   ...userCustomHandlers,
   ...botNotificationCustomHandlers,
   ...messageDisplayCustomHandlers,
-  ...customCommandCustomHandlers
+  ...customCommandCustomHandlers,
+  ...groupManagementCustomHandlers
 };

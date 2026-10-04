@@ -7,12 +7,16 @@ auth/
 
 # Runtime data: user profiles, chat rules, settings, stats and WhatsApp session.
 # Never commit this directory -- it contains real user JIDs and preferences.
-# Two exceptions, both authored content rather than user data:
+# Four exceptions, all authored/config data rather than user data:
 #   changelog.json   the published version history
 #   botContent.json  the admin Content & Timing editor's live values
+#   groups.json      activated-group registry (group JIDs, no personal data)
+#   groupStats.json  reserved for Phase 6 group stats
 data/*
 !data/changelog.json
 !data/botContent.json
+!data/groups.json
+!data/groupStats.json
 
 # Environment-specific notification bookkeeping (never shared between hosts)
 data/lastNotifiedChangeId.json

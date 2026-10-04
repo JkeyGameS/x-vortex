@@ -3,6 +3,7 @@
 // Phase 3: main_menu. Phase 4: profile cluster. Phase 5: chat & FAQ cluster.
 import { registerMenu } from './registry.js';
 import mainMenu from './mainMenu.js';
+import groupManagementMenu from './groupManagement.js';
 import profileMenu from './profile/index.js';
 import editProfileMenu from './profile/editProfile.js';
 import preferencesMenu from './profile/preferences.js';
@@ -51,6 +52,7 @@ import snippetImpexMenu from './chatFaq/snippetImpex.js';
 import helpMenu from './help.js';
 
 registerMenu(mainMenu);
+registerMenu(groupManagementMenu);
 registerMenu(botContentMenu);
 registerMenu(botContentOnboardingMenu);
 registerMenu(botContentWelcomeBackMenu);
@@ -102,6 +104,7 @@ registerMenu(helpMenu);
 export { registerMenu, getMenu, getAllMenus, findMenuByCommand, unregisterMenu } from './registry.js';
 export { validateMenuDefinition } from './schema.js';
 export { default as mainMenuDefinition } from './mainMenu.js';
+export { default as groupManagementDefinition } from './groupManagement.js';
 export { default as chatFaqDefinition } from './chatFaq/index.js';
 export { default as chatResponsesDefinition } from './chatFaq/chatResponses.js';
 export { default as chatSettingsDefinition } from './chatFaq/chatSettings.js';

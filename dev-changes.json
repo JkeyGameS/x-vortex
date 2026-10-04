@@ -1,6 +1,50 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-04T22-05-00",
+      "timestamp": "2026-10-04T22:24:51Z",
+      "agent": "Cline",
+      "promptSummary": "Group Management Phase 1: activation and routing",
+      "changes": [
+        "Added groups.json registry and groupService with activate, deactivate, update and per-group settings accessors",
+        "Replaced the unconditional group guard with an activation-aware group router; group messages can no longer reach DM onboarding, welcome-back, chat rules or menus",
+        "Added group metadata, admin-check and mention helpers with a participant-metadata cache",
+        "Added the DM Group Management submenu with My Groups, Activate, Deactivate and a read-only Defaults view, reachable via /groups, /gm or main-menu option 7",
+        "Added permission checks so only bot admins or admins of a specific group can view or change that group",
+        "Added admin logging for group_activated and group_deactivated with stringified payloads",
+        "Added 16 unit tests for the group registry and tracked data/groups.json plus the reserved data/groupStats.json"
+      ],
+      "files": [
+        "src/services/groupService.js",
+        "src/utils/groupHelper.js",
+        "src/utils/groupPermission.js",
+        "src/handlers/groupMessageHandler.js",
+        "src/handlers/groupManagementHandlers.js",
+        "src/config/menus/groupManagement.js",
+        "src/config/menus/index.js",
+        "src/config/menus/mainMenu.js",
+        "src/index.js",
+        "src/utils/menuCustomHandlers.js",
+        "src/utils/menuResolvers.js",
+        "src/utils/messageHelper.js",
+        "src/config/config.js",
+        "tests/groupService.test.mjs",
+        "tests/part1TryAndHeading.test.mjs",
+        "tests/routingAndHint.test.mjs",
+        "package.json",
+        ".gitignore",
+        "data/groups.json",
+        "data/groupStats.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.7.0"
+    },
+    {
       "id": "chg-2026-10-04T15-25-00",
       "timestamp": "2026-10-04T15:31:22Z",
       "agent": "Cline",

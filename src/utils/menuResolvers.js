@@ -14,6 +14,7 @@ import { changelogOptions, formatEntryHeading } from './changelogFormat.js';
 import * as messageSettings from '../services/messageSettingsService.js';
 import { MESSAGE_MODES } from '../services/messageSettingsService.js';
 import * as customCommandStore from '../services/customCommandService.js';
+import { getAllGroups, getEnabledGroups } from '../services/groupService.js';
 
 /**
  * Suffix resolvers for dynamic option labels: (user, language) => string.
@@ -374,7 +375,21 @@ function contentRelativeTime(iso) {
 // every other summary in the codebase registers the same way.
 // ---------------------------------------------------------------------------
 
-registerSummaryResolver('botContentSummary', () => {
+registerSummaryResolver('groupManagementSummary', () => {
+    // Returns { static, dynamic } objects so pushBodyLine small-caps the label
+    // and leaves the counts untouched. A bare string would also work, but the
+    // counts would then be small-capped too. The trailing '' matches
+    // changelogManagerSummary: renderMenu does not insert a blank line between
+    // the summary block and the options.
+    const enabled = getEnabledGroups().length;
+    const total = getAllGroups().length;
+    return [
+      { static: toSmallCaps(t('en', 'menu.group_management.enabled')) + ': *', dynamic: enabled + ' / ' + total + '*' },
+      ''
+    ];
+  });
+
+  registerSummaryResolver('botContentSummary', () => {
   const updatedAt = getContent('updatedAt', null);
   return toSmallCaps(t('en', 'menu.bot_content.updated')) + ': '
     + contentRelativeTime(updatedAt);

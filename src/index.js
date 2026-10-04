@@ -10,6 +10,7 @@ import { startHealthServer, stopHealthServer } from './healthServer.js';
 import { setQR, clearQR } from './utils/qrState.js';
 import { loadChangelog } from './services/changelogService.js';
 import { loadBotContent } from './services/botContentService.js';
+import { loadGroups } from './services/groupService.js';
 import { SUB_STATES as CHANGELOG_SUB_STATES } from './handlers/changelogManagerCommand.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
@@ -416,6 +417,11 @@ async function startBot() {
   // language display, and every onboarding string resolves on first use.
   loadBotContent();
 
+  // Activated-group registry. Loaded before the router starts so a group that
+  // is already enabled is recognised on the very first message; a missing file
+  // degrades to an empty registry, which means every group is ignored.
+  loadGroups();
+
   // Version history for the Info menu. Loaded eagerly so the first open does
   // not pay a disk read; a missing file degrades to an empty changelog.
   loadChangelog();
@@ -690,12 +696,31 @@ async function startBot() {
 
       if (!msg.message || msg.key.fromMe) return;
 
-      // Ignore all group messages for now (group features come later). This
-      // must happen before any text extraction, session touch, language
-      // enforcement, or command processing, so groups never get a reply.
-      const isGroup = msg.key.remoteJid.endsWith('@g.us');
-      if (isGroup) {
-        logger.debug({ jid: msg.key.remoteJid }, 'Ignoring group message');
+// Group messages are handled by the group router and NEVER fall through to the
+// DM path below (onboarding, welcome-back, chat rules, menus). An unactivated
+// group is ignored inside the handler, which is the safe default.
+const isGroup = msg.key.remoteJid.endsWith('@g.us');
+if (isGroup) {
+        try {
+          const { handleGroupMessage } = await import('./handlers/groupMessageHandler.js');
+          // Groups need only the text; no media download and no document buffer.
+          const gText =
+            msg.message.conversation ||
+            msg.message.extendedTextMessage?.text ||
+            msg.message.imageMessage?.caption ||
+            msg.message.videoMessage?.caption ||
+            '';
+          await handleGroupMessage({
+            sock,
+            msg,
+            chatId: msg.key.remoteJid,
+            sender: msg.key.participant || msg.key.remoteJid,
+            pushName: msg.pushName || 'User',
+            text: gText
+          });
+        } catch (err) {
+          logger.error({ err, chatId: msg.key.remoteJid }, '[GROUP] handler threw');
+        }
         return;
       }
 
@@ -3021,6 +3046,16 @@ async function startBot() {
         }
         await sendText(sock, sender, tr('common.invalidChoice'));
         return;
+      }
+
+      // Group Management sub-states: pickers and confirmations own their input.
+      if (session?.currentMenu && session.currentMenu.startsWith('group_management')) {
+        const { handleGroupManagementReply } = await import('./handlers/groupManagementHandlers.js');
+        const handled = await handleGroupManagementReply(
+          { sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage, session },
+          trimmedText
+        );
+        if (handled) return;
       }
 
       // Custom Commands wizard: every state owns its own prompts and validation.
