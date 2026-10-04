@@ -416,7 +416,9 @@ async function broadcastToAdmins(sock, text) {
   let sent = 0;
   for (const jid of admins) {
     try {
-      const ok = await sendText(sock, jid, text, { type: 'silent' });
+      // bypassRateLimit: a new-user notification is a system notification. It must
+        // still reach the admin while the limiter is throttling ordinary chat.
+        const ok = await sendText(sock, jid, text, { type: 'silent', bypassRateLimit: true });
       if (ok !== false) sent++;
     } catch (err) {
       logger.error({ err, jid }, '[ONBOARD] admin notification failed');

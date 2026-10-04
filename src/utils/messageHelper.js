@@ -6,10 +6,13 @@ import { menuTransitions } from '../config/menuConfig.js';
 import { getUserByJid } from '../services/userService.js';
 import { t } from '../services/localeService.js';
 import { scheduleSelfDestruct } from '../services/selfDestructService.js';
+import { checkOutbound, recordBlock } from '../services/outboundRateLimitService.js';
 
 /**
  * Send a menu message according to the transition defined in menuConfig,
  * optionally overridden by a resolved display mode (messageSettingsService).
+ *
+ * Pass `bypassRateLimit: true` only for admin/system notifications.
  *
  * Display modes (override the transition's hybrid behavior):
  * - 'edit': always try to edit the stored menu key. On failure, fall back to
@@ -22,7 +25,7 @@ import { scheduleSelfDestruct } from '../services/selfDestructService.js';
  * Transitions flagged 'edit_or_new' keep their legacy never-delete behavior.
  *
  * Stores the new message key as lastMenuKey unless the transition says storeKey: false.
- * @returns {Promise<{ key: object|null, action: 'edited'|'sent'|'deleted_sent' }>}
+ * @returns {Promise<{ key: object|null, action: 'edited'|'sent'|'deleted_sent'|'suppressed' }>}
  */
 function deleteAndSend(sock, sender, lastMenuKey, text) {
   if (lastMenuKey) {
@@ -35,7 +38,28 @@ function deleteAndSend(sock, sender, lastMenuKey, text) {
   return sock.sendMessage(sender, { text });
 }
 
-export async function sendMenu({ sock, sender, chatId, text, transitionKey, skipTyping = false, type = 'submenuTransition', mode = null }) {
+export async function sendMenu({ sock, sender, chatId, text, transitionKey, skipTyping = false, type = 'submenuTransition', mode = null, bypassRateLimit = false }) {
+  // Outbound rate limit gate. This is the single chokepoint for every menu
+  // send: sendMenuById delegates here, and the edit/delete/send variants below
+  // are all one logical message, so the check belongs at the top rather than
+  // around each sock.sendMessage.
+  if (bypassRateLimit !== true) {
+    const check = checkOutbound(sender);
+    if (!check.allowed) {
+      logger.warn({ sender, reason: check.reason }, '[OUTBOUND_RATE_LIMIT] menu suppressed');
+      try {
+        const warning = recordBlock(check.reason);
+        if (warning.shouldWarn) {
+          const { notifyAdminsRateLimit } = await import('./adminRateLimitWarning.js');
+          notifyAdminsRateLimit(sock, warning.count, check.reason).catch(() => {});
+        }
+      } catch (err) {
+        logger.warn({ err }, '[OUTBOUND_RATE_LIMIT] failed to record block');
+      }
+      return { key: null, action: 'suppressed' };
+    }
+  }
+
   if (!skipTyping && type !== 'silent') {
     try {
       const { showTyping } = await import('./typingHelper.js');

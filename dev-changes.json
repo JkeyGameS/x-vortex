@@ -1,6 +1,41 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-04T15-25-00",
+      "timestamp": "2026-10-04T15:31:22Z",
+      "agent": "Cline",
+      "promptSummary": "Add outbound rate limiter",
+      "changes": [
+        "Added outbound rate limit service with per-chat (8/min) and global (40/min) caps as a spam-flag safety net, separate from the existing inbound conversation limiter",
+        "Gated outbound sends centrally in the messageService sendRaw funnel and the sendMenu chokepoint, so menus and text replies are covered without touching every call site",
+        "Added bypassRateLimit for admin/system notifications so a spam warning can never be suppressed by the limit it is reporting",
+        "Added admin warning after repeated blocks, rate-limited to once per cooldown window, delivered via direct send",
+        "Added sendDocument and wired the five user-facing export sends in chat, faq and feedback through it",
+        "Added 15 unit tests for the limiter on the built-in node test runner, registered as the 16th link in the existing test chain",
+        "Disabled the limiter in the three test suites that legitimately exceed the per-minute caps in-process, so they assert real behavior instead of throttling"
+      ],
+      "files": [
+        "src/services/outboundRateLimitService.js",
+        "src/utils/adminRateLimitWarning.js",
+        "src/services/messageService.js",
+        "src/utils/messageHelper.js",
+        "src/config/config.js",
+        "src/services/lifecycleService.js",
+        "src/services/devChangeNotifier.js",
+        "src/handlers/languageOnboardingHandler.js",
+        "src/handlers/chatCommand.js",
+        "src/handlers/faqCommand.js",
+        "src/handlers/feedbackCommand.js",
+        "tests/outboundRateLimit.test.mjs",
+        "tests/languageOnboarding.test.mjs",
+        "tests/resumeFlow.test.mjs",
+        "tests/changelogManager.test.mjs",
+        "package.json"
+      ],
+      "type": "improvement",
+      "versionSuggested": "1.6.0"
+    },
+    {
       "id": "chg-2026-10-04T00-30-00",
       "timestamp": "2026-10-04T00:36:02Z",
       "agent": "Cline",

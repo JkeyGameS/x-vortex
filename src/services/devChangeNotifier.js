@@ -85,8 +85,9 @@ export async function notifyPendingDevChanges(sock) {
   let sent = 0;
   for (const jid of config.adminJids || []) {
     try {
-      // type 'silent' skips the typing indicator for a machine notification.
-      const ok = await sendText(sock, jid, text, { type: 'silent' });
+// type 'silent' skips the typing indicator for a machine notification.
+        // bypassRateLimit: this is a system notification, not user-facing chat.
+        const ok = await sendText(sock, jid, text, { type: 'silent', bypassRateLimit: true });
       if (ok !== false) sent++;
     } catch (err) {
       // One unreachable admin must not stop the others.

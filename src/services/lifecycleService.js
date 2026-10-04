@@ -186,8 +186,10 @@ async function broadcast(sock, text) {
   let sent = 0;
   for (const jid of admins) {
     try {
-      // type: 'silent' skips the typing indicator.
-      const ok = await sendText(sock, jid, text, { type: 'silent' });
+// type: 'silent' skips the typing indicator. bypassRateLimit keeps the
+        // startup/crash/shutdown alert deliverable even while the limiter is
+        // actively throttling outbound chat -- exactly when an admin needs it.
+        const ok = await sendText(sock, jid, text, { type: 'silent', bypassRateLimit: true });
       if (ok !== false) sent++;
     } catch (err) {
       // One unreachable admin must never stop the others.

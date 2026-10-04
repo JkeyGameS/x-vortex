@@ -1,7 +1,7 @@
 import config from '../config/config.js';
 import sessionManager from '../utils/sessionManager.js';
 import { sendMenuById } from '../utils/menuSender.js';
-import { sendText } from '../services/messageService.js';
+import { sendText, sendDocument } from '../services/messageService.js';
 import { t } from '../services/localeService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { buildMenu } from '../utils/menuBuilder.js';
@@ -1144,8 +1144,8 @@ export async function handleFeedbackAdminReply(context, input) {
         const data = JSON.stringify(getAllFeedback(), null, 2);
         const ts = new Date().toISOString().replace(/[:.]/g, '-');
         try {
-          await context.sock.sendMessage(chatId, {
-            document: Buffer.from(data, 'utf8'),
+await sendDocument(context.sock, chatId, {
+              document: Buffer.from(data, 'utf8'),
             mimetype: 'application/json',
             fileName: `feedback-export-${ts}.json`,
             caption: toSmallCaps(t(language, 'feedback.adminExportCaption'))

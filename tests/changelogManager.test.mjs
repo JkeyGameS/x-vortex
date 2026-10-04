@@ -49,6 +49,15 @@ function check(name, cond, extra = '') {
   if (!cond) fails++;
 }
 
+// The outbound rate limiter is a deployment safety net against spam flags.
+// This suite drives many sends per second in-process, which legitimately trips
+// the per-minute caps and would fail assertions for the wrong reason. Disable
+// it here; outboundRateLimit.test.mjs covers the limiter itself.
+{
+  const cfg = (await import('../src/config/config.js')).default;
+  cfg.rateLimit.enabled = false;
+}
+
 const { toSmallCaps } = await import('../src/utils/smallCaps.js');
 const SMALL_TO_PLAIN = new Map();
 for (const ch of 'abcdefghijklmnopqrstuvwxyz') {

@@ -139,6 +139,19 @@ sessionTimeoutMinutes: 5,
   chatRateLimitCooldownBehavior: 'silent', // 'silent' | 'polite'
   chatDryRunMaxLogEntries: 500, // cap for data/chatDryRunLog.json
   chatSnippetMaxDepth: 3, // max recursive {snippet:name} expansion depth
+  // Outbound rate limiting. Independent of the inbound chatRateLimit* block
+  // above: this caps messages the bot SENDS, per chat and globally, as a safety
+  // net against host/WhatsApp spam flags. Read by outboundRateLimitService.js.
+  rateLimit: {
+    enabled: true,
+    windowMs: 60000,        // sliding window for both caps
+    perChatPerMinute: 8,    // max outbound messages to one chat per window
+    globalPerMinute: 40,    // max outbound messages across all chats per window
+    adminWarnThreshold: 5,      // blocks in the warn window before alerting admins
+    adminWarnWindowMs: 300000,  // window the threshold is counted over
+    adminWarnCooldownMs: 900000, // min gap between admin warnings
+    bypassForAdminNotifications: true
+  },
   // Admin-defined custom commands (data/customCommands.json)
   customCommands: {
     enabled: true,

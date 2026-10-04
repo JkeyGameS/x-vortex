@@ -3,7 +3,7 @@ import logger from '../utils/logger.js';
 import sessionManager from '../utils/sessionManager.js';
 import { sendMenuById } from '../utils/menuSender.js';
 import { registerCardResolver, registerBodyResolver } from '../utils/menuResolvers.js';
-import { sendText, sendError } from '../services/messageService.js';
+import { sendText, sendError, sendDocument } from '../services/messageService.js';
 import { t } from '../services/localeService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { buildMenu } from '../utils/menuBuilder.js';
@@ -1730,8 +1730,8 @@ export async function handleFaqImportExportMenu(context, input, documentContent 
     case '1': {
       const entries = faqService.exportEntries();
       const stamp = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '-');
-      await context.sock.sendMessage(chatId, {
-        document: Buffer.from(JSON.stringify({ exportedAt: new Date().toISOString(), entries }, null, 2), 'utf8'),
+await sendDocument(context.sock, chatId, {
+          document: Buffer.from(JSON.stringify({ exportedAt: new Date().toISOString(), entries }, null, 2), 'utf8'),
         mimetype: 'application/json',
         fileName: `faq-export-${stamp}.json`,
         caption: toSmallCaps(t(language, 'faq.ieExported'))
@@ -3022,8 +3022,8 @@ export async function handleFaqTemplateImportExport(context, input, documentCont
     const { exportFaqTemplatePacks } = await import('../services/faqTemplateService.js');
     const packs = exportFaqTemplatePacks(trimmed === '1' ? 'all' : 'custom');
     const stamp = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '-');
-    await context.sock.sendMessage(chatId, {
-      document: Buffer.from(JSON.stringify({ exportedAt: new Date().toISOString(), packs }, null, 2), 'utf8'),
+await sendDocument(context.sock, chatId, {
+        document: Buffer.from(JSON.stringify({ exportedAt: new Date().toISOString(), packs }, null, 2), 'utf8'),
       mimetype: 'application/json',
       fileName: `faq-templates-${stamp}.json`,
       caption: toSmallCaps(t(language, 'faqtemplates.ieExported'))

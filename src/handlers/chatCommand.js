@@ -2,7 +2,7 @@ import config from '../config/config.js';
 import logger from '../utils/logger.js';
 import sessionManager from '../utils/sessionManager.js';
 import { sendMenuById } from '../utils/menuSender.js';
-import { sendText, sendError } from '../services/messageService.js';
+import { sendText, sendError, sendDocument } from '../services/messageService.js';
 import { t } from '../services/localeService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { buildMenu } from '../utils/menuBuilder.js';
@@ -1111,8 +1111,8 @@ export async function handleSnippetImpex(context, input) {
   if (trimmed === '1') {
     const { getSnippets } = await import('../services/snippetService.js');
     const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-    await context.sock.sendMessage(chatId, {
-      document: Buffer.from(JSON.stringify({ exportedAt: new Date().toISOString(), snippets: getSnippets() }, null, 2), 'utf8'),
+await sendDocument(context.sock, chatId, {
+        document: Buffer.from(JSON.stringify({ exportedAt: new Date().toISOString(), snippets: getSnippets() }, null, 2), 'utf8'),
       mimetype: 'application/json',
       fileName: `snippets-export-${stamp}.json`,
       caption: L(language, 'chatResponses.snippetsExported')
@@ -2861,8 +2861,8 @@ export async function handleTemplateImportExport(context, input, documentContent
     const scope = trimmed === '1' ? 'all' : 'custom';
     const packs = exportTemplatePacks(scope);
     const stamp = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '-');
-    await context.sock.sendMessage(chatId, {
-      document: Buffer.from(JSON.stringify({ exportedAt: new Date().toISOString(), packs }, null, 2), 'utf8'),
+await sendDocument(context.sock, chatId, {
+        document: Buffer.from(JSON.stringify({ exportedAt: new Date().toISOString(), packs }, null, 2), 'utf8'),
       mimetype: 'application/json',
       fileName: `templates-${stamp}.json`,
       caption: toSmallCaps(t(language, 'templates.ieExported'))
