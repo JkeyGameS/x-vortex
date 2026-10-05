@@ -7,6 +7,7 @@ import {
   isBotGroupAdmin
 } from '../utils/groupHelper.js';
 import { getLanguageDisplay } from '../utils/languageHelper.js';
+import config from '../config/config.js';
 import { canManageGroups, canManageGroup, isBotAdmin } from '../utils/groupPermission.js';
 import {
   getAllGroups,
@@ -25,7 +26,7 @@ import {
  * Session-state prefixes this module owns. The router dispatches on these;
  * keep them in step with the predicate in src/index.js.
  */
-export const GROUP_STATE_PREFIXES = ['group_management', 'group_settings', 'group_defaults'];
+export const GROUP_STATE_PREFIXES = ['group_management', 'group_settings', 'group_defaults', 'group_moderation'];
 
 /**
  * DM-side Group Management handlers (Phase 1).
@@ -213,6 +214,11 @@ export async function handleGroupManagementReply(context, trimmedText) {
 
   const input = String(trimmedText || '').trim();
   const back = () => backToMenu(sock, sender, chatId);
+
+  // Moderation submenu owns its own numeric flow (Phase 4).
+  if (state.startsWith('group_moderation')) {
+    return handleModerationSubState({ sock, sender, chatId, user, session }, state, input);
+  }
 
   if (input === '0' || input === 'back') {
     return back();
@@ -600,11 +606,229 @@ async function logAction(actorJid, action, payload) {
   } catch { /* logging must never break the flow */ }
 }
 
+// ---------------------------------------------------------------------------
+// Moderation submenu (Phase 4)
+//
+// group_moderation_group     -> pick a group the actor moderates
+// group_moderation_user      -> pick a member (20 per page)
+// group_moderation_action    -> warn/mute/kick/ban/...
+// group_moderation_duration  -> pick a mute duration
+//
+// Every action delegates to moderationHandlers.js, the same code the slash
+// commands use, so the two entry points cannot diverge.
+// ---------------------------------------------------------------------------
+
+async function openModerationRoot(context) {
+  const { sock, sender, chatId } = context;
+  const mod = await import('./moderationHandlers.js');
+  const groups = await mod.listModeratedGroups(sock, sender);
+  if (!groups.length) {
+    await sendText(
+      sock, sender,
+      toSmallCaps('You do not moderate any activated groups.'),
+      GROUP_OPTS
+    );
+    return;
+  }
+  const lines = ['> *\u26A0\uFE0F ' + toSmallCaps('Moderation') + '*', ''];
+  groups.forEach((g, i) => {
+    lines.push(`${i + 1}. ${g.name || g.id}`);
+  });
+  lines.push('', '0. ' + toSmallCaps('Back'));
+  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
+  await setMenu(sock, sender, chatId, 'group_moderation_group', {
+    moderationGroupIds: groups.map((g) => g.id),
+    currentGroupJid: null
+  });
+}
+
+/** Dispatch the four group_moderation_* sub-states. */
+async function handleModerationSubState(context, state, input) {
+  const { sock, sender, chatId, user, session } = context;
+  const mod = await import('./moderationHandlers.js');
+
+  const back = async (patch = {}) => {
+    const sessionManager = (await import('../utils/sessionManager.js')).default;
+    sessionManager.setState(sender, chatId, {
+      moderationGroupIds: null,
+      currentGroupJid: null,
+      pendingGroupJid: null,
+      pendingPage: null,
+      ...patch
+    });
+    return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, 'settings_back');
+  };
+
+  if (input === '0' || input === 'back') {
+    if (state === 'group_moderation_action' || state === 'group_moderation_duration') {
+      // Back up one step rather than all the way out.
+      return openUserActions({ sock, sender, chatId, user, session });
+    }
+    return back();
+  }
+
+  // --- pick a group -------------------------------------------------------
+  if (state === 'group_moderation_group') {
+    const ids = Array.isArray(session?.moderationGroupIds) ? session.moderationGroupIds : [];
+    const n = Number(input);
+    if (!Number.isInteger(n) || n < 1 || n > ids.length) {
+      await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
+      return true;
+    }
+    const groupJid = ids[n - 1];
+    const meta = await getGroupMetadata(sock, groupJid);
+    const participants = Array.isArray(meta?.participants) ? meta.participants : [];
+    const users = participants.map((p) => ({
+      jid: p.id,
+      label: (p.pushName || String(p.id).split('@')[0]) +
+        (p.admin === 'admin' || p.admin === 'superadmin' ? ' \u{1F451}' : '')
+    }));
+    await setMenu(sock, sender, chatId, 'group_moderation_user', {
+      currentGroupJid: groupJid,
+      pendingUserIds: users.map((u) => u.jid),
+      pendingUserLabels: users.map((u) => u.label),
+      pendingPage: 0
+    });
+    await sendUserPicker({ sock, sender, chatId }, users, 0);
+    return true;
+  }
+
+  // --- pick a member (paginated) -----------------------------------------
+  if (state === 'group_moderation_user') {
+    const ids = Array.isArray(session?.pendingUserIds) ? session.pendingUserIds : [];
+    const labels = Array.isArray(session?.pendingUserLabels) ? session.pendingUserLabels : [];
+    const page = Number(session?.pendingPage) || 0;
+    const n = Number(input);
+    // A value past the end of the page is a next-page request.
+    if (Number.isInteger(n) && n > mod.MEMBER_PAGE_SIZE && n <= Math.ceil(ids.length / mod.MEMBER_PAGE_SIZE)) {
+      const next = page + 1;
+      await setMenu(sock, sender, chatId, 'group_moderation_user', { pendingPage: next });
+      await sendUserPicker({ sock, sender, chatId }, sliceUsers(labels, ids, next), next, ids.length);
+      return true;
+    }
+    const idx = page * mod.MEMBER_PAGE_SIZE + (n - 1);
+    if (!Number.isInteger(n) || n < 1 || idx >= ids.length) {
+      await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
+      return true;
+    }
+    await setMenu(sock, sender, chatId, 'group_moderation_action', {
+      pendingGroupJid: ids[idx],
+      pendingUserLabel: labels[idx]
+    });
+    await openUserActions(context);
+    return true;
+  }
+
+  // --- pick an action -----------------------------------------------------
+  if (state === 'group_moderation_action') {
+    const groupJid = session?.currentGroupJid;
+    const userJid = session?.pendingGroupJid;
+    if (!groupJid || !userJid) return back();
+    const n = Number(input);
+    if (!Number.isInteger(n) || n < 1 || n > 7) {
+      await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
+      return true;
+    }
+    if (n === 2) {
+      // Mute needs a duration first.
+      await sendText(sock, sender, mod.renderDurationPicker(), GROUP_OPTS);
+      await setMenu(sock, sender, chatId, 'group_moderation_duration', { pendingGroupJid: userJid });
+      return true;
+    }
+    const flows = {
+      1: mod.flowWarn,
+      3: mod.flowKick,
+      4: mod.flowBan,
+      5: mod.flowWarnings,
+      6: mod.flowUnmute,
+      7: mod.flowUnban
+    };
+    const flow = flows[n];
+    if (!flow) return true;
+    await flow({ sock, sender, chatId, user }, { groupJid, userJid });
+    return openUserActions(context);
+  }
+
+  // --- pick a mute duration ----------------------------------------------
+  if (state === 'group_moderation_duration') {
+    const groupJid = session?.currentGroupJid;
+    const userJid = session?.pendingGroupJid;
+    if (!groupJid || !userJid) return back();
+    const presets = (config.moderation && config.moderation.presetMuteDurations) || [];
+    const n = Number(input);
+    if (!Number.isInteger(n) || n < 1 || n > presets.length + 1) {
+      await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
+      return true;
+    }
+    if (n === presets.length + 1) {
+      await sendText(
+        sock, sender,
+        toSmallCaps('Send the number of minutes to mute for.'),
+        GROUP_OPTS
+      );
+      await setMenu(sock, sender, chatId, 'group_moderation_duration_custom', {
+        pendingGroupJid: userJid
+      });
+      return true;
+    }
+    await mod.flowMute({ sock, sender, chatId, user }, {
+      groupJid, userJid, durationMs: presets[n - 1]
+    });
+    return openUserActions(context);
+  }
+
+  // --- custom mute duration (free text) ----------------------------------
+  if (state === 'group_moderation_duration_custom') {
+    const groupJid = session?.currentGroupJid;
+    const userJid = session?.pendingGroupJid;
+    if (!groupJid || !userJid) return back();
+    const minutes = Number(input);
+    if (!Number.isInteger(minutes) || minutes <= 0) {
+      await sendText(sock, sender, '\u274C ' + toSmallCaps('Send a whole number of minutes.'), GROUP_OPTS);
+      return true;
+    }
+    await mod.flowMute({ sock, sender, chatId, user }, {
+      groupJid, userJid, durationMs: minutes * 60_000
+    });
+    return openUserActions(context);
+  }
+
+  return false;
+}
+
+function sliceUsers(labels, ids, page) {
+  const start = page * 20;
+  return labels.slice(start, start + 20).map((label, i) => ({
+    jid: ids[start + i],
+    label
+  }));
+}
+
+async function sendUserPicker(target, users, page, total) {
+  const mod = await import('./moderationHandlers.js');
+  await sendText(
+    target.sock,
+    target.sender,
+    mod.renderMemberPicker(users, page, total ?? users.length),
+    GROUP_OPTS
+  );
+}
+
+async function openUserActions(context) {
+  const { sock, sender, chatId, user, session } = context;
+  const mod = await import('./moderationHandlers.js');
+  const label = session?.pendingUserLabel || String(session?.pendingGroupJid || '').split('@')[0];
+  await sendText(sock, sender, mod.renderUserActions(label), GROUP_OPTS);
+  await setMenu(sock, sender, chatId, 'group_moderation_action');
+}
+
 export const groupManagementCustomHandlers = {
   groups_my_groups: (c) => groupsMyGroups(c),
   groups_activate: (c) => groupsActivate(c),
   groups_deactivate: (c) => groupsDeactivate(c),
   groups_defaults: (c) => groupsDefaults(c),
+  // Moderation submenu (Phase 4). Reached from Group Management option 5.
+  groups_moderation: (c) => openModerationRoot(c),
   groups_group_settings: (c) => {
     const groupJid = c?.pendingGroupJid || c?.session?.pendingGroupJid;
     if (!groupJid) {

@@ -1,6 +1,7 @@
 import logger from '../utils/logger.js';
 import { getGroup } from '../services/groupService.js';
-import { getGroupMetadata, isBotGroupAdmin } from '../utils/groupHelper.js';
+import { getGroupMetadata, isBotGroupAdmin, isGroupAdmin } from '../utils/groupHelper.js';
+import { isMuted, isBanned } from '../services/moderationService.js';
 import { sendText } from '../services/messageService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { isBotMentioned } from '../utils/messageHelper.js';
@@ -31,6 +32,24 @@ export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, 
 
     const trimmed = String(text || '').trim();
     if (!trimmed) return;
+
+    // Moderation gate (Phase 4). A ban silences the user outright; a mute
+    // silences them unless they moderate the group themselves. isGroupAdmin
+    // reads the cached participant list, so this is cheap after the first call.
+    if (isBanned(chatId, sender)) {
+      logger.debug({ chatId, sender }, '[GROUP] banned user, ignored');
+      return;
+    }
+    if (isMuted(chatId, sender)) {
+      const actorIsBotAdmin = Array.isArray(config.adminJids) && config.adminJids.includes(sender);
+      const senderAdministers = actorIsBotAdmin
+        ? true
+        : await isGroupAdmin(sock, chatId, sender);
+      if (!senderAdministers) {
+        logger.debug({ chatId, sender }, '[GROUP] muted user, ignored');
+        return;
+      }
+    }
 
     const opts = { skipTyping: true };
 

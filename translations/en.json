@@ -3219,7 +3219,8 @@
         "14": "l",
         "15": "t",
         "16": "s",
-        "groupMessages": "Group Messages"
+        "groupMessages": "Group Messages",
+        "moderationMessages": "Moderation Messages"
       },
       "current": "Current value",
       "placeholders": "Placeholders",
@@ -3394,7 +3395,16 @@
       "group_messages": "Group Messages",
       "group_messages_heading": "Group Messages",
       "group_welcome": "Welcome Message",
-      "group_goodbye": "Goodbye Message"
+      "group_goodbye": "Goodbye Message",
+      "moderation_messages": "Moderation Messages",
+      "moderation_messages_heading": "Moderation Messages",
+      "mod_warning": "Warning DM",
+      "mod_mute": "Mute DM",
+      "mod_unmute": "Unmute DM",
+      "mod_kick": "Kick DM",
+      "mod_ban": "Ban DM",
+      "mod_auto_mute": "Auto-Mute DM",
+      "mod_auto_kick": "Auto-Kick DM"
     },
     "group_management": {
       "heading": "Group Management",
@@ -3417,7 +3427,27 @@
         "defaults_note": "These apply to newly activated groups.",
         "permission_denied": "You don't have permission to manage this group.",
         "bot_admin_only": "Default settings are restricted to bot admins."
-      }
+      },
+      "moderation": {
+        "heading": "Moderation",
+        "select_group": "Select a group",
+        "select_user": "Select a user",
+        "warn": "Warn",
+        "mute": "Mute",
+        "kick": "Kick",
+        "ban": "Ban",
+        "unwarn": "Remove warning",
+        "unmute": "Unmute",
+        "unban": "Unban",
+        "view_warnings": "View warnings",
+        "duration_5m": "5 minutes",
+        "duration_30m": "30 minutes",
+        "duration_1h": "1 hour",
+        "duration_24h": "24 hours",
+        "duration_custom": "Custom"
+      },
+      "moderation_menu_label": "Moderation",
+      "moderation_entry": "Moderation"
     }
   },
   "lifecycle": {

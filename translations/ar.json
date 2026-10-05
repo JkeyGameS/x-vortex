@@ -3180,7 +3180,8 @@
         "6": "ض",
         "7": "ب",
         "8": "ط",
-        "groupMessages": "رسائل المجموعة"
+        "groupMessages": "رسائل المجموعة",
+        "moderationMessages": "رسائل الإشراف"
       },
       "current": "القيمة الحالية",
       "placeholders": "المتغيرات",
@@ -3355,7 +3356,16 @@
       "group_messages": "رسائل المجموعة",
       "group_messages_heading": "رسائل المجموعة",
       "group_welcome": "رسالة الترحيب",
-      "group_goodbye": "رسالة الوداع"
+      "group_goodbye": "رسالة الوداع",
+      "moderation_messages": "رسائل الإشراف",
+      "moderation_messages_heading": "رسائل الإشراف",
+      "mod_warning": "رسالة تحذير",
+      "mod_mute": "رسالة كتم",
+      "mod_unmute": "رسالة إلغاء الكتم",
+      "mod_kick": "رسالة إزالة",
+      "mod_ban": "رسالة حظر",
+      "mod_auto_mute": "رسالة كتم تلقائي",
+      "mod_auto_kick": "رسالة إزالة تلقائية"
     },
     "group_management": {
       "heading": "إدارة المجموعات",
@@ -3378,7 +3388,27 @@
         "defaults_note": "تنطبق على المجموعات المفعّلة حديثاً.",
         "permission_denied": "ليس لديك إذن لإدارة هذه المجموعة.",
         "bot_admin_only": "الإعدادات الافتراضية متاحة للمسؤولين فقط."
-      }
+      },
+      "moderation": {
+        "heading": "الإشراف",
+        "select_group": "اختر مجموعة",
+        "select_user": "اختر مستخدماً",
+        "warn": "تحذير",
+        "mute": "كتم",
+        "kick": "إزالة",
+        "ban": "حظر",
+        "unwarn": "إزالة التحذير",
+        "unmute": "إلغاء الكتم",
+        "unban": "رفع الحظر",
+        "view_warnings": "عرض التحذيرات",
+        "duration_5m": "5 دقائق",
+        "duration_30m": "30 دقيقة",
+        "duration_1h": "ساعة",
+        "duration_24h": "24 ساعة",
+        "duration_custom": "مخصص"
+      },
+      "moderation_menu_label": "الإشراف",
+      "moderation_entry": "الإشراف"
     }
   },
   "lifecycle": {

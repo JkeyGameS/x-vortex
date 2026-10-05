@@ -3065,7 +3065,7 @@ if (isGroup) {
       // Group Management sub-states: pickers, the per-group settings panel and the
       // defaults editor own their input. Three prefixes, because the settings and
       // defaults states are not nested under group_management by name.
-      if (session?.currentMenu && ['group_management', 'group_settings', 'group_defaults'].some((p) => session.currentMenu.startsWith(p))) {
+      if (session?.currentMenu && ['group_management', 'group_settings', 'group_defaults', 'group_moderation'].some((p) => session.currentMenu.startsWith(p))) {
         const { handleGroupManagementReply } = await import('./handlers/groupManagementHandlers.js');
         const handled = await handleGroupManagementReply(
           { sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage, session },

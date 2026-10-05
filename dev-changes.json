@@ -1,6 +1,50 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-05T01-10-00",
+      "timestamp": "2026-10-05T09:24:23Z",
+      "agent": "Cline",
+      "promptSummary": "Group Management Phase 4: moderation commands",
+      "changes": [
+        "Added moderation service storing warnings, mutes and bans under each group, with rolling-window warning expiry and self-expiring mutes",
+        "Added warn, unwarn, mute, unmute, kick, ban, unban and warnings slash commands, all DM-only",
+        "Added auto-escalation: 3 active warnings auto-mute for 30 minutes, 5 auto-kick, falling back to a mute when the bot is not a group admin",
+        "Added DM notifications to warned, muted, kicked and banned users, with the reason and duration filled from editable templates",
+        "Added a Moderation submenu to Group Management that shares the same flows as the slash commands",
+        "Enforced mute and ban in the group message router; muted group admins stay exempt",
+        "Added seven editable moderation DM templates to the Bot Content editor",
+        "Added 23 unit tests covering the moderation state, warning expiry persistence, duration capping and message rendering"
+      ],
+      "files": [
+        "src/services/moderationService.js",
+        "src/utils/humanizeDuration.js",
+        "src/handlers/moderationHandlers.js",
+        "src/handlers/moderationCommands.js",
+        "src/config/menus/admin/botContentModeration.js",
+        "tests/moderationService.test.mjs",
+        "src/config/config.js",
+        "src/config/defaultBotContent.js",
+        "src/config/botContentFields.js",
+        "src/utils/placeholderResolver.js",
+        "src/handlers/groupMessageHandler.js",
+        "src/handlers/groupManagementHandlers.js",
+        "src/config/menus/groupManagement.js",
+        "src/config/menus/admin/botContent.js",
+        "src/config/menus/index.js",
+        "src/utils/botContentHandlers.js",
+        "tests/botContent.test.mjs",
+        "tests/routingAndHint.test.mjs",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.7.3"
+    },
+    {
       "id": "chg-2026-10-05T00-20-00",
       "timestamp": "2026-10-05T00:18:12Z",
       "agent": "Cline",

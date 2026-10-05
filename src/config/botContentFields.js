@@ -71,6 +71,36 @@ export const EDITABLE_FIELDS = {
   'groupMessages.goodbye': {
     labelKey: 'menu.bot_content.group_goodbye',
     placeholders: ['pushName', 'groupName', 'botName']
+  },
+
+  // Moderation DMs (Phase 4).
+  'moderationMessages.warningDM': {
+    labelKey: 'menu.bot_content.mod_warning',
+    placeholders: ['pushName', 'groupName', 'reason', 'count', 'threshold']
+  },
+  'moderationMessages.muteDM': {
+    labelKey: 'menu.bot_content.mod_mute',
+    placeholders: ['pushName', 'groupName', 'duration', 'reason']
+  },
+  'moderationMessages.unmuteDM': {
+    labelKey: 'menu.bot_content.mod_unmute',
+    placeholders: ['pushName', 'groupName']
+  },
+  'moderationMessages.kickDM': {
+    labelKey: 'menu.bot_content.mod_kick',
+    placeholders: ['pushName', 'groupName', 'reason']
+  },
+  'moderationMessages.banDM': {
+    labelKey: 'menu.bot_content.mod_ban',
+    placeholders: ['pushName', 'groupName', 'reason']
+  },
+  'moderationMessages.autoMuteDM': {
+    labelKey: 'menu.bot_content.mod_auto_mute',
+    placeholders: ['pushName', 'groupName', 'duration', 'threshold']
+  },
+  'moderationMessages.autoKickDM': {
+    labelKey: 'menu.bot_content.mod_auto_kick',
+    placeholders: ['pushName', 'groupName', 'threshold']
   }
 };
 
@@ -117,7 +147,8 @@ export const RESET_SECTIONS = [
   { key: 'welcomeBack', labelKey: 'menu.bot_content.reset.welcomeBack' },
   { key: 'timing', labelKey: 'menu.bot_content.reset.timing' },
   { key: 'languageDisplay', labelKey: 'menu.bot_content.reset.languageDisplay' },
-  { key: 'groupMessages', labelKey: 'menu.bot_content.reset.groupMessages' }
+  { key: 'groupMessages', labelKey: 'menu.bot_content.reset.groupMessages' },
+  { key: 'moderationMessages', labelKey: 'menu.bot_content.reset.moderationMessages' }
 ];
 
 /** Sample values used for every preview. */
@@ -131,7 +162,12 @@ export const SAMPLE_CTX = {
   detectedRaw: 'Portuguese',
   // Group placeholders, so the welcome/goodbye preview renders fully.
   groupName: 'Dev Team',
-  memberCount: 12
+  memberCount: 12,
+  // Moderation placeholders, so the moderation DM preview renders fully.
+  reason: 'repeated link posting',
+  duration: '30 minutes',
+  count: 2,
+  threshold: 5
 };
 
 /** All field paths an editor can be launched for, in menu order. */

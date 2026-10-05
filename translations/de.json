@@ -3187,7 +3187,8 @@
         "10": "z",
         "11": "e",
         "12": "n",
-        "groupMessages": "Gruppennachrichten"
+        "groupMessages": "Gruppennachrichten",
+        "moderationMessages": "Moderationsnachrichten"
       },
       "current": "Aktueller Wert",
       "placeholders": "Platzhalter",
@@ -3362,7 +3363,16 @@
       "group_messages": "Gruppennachrichten",
       "group_messages_heading": "Gruppennachrichten",
       "group_welcome": "Willkommensnachricht",
-      "group_goodbye": "Abschiedsnachricht"
+      "group_goodbye": "Abschiedsnachricht",
+      "moderation_messages": "Moderationsnachrichten",
+      "moderation_messages_heading": "Moderationsnachrichten",
+      "mod_warning": "DM Verwarnung",
+      "mod_mute": "DM Stummschaltung",
+      "mod_unmute": "DM Stummschaltung aufgehoben",
+      "mod_kick": "DM Entfernung",
+      "mod_ban": "DM Sperre",
+      "mod_auto_mute": "DM automatisch stumm",
+      "mod_auto_kick": "DM automatisch entfernt"
     },
     "group_management": {
       "heading": "Gruppenverwaltung",
@@ -3385,7 +3395,27 @@
         "defaults_note": "Diese gelten fuer neu aktivierte Gruppen.",
         "permission_denied": "Sie haben keine Berechtigung fuer diese Gruppe.",
         "bot_admin_only": "Standardeinstellungen sind Administratoren vorbehalten."
-      }
+      },
+      "moderation": {
+        "heading": "Moderation",
+        "select_group": "Gruppe waehlen",
+        "select_user": "Benutzer waehlen",
+        "warn": "Verwarnen",
+        "mute": "Stummschalten",
+        "kick": "Entfernen",
+        "ban": "Sperren",
+        "unwarn": "Verwarnung aufheben",
+        "unmute": "Stummschaltung aufheben",
+        "unban": "Sperre aufheben",
+        "view_warnings": "Verwarnungen anzeigen",
+        "duration_5m": "5 Minuten",
+        "duration_30m": "30 Minuten",
+        "duration_1h": "1 Stunde",
+        "duration_24h": "24 Stunden",
+        "duration_custom": "Benutzerdefiniert"
+      },
+      "moderation_menu_label": "Moderation",
+      "moderation_entry": "Moderation"
     }
   },
   "lifecycle": {

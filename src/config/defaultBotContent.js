@@ -156,5 +156,17 @@ export default {
   groupMessages: {
     welcome: '👋 Welcome {pushName}!\n\nYou joined *{groupName}* (member #{memberCount}).\n\nType /help for more.',
     goodbye: '👋 Goodbye {pushName}!\n\nWe will miss you in *{groupName}*.'
+  },
+
+  // Moderation DMs (Phase 4). Normal case; resolvePlaceholders caps the static
+  // fragments at render. {reason}, {duration}, {count} and {threshold} are raw.
+  moderationMessages: {
+    warningDM: '⚠️ You received a warning in *{groupName}*.\n\nReason: {reason}\nWarnings: {count}/{threshold}',
+    muteDM: "🔇 You've been muted in *{groupName}* for {duration}.\n\nReason: {reason}",
+    unmuteDM: "🔊 You've been unmuted in *{groupName}*.",
+    kickDM: '👋 You were removed from *{groupName}*.\n\nReason: {reason}',
+    banDM: "⛔ You've been banned in *{groupName}*.\n\nReason: {reason}",
+    autoMuteDM: "🔇 You've been automatically muted in *{groupName}* for {duration} after reaching {threshold} warnings.",
+    autoKickDM: "👋 You've been automatically removed from *{groupName}* after reaching {threshold} warnings."
   }
 };

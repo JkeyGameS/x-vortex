@@ -25,7 +25,12 @@ const RAW_PLACEHOLDERS = [
   'minutes',
   'detectedRaw',
   'groupName',
-  'memberCount'
+  'memberCount',
+  // Moderation (Phase 4)
+  'reason',
+  'duration',
+  'count',
+  'threshold'
 ];
 const CAPPED_PLACEHOLDERS = ['timeOfDay', 'languageName'];
 const PLACEHOLDER_RE = /\{(\w+)\}/g;
@@ -35,7 +40,8 @@ const PLACEHOLDER_RE = /\{(\w+)\}/g;
  * @param {{pushName?:string, languageName?:string, languageFlag?:string,
  *          timeOfDay?:string, botName?:string, cooldownMinutes?:number,
  *          minutes?:number, detectedRaw?:string, groupName?:string,
- *          memberCount?:number}} ctx
+ *          memberCount?:number, reason?:string, duration?:string,
+ *          count?:number, threshold?:number}} ctx
  * @returns {string}
  */
 export function resolvePlaceholders(template, ctx = {}) {
@@ -62,6 +68,10 @@ export function resolvePlaceholders(template, ctx = {}) {
       case 'detectedRaw': return ctx.detectedRaw || 'unknown';
       case 'groupName': return ctx.groupName || '';
       case 'memberCount': return ctx.memberCount != null ? String(ctx.memberCount) : '';
+      case 'reason': return ctx.reason || 'no reason given';
+      case 'duration': return ctx.duration || '';
+      case 'count': return ctx.count != null ? String(ctx.count) : '0';
+      case 'threshold': return ctx.threshold != null ? String(ctx.threshold) : '0';
       default: return '';
     }
   };

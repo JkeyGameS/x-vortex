@@ -3187,7 +3187,8 @@
         "8": "c",
         "9": "e",
         "10": "r",
-        "groupMessages": "Mensajes de grupo"
+        "groupMessages": "Mensajes de grupo",
+        "moderationMessages": "Mensajes de moderacion"
       },
       "current": "Valor actual",
       "placeholders": "Variables",
@@ -3362,7 +3363,16 @@
       "group_messages": "Mensajes de grupo",
       "group_messages_heading": "Mensajes de grupo",
       "group_welcome": "Mensaje de bienvenida",
-      "group_goodbye": "Mensaje de despedida"
+      "group_goodbye": "Mensaje de despedida",
+      "moderation_messages": "Mensajes de moderacion",
+      "moderation_messages_heading": "Mensajes de moderacion",
+      "mod_warning": "DM advertencia",
+      "mod_mute": "DM silencio",
+      "mod_unmute": "DM fin de silencio",
+      "mod_kick": "DM expulsion",
+      "mod_ban": "DM ban",
+      "mod_auto_mute": "DM silencio auto",
+      "mod_auto_kick": "DM expulsion auto"
     },
     "group_management": {
       "heading": "Gestion de grupos",
@@ -3385,7 +3395,27 @@
         "defaults_note": "Se aplican a los grupos activados recientemente.",
         "permission_denied": "No tienes permiso para gestionar este grupo.",
         "bot_admin_only": "Los ajustes predeterminados son solo para administradores."
-      }
+      },
+      "moderation": {
+        "heading": "Moderacion",
+        "select_group": "Elegir grupo",
+        "select_user": "Elegir usuario",
+        "warn": "Advertir",
+        "mute": "Silenciar",
+        "kick": "Expulsar",
+        "ban": "Banear",
+        "unwarn": "Quitar advertencia",
+        "unmute": "Quitar silencio",
+        "unban": "Quitar ban",
+        "view_warnings": "Ver advertencias",
+        "duration_5m": "5 minutos",
+        "duration_30m": "30 minutos",
+        "duration_1h": "1 hora",
+        "duration_24h": "24 horas",
+        "duration_custom": "Personalizado"
+      },
+      "moderation_menu_label": "Moderacion",
+      "moderation_entry": "Moderacion"
     }
   },
   "lifecycle": {

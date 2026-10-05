@@ -155,6 +155,23 @@ sessionTimeoutMinutes: 5,
   // Group Management Phase 1. Global kill switch: when false every group
   // message is ignored, which restores the pre-Phase-1 behaviour.
   groupManagementEnabled: true,
+  // Group moderation (Phase 4). moderationEnabled is the kill switch; the
+  // block below holds thresholds. canModerate refuses if either is off.
+  moderationEnabled: true,
+  moderation: {
+    enabled: true,
+    warnMuteThreshold: 3,        // active warnings that trigger an auto-mute
+    warnMuteDurationMs: 30 * 60 * 1000,
+    warnKickThreshold: 5,        // active warnings that trigger an auto-kick
+    warnExpiryMs: 90 * 24 * 60 * 60 * 1000, // rolling window for warnings
+    maxMuteDurationMs: 7 * 24 * 60 * 60 * 1000, // cap for /mute
+    presetMuteDurations: [
+      5 * 60 * 1000,
+      30 * 60 * 1000,
+      60 * 60 * 1000,
+      24 * 60 * 60 * 1000
+    ]
+  },
   // Admin-defined custom commands (data/customCommands.json)
   customCommands: {
     enabled: true,

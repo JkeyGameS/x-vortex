@@ -411,8 +411,8 @@ try {
   check('all four submenus are registered',
     ['bot_content_onboarding', 'bot_content_welcome_back', 'bot_content_timing', 'bot_content_language']
       .every((id) => !!getMenu(id)));
-  // Phase 3 appended Group Messages as option 10; nothing was renumbered.
-  check('bot_content has ten options', getMenu('bot_content').options.length === 10, String(getMenu('bot_content').options.length));
+  // Phase 4 appended Moderation Messages as option 11; nothing was renumbered.
+  check('bot_content has eleven options', getMenu('bot_content').options.length === 11, String(getMenu('bot_content').options.length));
   check('bot_content is admin only', getMenu('bot_content').adminOnly === true);
   check('bot_content parents off system_settings', getMenu('bot_content').parent === 'system_settings');
   check('submenus point back at bot_content',

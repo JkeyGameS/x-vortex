@@ -48,6 +48,15 @@ export const botContentHandlers = {
   bot_content_edit_group_welcome: (c) => field(c, 'groupMessages.welcome'),
   bot_content_edit_group_goodbye: (c) => field(c, 'groupMessages.goodbye'),
 
+  // Moderation Messages (Phase 4)
+  bot_content_edit_mod_warning: (c) => field(c, 'moderationMessages.warningDM'),
+  bot_content_edit_mod_mute: (c) => field(c, 'moderationMessages.muteDM'),
+  bot_content_edit_mod_unmute: (c) => field(c, 'moderationMessages.unmuteDM'),
+  bot_content_edit_mod_kick: (c) => field(c, 'moderationMessages.kickDM'),
+  bot_content_edit_mod_ban: (c) => field(c, 'moderationMessages.banDM'),
+  bot_content_edit_mod_auto_mute: (c) => field(c, 'moderationMessages.autoMuteDM'),
+  bot_content_edit_mod_auto_kick: (c) => field(c, 'moderationMessages.autoKickDM'),
+
   // Tools
   bot_content_preview: (c) => impl(c).then((m) => m.botContentPreview(c)),
   bot_content_export: (c) => impl(c).then((m) => m.botContentExport(c)),

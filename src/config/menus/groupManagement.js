@@ -39,6 +39,12 @@ export default {
       labelKey: 'menu.group_management.defaults',
       emoji: '\u2699\uFE0F',
       action: 'custom:groups_defaults'
+    },
+    {
+      number: '5',
+      labelKey: 'menu.group_management.moderation',
+      emoji: '\u26A0\uFE0F',
+      action: 'custom:groups_moderation'
     }
   ]
 };
