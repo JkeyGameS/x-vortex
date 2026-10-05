@@ -148,5 +148,13 @@ export default {
       es: { name: 'Español', flag: '🇪🇸' },
       ar: { name: 'العربية', flag: '🇸🇦' }
     }
+  },
+
+  // Group welcome/goodbye (Group Management Phase 3). Stored in normal case:
+  // resolvePlaceholders applies toSmallCaps to the static fragments at render,
+  // matching every other section in this file.
+  groupMessages: {
+    welcome: '👋 Welcome {pushName}!\n\nYou joined *{groupName}* (member #{memberCount}).\n\nType /help for more.',
+    goodbye: '👋 Goodbye {pushName}!\n\nWe will miss you in *{groupName}*.'
   }
 };

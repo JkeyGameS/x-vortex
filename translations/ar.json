@@ -3170,7 +3170,18 @@
       "export": "تصدير JSON",
       "import": "استيراد JSON",
       "snapshots": "اللقطات",
-      "reset": "إعادة ضبط",
+      "reset": {
+        "0": "إ",
+        "1": "ع",
+        "2": "ا",
+        "3": "د",
+        "4": "ة",
+        "5": " ",
+        "6": "ض",
+        "7": "ب",
+        "8": "ط",
+        "groupMessages": "رسائل المجموعة"
+      },
       "current": "القيمة الحالية",
       "placeholders": "المتغيرات",
       "save": "حفظ",
@@ -3340,7 +3351,11 @@
       "unavailableTitle": "القائمة غير متاحة",
       "unavailableAction": "الإجراء",
       "unavailableReason": "السبب",
-      "unavailableDetails": "التفاصيل"
+      "unavailableDetails": "التفاصيل",
+      "group_messages": "رسائل المجموعة",
+      "group_messages_heading": "رسائل المجموعة",
+      "group_welcome": "رسالة الترحيب",
+      "group_goodbye": "رسالة الوداع"
     },
     "group_management": {
       "heading": "إدارة المجموعات",

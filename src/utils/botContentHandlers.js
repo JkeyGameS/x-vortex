@@ -44,6 +44,10 @@ export const botContentHandlers = {
   // spelling threw a TypeError and surfaced as "menu unavailable".
   bot_content_toggle_smallcaps: (c) => impl(c).then((m) => m.botContentToggleSmallCaps(c)),
 
+  // Group Messages (Phase 3)
+  bot_content_edit_group_welcome: (c) => field(c, 'groupMessages.welcome'),
+  bot_content_edit_group_goodbye: (c) => field(c, 'groupMessages.goodbye'),
+
   // Tools
   bot_content_preview: (c) => impl(c).then((m) => m.botContentPreview(c)),
   bot_content_export: (c) => impl(c).then((m) => m.botContentExport(c)),
@@ -56,3 +60,5 @@ const impl = async () => import('../handlers/botContentCommand.js');
 const variant = async (c, id) => (await impl()).showVariantEditor(c, id);
 const timing = async (c, key) => (await impl()).botContentTimingValue(c, key);
 const language = async (c, code) => (await impl()).botContentLanguageEditor(c, code);
+  // Group welcome/goodbye reuse the one field editor, keyed by dotted path.
+  const field = async (c, path) => (await impl()).showFieldEditor(c, path);

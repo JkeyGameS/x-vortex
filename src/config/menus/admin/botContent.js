@@ -25,6 +25,7 @@ export default {
     { number: '6', labelKey: 'menu.bot_content.export', emoji: '💾', action: 'custom:bot_content_export' },
     { number: '7', labelKey: 'menu.bot_content.import', emoji: '📥', action: 'custom:bot_content_import' },
     { number: '8', labelKey: 'menu.bot_content.snapshots', emoji: '📸', action: 'custom:bot_content_snapshots' },
-    { number: '9', labelKey: 'menu.bot_content.reset', emoji: '♻️', action: 'custom:bot_content_reset' }
+    { number: '9', labelKey: 'menu.bot_content.reset', emoji: '♻️', action: 'custom:bot_content_reset' },
+    { number: '10', labelKey: 'menu.bot_content.group_messages', emoji: '\u{1F465}', action: 'open:bot_content_group_messages' }
   ]
 };

@@ -3173,7 +3173,22 @@
       "export": "Als JSON exportieren",
       "import": "Aus JSON importieren",
       "snapshots": "Snapshots",
-      "reset": "Zuruecksetzen",
+      "reset": {
+        "0": "Z",
+        "1": "u",
+        "2": "r",
+        "3": "u",
+        "4": "e",
+        "5": "c",
+        "6": "k",
+        "7": "s",
+        "8": "e",
+        "9": "t",
+        "10": "z",
+        "11": "e",
+        "12": "n",
+        "groupMessages": "Gruppennachrichten"
+      },
       "current": "Aktueller Wert",
       "placeholders": "Platzhalter",
       "save": "Speichern",
@@ -3343,7 +3358,11 @@
       "unavailableTitle": "Menue nicht verfuegbar",
       "unavailableAction": "Aktion",
       "unavailableReason": "Grund",
-      "unavailableDetails": "Details"
+      "unavailableDetails": "Details",
+      "group_messages": "Gruppennachrichten",
+      "group_messages_heading": "Gruppennachrichten",
+      "group_welcome": "Willkommensnachricht",
+      "group_goodbye": "Abschiedsnachricht"
     },
     "group_management": {
       "heading": "Gruppenverwaltung",

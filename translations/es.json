@@ -3175,7 +3175,20 @@
       "export": "Exportar JSON",
       "import": "Importar JSON",
       "snapshots": "Instantaneas",
-      "reset": "Restablecer",
+      "reset": {
+        "0": "R",
+        "1": "e",
+        "2": "s",
+        "3": "t",
+        "4": "a",
+        "5": "b",
+        "6": "l",
+        "7": "e",
+        "8": "c",
+        "9": "e",
+        "10": "r",
+        "groupMessages": "Mensajes de grupo"
+      },
       "current": "Valor actual",
       "placeholders": "Variables",
       "save": "Guardar",
@@ -3345,7 +3358,11 @@
       "unavailableTitle": "Menu no disponible",
       "unavailableAction": "Accion",
       "unavailableReason": "Motivo",
-      "unavailableDetails": "Detalles"
+      "unavailableDetails": "Detalles",
+      "group_messages": "Mensajes de grupo",
+      "group_messages_heading": "Mensajes de grupo",
+      "group_welcome": "Mensaje de bienvenida",
+      "group_goodbye": "Mensaje de despedida"
     },
     "group_management": {
       "heading": "Gestion de grupos",

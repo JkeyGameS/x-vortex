@@ -1,6 +1,43 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-05T00-20-00",
+      "timestamp": "2026-10-05T00:18:12Z",
+      "agent": "Cline",
+      "promptSummary": "Group Management Phase 3: welcome and goodbye messages",
+      "changes": [
+        "Added a group-participants.update listener that sends welcome and goodbye messages for activated groups",
+        "Honors the per-group welcome and goodbye toggles added in Phase 2, independently of each other",
+        "Added an editable groupMessages section to the Bot Content editor with a Group Messages submenu",
+        "Added groupName and memberCount placeholders, resolved raw so a group name keeps its casing and counts stay as digits",
+        "Sends to the group chat rather than a participant DM, through sendText so the outbound rate limiter still applies",
+        "Added admin logging for group_member_joined and group_member_left with the system actor, only when a message is sent",
+        "Added 16 unit tests for the participant handler, plus a botContent.json snapshot so the suite cannot leave a template edit behind"
+      ],
+      "files": [
+        "src/handlers/groupParticipantHandler.js",
+        "src/config/menus/admin/botContentGroupMessages.js",
+        "tests/groupParticipant.test.mjs",
+        "src/config/defaultBotContent.js",
+        "src/config/botContentFields.js",
+        "src/utils/placeholderResolver.js",
+        "src/index.js",
+        "src/config/menus/admin/botContent.js",
+        "src/config/menus/index.js",
+        "src/utils/botContentHandlers.js",
+        "tests/botContent.test.mjs",
+        "tests/routingAndHint.test.mjs",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.7.2"
+    },
+    {
       "id": "chg-2026-10-04T23-40-00",
       "timestamp": "2026-10-04T23:23:04Z",
       "agent": "Cline",

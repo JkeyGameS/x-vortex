@@ -118,7 +118,8 @@ try {
     setMenu('bot_content');
     const r6 = resolveMenuOption('bot_content', 'hi', { jid: JID }, 'en');
     check('6: free text inside a menu is invalid, not a chat rule', r6.kind === 'invalid', JSON.stringify(r6));
-    check('6: the invalid reply names the menu bound', String(r6.max) === '9', r6.max);
+    // Phase 3 appended Group Messages as bot_content option 10.
+  check('6: the invalid reply names the menu bound', String(r6.max) === '10', r6.max);
   }
 
   // The chat-rule layer refuses to run while a registered menu is open.

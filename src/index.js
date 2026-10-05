@@ -690,6 +690,19 @@ async function startBot() {
     await sendMenu({ sock, sender, chatId, text, transitionKey: 'help_back' });
   }
 
+  // Group join/leave events drive the welcome and goodbye messages. Registered
+  // separately from messages.upsert because Baileys emits this event on its own
+  // channel. The handler is a no-op unless the group is activated and the
+  // matching per-group toggle is on.
+  sock.ev.on('group-participants.update', async (update) => {
+    try {
+      const { handleParticipantsUpdate } = await import('./handlers/groupParticipantHandler.js');
+      await handleParticipantsUpdate({ sock, update });
+    } catch (err) {
+      logger.error({ err }, '[GROUP_PARTICIPANT] outer catch');
+    }
+  });
+
   // Handle incoming messages
   sock.ev.on('messages.upsert', async ({ messages }) => {
     try {

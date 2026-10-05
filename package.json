@@ -16,7 +16,7 @@
     "test:changelog": "node tests/changelog.test.mjs",
     "test:devChanges": "node tests/devChanges.test.mjs",
     "test:changelogManager": "node tests/changelogManager.test.mjs",
-    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs && node tests/welcomeBack.test.mjs && node tests/resumeFlow.test.mjs && node tests/part1TryAndHeading.test.mjs && node tests/botContent.test.mjs && node tests/routingAndHint.test.mjs && node tests/i18nAndHandlers.test.mjs && node --test tests/outboundRateLimit.test.mjs && node --test tests/groupService.test.mjs && node --test tests/groupSettings.test.mjs && node tests/healthServer.test.mjs && node tests/changelog.test.mjs && node tests/devChanges.test.mjs && node tests/changelogManager.test.mjs",
+    "test": "node tests/menuPrimitives.test.mjs && node tests/menuCommands.test.mjs && node tests/menuGates.test.mjs && node tests/preferencesRouting.test.mjs && node tests/languageOnboarding.test.mjs && node tests/welcomeBack.test.mjs && node tests/resumeFlow.test.mjs && node tests/part1TryAndHeading.test.mjs && node tests/botContent.test.mjs && node tests/routingAndHint.test.mjs && node tests/i18nAndHandlers.test.mjs && node --test tests/outboundRateLimit.test.mjs && node --test tests/groupService.test.mjs && node --test tests/groupSettings.test.mjs && node --test tests/groupParticipant.test.mjs && node tests/healthServer.test.mjs && node tests/changelog.test.mjs && node tests/devChanges.test.mjs && node tests/changelogManager.test.mjs",
     "audit:menus": "node src/scripts/auditMenus.js"
   },
   "keywords": [],

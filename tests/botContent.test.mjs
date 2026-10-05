@@ -29,7 +29,12 @@ function check(name, cond, extra = '') {
 
 const svc = await import('../src/services/botContentService.js');
 const defaults = (await import('../src/config/defaultBotContent.js')).default;
-const { resolvePlaceholders } = await import('../src/utils/placeholderResolver.js');
+const { resolvePlaceholders, RAW_PLACEHOLDERS, CAPPED_PLACEHOLDERS } =
+  await import('../src/utils/placeholderResolver.js');
+// Ask the resolver which placeholders it knows instead of duplicating its list
+// here, so adding one (groupName, memberCount in Phase 3) cannot make this
+// suite fail on a stale copy.
+const KNOWN_PLACEHOLDERS = [...RAW_PLACEHOLDERS, ...CAPPED_PLACEHOLDERS];
 const { getLanguageDisplay, smallCapsEnabled } = await import('../src/utils/languageHelper.js');
 const timing = await import('../src/utils/botTiming.js');
 const onboard = await import('../src/handlers/languageOnboardingHandler.js');
@@ -406,7 +411,8 @@ try {
   check('all four submenus are registered',
     ['bot_content_onboarding', 'bot_content_welcome_back', 'bot_content_timing', 'bot_content_language']
       .every((id) => !!getMenu(id)));
-  check('bot_content has nine options', getMenu('bot_content').options.length === 9, String(getMenu('bot_content').options.length));
+  // Phase 3 appended Group Messages as option 10; nothing was renumbered.
+  check('bot_content has ten options', getMenu('bot_content').options.length === 10, String(getMenu('bot_content').options.length));
   check('bot_content is admin only', getMenu('bot_content').adminOnly === true);
   check('bot_content parents off system_settings', getMenu('bot_content').parent === 'system_settings');
   check('submenus point back at bot_content',
@@ -481,16 +487,16 @@ try {
   JSON.stringify(Object.values(EDITABLE_FIELDS).map((f) => f.labelKey).filter((k) => t('en', k) === k)));
   check('every declared placeholder is one the resolver knows',
     Object.values(EDITABLE_FIELDS).flatMap((f) => f.placeholders || [])
-      .every((p) => ['pushName', 'languageName', 'languageFlag', 'timeOfDay', 'botName', 'minutes', 'detectedRaw'].includes(p)),
+      .every((p) => KNOWN_PLACEHOLDERS.includes(p)),
     JSON.stringify(Object.values(EDITABLE_FIELDS).flatMap((f) => f.placeholders || [])
-      .filter((p) => !['pushName', 'languageName', 'languageFlag', 'timeOfDay', 'botName', 'minutes', 'detectedRaw'].includes(p))));
+      .filter((p) => !KNOWN_PLACEHOLDERS.includes(p))));
   check('every declared variant has a default pool',
     EDITABLE_VARIANTS.every((v) => Array.isArray(svc.getContent('welcomeBack.' + v)) && svc.getContent('welcomeBack.' + v).length > 0),
     JSON.stringify(EDITABLE_VARIANTS.filter((v) => !(svc.getContent('welcomeBack.' + v) || []).length)));
   check('every timing field path resolves', Object.keys(EDITABLE_TIMING).every((p) => svc.getContent(p) !== undefined),
     JSON.stringify(Object.keys(EDITABLE_TIMING).filter((p) => svc.getContent(p) === undefined)));
   check('the sample context covers every placeholder',
-    ['pushName', 'languageName', 'languageFlag', 'timeOfDay', 'botName', 'minutes', 'detectedRaw']
+    [...KNOWN_PLACEHOLDERS]
       .every((k) => SAMPLE_CTX[k] !== undefined), JSON.stringify(SAMPLE_CTX));
   check('emoji shortcut characters are not exposed as fields',
     !Object.keys(EDITABLE_FIELDS).some((p) => /emoji|shortcut/i.test(p)));

@@ -61,6 +61,16 @@ export const EDITABLE_FIELDS = {
   'onboarding.cooldownLock.body': {
     labelKey: 'menu.bot_content.field.cooldownBody',
     placeholders: ['minutes']
+  },
+
+  // Group Management Phase 3: welcome / goodbye sent on join / leave.
+  'groupMessages.welcome': {
+    labelKey: 'menu.bot_content.group_welcome',
+    placeholders: ['pushName', 'groupName', 'memberCount', 'botName']
+  },
+  'groupMessages.goodbye': {
+    labelKey: 'menu.bot_content.group_goodbye',
+    placeholders: ['pushName', 'groupName', 'botName']
   }
 };
 
@@ -106,7 +116,8 @@ export const RESET_SECTIONS = [
   { key: 'onboarding', labelKey: 'menu.bot_content.reset.onboarding' },
   { key: 'welcomeBack', labelKey: 'menu.bot_content.reset.welcomeBack' },
   { key: 'timing', labelKey: 'menu.bot_content.reset.timing' },
-  { key: 'languageDisplay', labelKey: 'menu.bot_content.reset.languageDisplay' }
+  { key: 'languageDisplay', labelKey: 'menu.bot_content.reset.languageDisplay' },
+  { key: 'groupMessages', labelKey: 'menu.bot_content.reset.groupMessages' }
 ];
 
 /** Sample values used for every preview. */
@@ -117,7 +128,10 @@ export const SAMPLE_CTX = {
   timeOfDay: 'good morning',
   botName: 'X-Vortex',
   minutes: 5,
-  detectedRaw: 'Portuguese'
+  detectedRaw: 'Portuguese',
+  // Group placeholders, so the welcome/goodbye preview renders fully.
+  groupName: 'Dev Team',
+  memberCount: 12
 };
 
 /** All field paths an editor can be launched for, in menu order. */

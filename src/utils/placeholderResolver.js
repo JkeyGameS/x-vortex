@@ -11,11 +11,22 @@ import { getContent } from '../services/botContentService.js';
 
 /**
  * Placeholders that receive a raw (uncapped) value: user-supplied or brand
- * names. Everything else is bot copy and gets capped like the rest of the
- * static text -- {timeOfDay} is included because it comes from the localized
- * greeting word, not from anything the user typed.
+ * names, or plain numbers. Everything else is bot copy and gets capped like
+ * the rest of the static text -- {timeOfDay} is included because it comes from
+ * the localized greeting word, not from anything the user typed.
+ *
+ * groupName and memberCount are group-scoped dynamic values and are raw: a
+ * group name keeps its own casing and a count must stay in ASCII digits.
  */
-const RAW_PLACEHOLDERS = ['pushName', 'languageFlag', 'botName', 'minutes', 'detectedRaw'];
+const RAW_PLACEHOLDERS = [
+  'pushName',
+  'languageFlag',
+  'botName',
+  'minutes',
+  'detectedRaw',
+  'groupName',
+  'memberCount'
+];
 const CAPPED_PLACEHOLDERS = ['timeOfDay', 'languageName'];
 const PLACEHOLDER_RE = /\{(\w+)\}/g;
 
@@ -23,7 +34,8 @@ const PLACEHOLDER_RE = /\{(\w+)\}/g;
  * @param {string} template
  * @param {{pushName?:string, languageName?:string, languageFlag?:string,
  *          timeOfDay?:string, botName?:string, cooldownMinutes?:number,
- *          detectedRaw?:string}} ctx
+ *          minutes?:number, detectedRaw?:string, groupName?:string,
+ *          memberCount?:number}} ctx
  * @returns {string}
  */
 export function resolvePlaceholders(template, ctx = {}) {
@@ -48,6 +60,8 @@ export function resolvePlaceholders(template, ctx = {}) {
       case 'botName': return ctx.botName || 'X-Vortex';
       case 'minutes': return String(ctx.cooldownMinutes ?? ctx.minutes ?? 5);
       case 'detectedRaw': return ctx.detectedRaw || 'unknown';
+      case 'groupName': return ctx.groupName || '';
+      case 'memberCount': return ctx.memberCount != null ? String(ctx.memberCount) : '';
       default: return '';
     }
   };
