@@ -3412,7 +3412,21 @@
         "duration_custom": "مخصص"
       },
       "moderation_menu_label": "الإشراف",
-      "moderation_entry": "الإشراف"
+      "moderation_entry": "الإشراف",
+      "aggregate_stats": "إحصائيات عامة",
+      "about_stats": "عن الإحصائيات",
+      "group_stats_heading": "إحصائيات المجموعة",
+      "total_messages": "إجمالي الرسائل",
+      "members": "الأعضاء",
+      "joins": "الانضمامات",
+      "leaves": "المغادرات",
+      "peak_hour": "ساعة الذروة",
+      "last_7_days": "آخر 7 أيام",
+      "top_members": "الأكثر نشاطاً",
+      "moderation_log_heading": "سجل الإشراف",
+      "active_warnings": "تحذيرات نشطة",
+      "active_mutes": "كتم نشط",
+      "active_bans": "حظر نشط"
     }
   },
   "lifecycle": {

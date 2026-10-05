@@ -1,6 +1,41 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-05T23-20-00",
+      "timestamp": "2026-10-05T23:22:55Z",
+      "agent": "Cline",
+      "promptSummary": "Group Management Phase 6: stats, analytics, and moderation log",
+      "changes": [
+        "Added group stats service tracking message counts, joins, leaves, top members and hourly buckets per group",
+        "Recording mutates memory and flushes on a debounce, so the message path stays O(1) instead of writing the file per message",
+        "Added per-group stats panel with a 7-day bar chart, peak hour and top members, refreshing the member count as it opens",
+        "Added an aggregate stats panel where bot admins see every group and group admins see only their own",
+        "Added a per-group moderation log viewer listing active warnings, mutes and bans",
+        "Fixed the Phase 3 member count lag with a stats-backed counter, and stopped it reporting \"member #1\" for a never-synced group",
+        "Added 90-day retention for daily buckets with pruning at boot and every 6 hours, leaving lifetime counters intact",
+        "Added 23 unit tests for the stats service, including the debounced flush and the no-baseline guard"
+      ],
+      "files": [
+        "src/services/groupStatsService.js",
+        "tests/groupStatsService.test.mjs",
+        "src/config/config.js",
+        "src/index.js",
+        "src/handlers/groupMessageHandler.js",
+        "src/handlers/groupParticipantHandler.js",
+        "src/handlers/groupManagementHandlers.js",
+        "src/config/menus/groupManagement.js",
+        "src/utils/groupHelper.js",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.8.0"
+    },
+    {
       "id": "chg-2026-10-05T02-20-00",
       "timestamp": "2026-10-05T10:13:56Z",
       "agent": "Cline",

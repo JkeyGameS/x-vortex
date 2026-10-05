@@ -3419,7 +3419,21 @@
         "duration_custom": "Personalizado"
       },
       "moderation_menu_label": "Moderacion",
-      "moderation_entry": "Moderacion"
+      "moderation_entry": "Moderacion",
+      "aggregate_stats": "Estadisticas generales",
+      "about_stats": "Sobre las estadisticas",
+      "group_stats_heading": "Estadisticas del grupo",
+      "total_messages": "Mensajes totales",
+      "members": "Miembros",
+      "joins": "Entradas",
+      "leaves": "Salidas",
+      "peak_hour": "Hora pico",
+      "last_7_days": "Ultimos 7 dias",
+      "top_members": "Miembros mas activos",
+      "moderation_log_heading": "Registro de moderacion",
+      "active_warnings": "Avisos activos",
+      "active_mutes": "Silencios activos",
+      "active_bans": "Bans activos"
     }
   },
   "lifecycle": {

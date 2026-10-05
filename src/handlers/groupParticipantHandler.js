@@ -5,6 +5,12 @@ import { sendText } from '../services/messageService.js';
 import { getContent } from '../services/botContentService.js';
 import { resolvePlaceholders } from '../utils/placeholderResolver.js';
 import { logAdminAction } from '../services/adminLogService.js';
+import {
+  recordJoin,
+  recordLeave,
+  adjustMemberCount,
+  getCurrentMemberCount
+} from '../services/groupStatsService.js';
 import config from '../config/config.js';
 
 /**
@@ -40,6 +46,22 @@ export async function handleParticipantsUpdate({ sock, update, deps } = {}) {
     if (action !== 'add' && action !== 'remove') return;
 
     const settings = group.settings || {};
+
+    // Stats (Phase 6) are recorded regardless of the welcome/goodbye toggles, so
+    // the counters reflect real membership churn rather than which notifications
+    // happen to be switched on. Placed above the toggle gates for that reason.
+    try {
+      if (action === 'add') {
+        recordJoin(groupJid);
+        adjustMemberCount(groupJid, 1);
+      } else {
+        recordLeave(groupJid);
+        adjustMemberCount(groupJid, -1);
+      }
+    } catch (err) {
+      logger.warn({ err, groupJid }, '[GROUP_PARTICIPANT] stats update failed');
+    }
+
     if (action === 'add' && settings.welcome !== true) return;
     if (action === 'remove' && settings.goodbye !== true) return;
 
@@ -56,7 +78,16 @@ export async function handleParticipantsUpdate({ sock, update, deps } = {}) {
     if (action === 'add') invalidateGroupMetadata(groupJid);
 
     const meta = await getGroupMetadata(sock, groupJid);
-    const memberCount = meta?.participants?.length || 0;
+        // Prefer the stats-backed counter: Baileys metadata still shows the
+    // pre-join roster on the add event, so meta.participants.length lags by one.
+    // The counter is only set once syncMemberCount has established a baseline,
+    // and getCurrentMemberCount returns null until then, so the first join in a
+    // never-synced group correctly falls back to the metadata count rather than
+    // reporting "member #1".
+    const tracked = getCurrentMemberCount(groupJid);
+    const memberCount = tracked != null
+      ? tracked
+      : (meta?.participants?.length || 0);
     const groupName = meta?.subject || group.name || 'Unknown';
 
     let sent = false;

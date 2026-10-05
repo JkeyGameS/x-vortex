@@ -162,6 +162,17 @@ sessionTimeoutMinutes: 5,
   // kill switches; the blocks hold thresholds. Both must be on.
   antiSpamEnabled: true,
   antiLinkEnabled: true,
+  groupStatsEnabled: true,
+  // Group stats (Phase 6). Counters are updated in memory on the message path
+  // and flushed to disk on this interval, so recording stays O(1) per message.
+  groupStats: {
+    enabled: true,
+    retentionDays: 90,
+    peakHourBuckets: 24,
+    topMembersLimit: 10,
+    pruneIntervalMs: 6 * 60 * 60 * 1000,
+    flushIntervalMs: 5 * 1000
+  },
   antiSpam: {
     enabled: true,
     repeatWindowMs: 30000,       // 30s

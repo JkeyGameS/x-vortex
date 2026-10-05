@@ -2,6 +2,7 @@ import logger from '../utils/logger.js';
 import { getGroup } from '../services/groupService.js';
 import { getGroupMetadata, isBotGroupAdmin, isGroupAdmin } from '../utils/groupHelper.js';
 import { isMuted, isBanned, addWarning, muteUser } from '../services/moderationService.js';
+import { recordMessage as recordGroupMessage } from '../services/groupStatsService.js';
 import {
   recordMessage,
   recordOffense,
@@ -56,6 +57,13 @@ export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, 
 
     const trimmed = String(text || '').trim();
     if (!trimmed) return;
+
+    // Stats (Phase 6): one O(1) in-memory increment per message, counted before
+    // the banned/muted gates so totals reflect real activity. Slash-prefixed text
+    // is a bot command and is not counted. The write is debounced in the service.
+    if (!trimmed.startsWith('/')) {
+      try { recordGroupMessage(chatId, sender); } catch { /* stats must never block */ }
+    }
 
     if (isBanned(chatId, sender)) {
       logger.debug({ chatId, sender }, '[GROUP] banned user, ignored');

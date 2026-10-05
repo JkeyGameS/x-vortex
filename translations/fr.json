@@ -3427,7 +3427,21 @@
         "duration_custom": "Personnalise"
       },
       "moderation_menu_label": "Moderation",
-      "moderation_entry": "Moderation"
+      "moderation_entry": "Moderation",
+      "aggregate_stats": "Statistiques globales",
+      "about_stats": "A propos des stats",
+      "group_stats_heading": "Statistiques du groupe",
+      "total_messages": "Messages au total",
+      "members": "Membres",
+      "joins": "Arrivees",
+      "leaves": "Departes",
+      "peak_hour": "Heure de pointe",
+      "last_7_days": "7 derniers jours",
+      "top_members": "Membres actifs",
+      "moderation_log_heading": "Journal de moderation",
+      "active_warnings": "Avertissements actifs",
+      "active_mutes": "Silences actifs",
+      "active_bans": "Bans actifs"
     }
   },
   "lifecycle": {

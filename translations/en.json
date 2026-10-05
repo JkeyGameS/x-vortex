@@ -3451,7 +3451,21 @@
         "duration_custom": "Custom"
       },
       "moderation_menu_label": "Moderation",
-      "moderation_entry": "Moderation"
+      "moderation_entry": "Moderation",
+      "aggregate_stats": "Aggregate Stats",
+      "about_stats": "About Stats",
+      "group_stats_heading": "Group Stats",
+      "total_messages": "Total messages",
+      "members": "Members",
+      "joins": "Joins",
+      "leaves": "Leaves",
+      "peak_hour": "Peak hour",
+      "last_7_days": "Last 7 days",
+      "top_members": "Top members",
+      "moderation_log_heading": "Moderation Log",
+      "active_warnings": "Active warnings",
+      "active_mutes": "Active mutes",
+      "active_bans": "Active bans"
     }
   },
   "lifecycle": {

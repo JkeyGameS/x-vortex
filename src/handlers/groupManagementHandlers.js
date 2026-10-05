@@ -220,6 +220,11 @@ export async function handleGroupManagementReply(context, trimmedText) {
     return handleModerationSubState({ sock, sender, chatId, user, session }, state, input);
   }
 
+  // Stats viewers are informational; 0 goes back (Phase 6).
+  if (state.startsWith('group_stats') || state === 'group_moderation_log') {
+    return handleStatsSubState({ sock, sender, chatId, user, session }, state, input);
+  }
+
   if (input === '0' || input === 'back') {
     return back();
   }
@@ -296,6 +301,13 @@ export async function handleGroupManagementReply(context, trimmedText) {
       }
       if (state === 'group_management_activate_confirm') {
         activateGroup(groupJid, { name: groupName, activatedBy: sender, language: user?.language || 'en' });
+        // Establish the stats-backed member baseline now, so the first welcome
+        // message reports the real count instead of falling back to the
+        // lagging metadata roster.
+        try {
+          const { syncMemberCount } = await import('../utils/groupHelper.js');
+          await syncMemberCount(sock, groupJid);
+        } catch { /* member sync is best-effort */ }
         await logAction(sender, 'group_activated', { groupJid, groupName });
         await sendText(
           sock, sender,
@@ -369,8 +381,16 @@ export async function handleGroupManagementReply(context, trimmedText) {
       await setMenu(sock, sender, chatId, 'group_settings_language', { currentGroupJid: groupJid });
       return true;
     }
-    // 8 -> deactivate confirmation
+    // 8 -> per-group stats
     if (n === 8) {
+      return openGroupStats({ sock, sender, chatId, user, session }, groupJid);
+    }
+    // 9 -> moderation log for this group
+    if (n === 9) {
+      return openModerationLog({ sock, sender, chatId, user, session }, groupJid);
+    }
+    // 10 -> deactivate confirmation (renumbered in Phase 6; was 8)
+    if (n === 10) {
       const group = getGroup(groupJid);
       const name = group?.name || groupJid;
       const lines = [
@@ -533,7 +553,9 @@ export function renderGroupSettingsPanel(group, memberCount) {
   lines.push(
     '7. \u{1F310} ' + toSmallCaps('Language'),
     '',
-    '8. \u26D4 ' + toSmallCaps('Deactivate Group'),
+    '8. \u{1F4CA} ' + toSmallCaps('Stats'),
+    '9. \u26A0\uFE0F ' + toSmallCaps('Moderation Log'),
+    '10. \u26D4 ' + toSmallCaps('Deactivate Group'),
     '',
     '0. ' + toSmallCaps('Back')
   );
@@ -822,6 +844,200 @@ async function openUserActions(context) {
   await setMenu(sock, sender, chatId, 'group_moderation_action');
 }
 
+// ---------------------------------------------------------------------------
+// Stats viewers (Phase 6)
+// ---------------------------------------------------------------------------
+
+const num = (n) => (Number.isFinite(Number(n)) ? String(Math.floor(Number(n))) : '0');
+
+/** Bar scaled to the busiest day in the window; at least one block when > 0. */
+function bar(count, max) {
+  if (!count) return '';
+  const filled = Math.max(1, Math.round((count / Math.max(1, max)) * 10));
+  return '\u2588'.repeat(filled);
+}
+
+/** Open the per-group stats panel and refresh the member count while we are here. */
+async function openGroupStats(context, groupJid) {
+  const { sock, sender, chatId, user, session } = context;
+  if (!await canManageGroup(sock, sender, groupJid)) {
+    return noPermission(sock, sender);
+  }
+  const statsSvc = await import('../services/groupStatsService.js');
+  const group = getGroup(groupJid);
+  if (!group) {
+    return sendText(sock, sender, '\u274C ' + toSmallCaps('Group not found.'), GROUP_OPTS);
+  }
+  // Self-heal the counter if a join or leave was missed while offline.
+  const { syncMemberCount } = await import('../utils/groupHelper.js');
+  await syncMemberCount(sock, groupJid);
+
+  const s = statsSvc.getGroupStats(groupJid);
+  const members = statsSvc.getCurrentMemberCount(groupJid);
+  const daily = statsSvc.getDailyActivity(groupJid, 7);
+  const maxDay = Math.max(0, ...daily.map((d) => d.count));
+  const peak = statsSvc.getPeakHour(groupJid);
+  const top = statsSvc.getTopMembers(groupJid, 5);
+
+  const lines = [
+    '> *\u{1F4CA} ' + toSmallCaps('Group Stats') + '*',
+    '',
+    group.name || groupJid,
+    '',
+    '\u{1F4E8} ' + toSmallCaps('Total messages') + ': ' + num(s?.totalMessages),
+    '\u{1F465} ' + toSmallCaps('Members') + ': ' + (members != null ? num(members) : toSmallCaps('unknown')),
+    '\u{1F4E5} ' + toSmallCaps('Joins') + ': ' + num(s?.joins),
+    '\u{1F4E4} ' + toSmallCaps('Leaves') + ': ' + num(s?.leaves),
+    '\u23F0 ' + toSmallCaps('Peak hour') + ': ' +
+      (peak ? peak[0] + ':00\u2013' + ((Number(peak[0]) + 1) % 24) + ':00' : toSmallCaps('unknown'))
+  ];
+
+  lines.push('', '\u{1F4C5} ' + toSmallCaps('Last 7 days') + ':');
+  for (const d of daily) {
+    lines.push(`${d.date.slice(5)} ${bar(d.count, maxDay)} ${num(d.count)}`);
+  }
+
+  lines.push('', '\u{1F3C6} ' + toSmallCaps('Top members') + ':');
+  if (!top.length) {
+    lines.push(toSmallCaps('No activity yet.'));
+  } else {
+    top.forEach(([jid, count], i) => {
+      lines.push(`${i + 1}. ${jid.split('@')[0]} — ${num(count)}`);
+    });
+  }
+  lines.push('', '0. ' + toSmallCaps('Back'));
+
+  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
+  await setMenu(sock, sender, chatId, 'group_stats_panel', { statsGroupJid: groupJid });
+  return true;
+}
+
+/** Aggregate totals. Bot admins see every group; group admins see only theirs. */
+async function openAggregateStats(context) {
+  const { sock, sender, chatId, user } = context;
+  const statsSvc = await import('../services/groupStatsService.js');
+  const all = statsSvc.getTopGroups(10);
+  const totals = statsSvc.getAggregateStats();
+
+  const botAdmin = isBotAdmin(sender);
+  let visible = all;
+  if (!botAdmin) {
+    visible = [];
+    for (const row of all) {
+      if (await canManageGroup(sock, sender, row.jid)) visible.push(row);
+    }
+  }
+
+  const names = new Map(getAllGroups().map((g) => [g.id, g.name]));
+  const lines = [
+    '> *\u{1F4CA} ' + toSmallCaps('Aggregate Stats') + '*',
+    '',
+    '\u{1F465} ' + toSmallCaps('Total groups') + ': ' + num(totals.groupCount),
+    '\u{1F4E8} ' + toSmallCaps('Total messages') + ': ' + num(totals.totalMessages),
+    '\u{1F4E5} ' + toSmallCaps('Total joins') + ': ' + num(totals.totalJoins),
+    '\u{1F4E4} ' + toSmallCaps('Total leaves') + ': ' + num(totals.totalLeaves),
+    '',
+    '\u{1F3C6} ' + toSmallCaps('Top groups by activity') + ':'
+  ];
+  if (!visible.length) {
+    lines.push(toSmallCaps('No activity yet.'));
+  } else {
+    visible.forEach((row, i) => {
+      lines.push(`${i + 1}. ${names.get(row.jid) || row.jid} — ${num(row.totalMessages)}`);
+    });
+  }
+  lines.push('', '0. ' + toSmallCaps('Back'));
+
+  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
+  await setMenu(sock, sender, chatId, 'group_stats_aggregate');
+  return true;
+}
+
+async function openAboutStats(context) {
+  const { sock, sender, chatId } = context;
+  const lines = [
+    '> *\u2139\uFE0F ' + toSmallCaps('About Stats') + '*',
+    '',
+    toSmallCaps('Stats track message counts, joins, leaves, top members, and peak hours.'),
+    '',
+    toSmallCaps('Available in per-group settings and in the aggregate view.'),
+    toSmallCaps('Daily history is kept for 90 days.'),
+    '',
+    '0. ' + toSmallCaps('Back')
+  ];
+  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
+  await setMenu(sock, sender, chatId, 'group_stats_about');
+  return true;
+}
+
+/** Active warnings, mutes and bans for one group. */
+async function openModerationLog(context, groupJid) {
+  const { sock, sender, chatId, user, session } = context;
+  if (!await canManageGroup(sock, sender, groupJid)) {
+    return noPermission(sock, sender);
+  }
+  const mod = await import('../services/moderationService.js');
+  const log = mod.getModerationLog(groupJid);
+  const group = getGroup(groupJid);
+  const short = (jid) => String(jid).split('@')[0];
+
+  const lines = [
+    '> *\u26A0\uFE0F ' + toSmallCaps('Moderation Log') + '*',
+    '',
+    group?.name || groupJid,
+    '',
+    '\u26A0\uFE0F ' + toSmallCaps('Active warnings') + ': ' + num(Object.keys(log?.warnings || {}).length),
+    '\u{1F507} ' + toSmallCaps('Active mutes') + ': ' + num(Object.keys(log?.mutes || {}).length),
+    '\u26D4 ' + toSmallCaps('Active bans') + ': ' + num(Object.keys(log?.bans || {}).length)
+  ];
+
+  const warned = Object.entries(log?.warnings || {}).sort((a, b) => (b[1].count || 0) - (a[1].count || 0));
+  lines.push('', toSmallCaps('Users with warnings') + ':');
+  if (!warned.length) lines.push(toSmallCaps('None.'));
+  else warned.forEach(([jid, e], i) => {
+    lines.push(`${i + 1}. @${short(jid)} — ${num(e.count)} ${toSmallCaps('warnings')}`);
+  });
+
+  const muted = Object.entries(log?.mutes || {});
+  lines.push('', toSmallCaps('Users muted') + ':');
+  if (!muted.length) lines.push(toSmallCaps('None.'));
+  else muted.forEach(([jid, e], i) => {
+    const until = e.until ? new Date(e.until) : null;
+    const when = until && !Number.isNaN(until.getTime())
+      ? until.toISOString().slice(11, 16)
+      : '?';
+    lines.push(`${i + 1}. @${short(jid)} — ${toSmallCaps('until')} ${when}`);
+  });
+
+  const banned = Object.entries(log?.bans || {});
+  lines.push('', toSmallCaps('Users banned') + ':');
+  if (!banned.length) lines.push(toSmallCaps('None.'));
+  else banned.forEach(([jid, e], i) => {
+    lines.push(`${i + 1}. @${short(jid)} — ${e.reason ?? ''}`);
+  });
+
+  lines.push('', '0. ' + toSmallCaps('Back'));
+  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
+  await setMenu(sock, sender, chatId, 'group_moderation_log', { statsGroupJid: groupJid });
+  return true;
+}
+
+/** Dispatch the group_stats_* / group_moderation_log sub-states. */
+async function handleStatsSubState(context, state, input) {
+  const { sock, sender, chatId, user, session } = context;
+  const sessionManager = (await import('../utils/sessionManager.js')).default;
+
+  if (input === '0' || input === 'back') {
+    sessionManager.setState(sender, chatId, { statsGroupJid: null });
+    // Return to the Group Management menu from every stats view.
+    return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, 'settings_back');
+  }
+
+  // These views are informational; anything else is an invalid choice.
+  await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
+  return true;
+}
+
 export const groupManagementCustomHandlers = {
   groups_my_groups: (c) => groupsMyGroups(c),
   groups_activate: (c) => groupsActivate(c),
@@ -829,6 +1045,9 @@ export const groupManagementCustomHandlers = {
   groups_defaults: (c) => groupsDefaults(c),
   // Moderation submenu (Phase 4). Reached from Group Management option 5.
   groups_moderation: (c) => openModerationRoot(c),
+  // Stats viewers (Phase 6). Reached from Group Management options 6 and 7.
+  groups_aggregate_stats: (c) => openAggregateStats(c),
+  groups_about_stats: (c) => openAboutStats(c),
   groups_group_settings: (c) => {
     const groupJid = c?.pendingGroupJid || c?.session?.pendingGroupJid;
     if (!groupJid) {

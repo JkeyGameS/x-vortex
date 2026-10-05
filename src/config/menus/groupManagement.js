@@ -45,6 +45,18 @@ export default {
       labelKey: 'menu.group_management.moderation',
       emoji: '\u26A0\uFE0F',
       action: 'custom:groups_moderation'
+    },
+    {
+      number: '6',
+      labelKey: 'menu.group_management.aggregate_stats',
+      emoji: '\u{1F4CA}',
+      action: 'custom:groups_aggregate_stats'
+    },
+    {
+      number: '7',
+      labelKey: 'menu.group_management.about_stats',
+      emoji: '\u2139\uFE0F',
+      action: 'custom:groups_about_stats'
     }
   ]
 };

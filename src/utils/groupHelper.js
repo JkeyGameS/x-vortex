@@ -46,6 +46,27 @@ export async function isGroupAdmin(sock, groupJid, userJid) {
   return !!(p && (p.admin === 'admin' || p.admin === 'superadmin'));
 }
 
+/**
+ * Refresh the stats-backed live member count for a group.
+ *
+ * Called on activation and whenever the stats panel opens, so the counter
+ * self-heals if a join or leave was missed (for example while the bot was
+ * offline). Best-effort: returns null when metadata is unavailable.
+ *
+ * @returns {Promise<number|null>}
+ */
+export async function syncMemberCount(sock, groupJid) {
+  try {
+    const meta = await getGroupMetadata(sock, groupJid);
+    const n = meta?.participants?.length;
+    if (!Number.isFinite(n)) return null;
+    const { setMemberCount } = await import('../services/groupStatsService.js');
+    return setMemberCount(groupJid, n);
+  } catch (err) {
+    logger.warn({ err, groupJid }, '[GROUP] member count sync failed');
+    return null;
+  }
+}
 /** True when the bot itself is an admin of the group. */
 export async function isBotGroupAdmin(sock, groupJid, botJid) {
   const id = botJid || sock?.user?.id;

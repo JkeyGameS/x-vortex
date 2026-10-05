@@ -11,6 +11,7 @@ import { setQR, clearQR } from './utils/qrState.js';
 import { loadChangelog } from './services/changelogService.js';
 import { loadBotContent } from './services/botContentService.js';
 import { loadGroups, loadGroupDefaults } from './services/groupService.js';
+import { loadGroupStats, pruneOldStats, flushStats as flushGroupStats } from './services/groupStatsService.js';
 import { SUB_STATES as CHANGELOG_SUB_STATES } from './handlers/changelogManagerCommand.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
@@ -423,6 +424,15 @@ async function startBot() {
   loadGroups();
   loadGroupDefaults();
 
+  // Group activity stats. Loaded eagerly so the first recorded message does not
+  // pay a disk read, and pruned once at boot plus on an interval.
+  loadGroupStats();
+  try { pruneOldStats(); } catch (err) { logger.warn({ err }, '[GROUP_STATS] startup prune failed'); }
+  const statsPrune = setInterval(() => {
+    try { pruneOldStats(); } catch (err) { logger.warn({ err }, '[GROUP_STATS] prune failed'); }
+  }, config.groupStats?.pruneIntervalMs || 6 * 60 * 60 * 1000);
+  if (typeof statsPrune.unref === 'function') statsPrune.unref();
+
   // Version history for the Info menu. Loaded eagerly so the first open does
   // not pay a disk read; a missing file degrades to an empty changelog.
   loadChangelog();
@@ -436,6 +446,11 @@ async function startBot() {
     try { flushLastSeen(); } catch { /* shutdown must not throw */ }
   };
   process.once('exit', flushPresence);
+  // Stats are buffered in memory and flushed on an interval; make sure a clean
+  // exit does not drop the last few seconds of counters.
+  process.once('exit', () => {
+    try { flushGroupStats(); } catch { /* shutdown must not throw */ }
+  });
   process.once('SIGINT', closeHealth);
   process.once('SIGTERM', closeHealth);
 
@@ -3065,7 +3080,7 @@ if (isGroup) {
       // Group Management sub-states: pickers, the per-group settings panel and the
       // defaults editor own their input. Three prefixes, because the settings and
       // defaults states are not nested under group_management by name.
-      if (session?.currentMenu && ['group_management', 'group_settings', 'group_defaults', 'group_moderation'].some((p) => session.currentMenu.startsWith(p))) {
+      if (session?.currentMenu && ['group_management', 'group_settings', 'group_defaults', 'group_moderation', 'group_stats'].some((p) => session.currentMenu.startsWith(p))) {
         const { handleGroupManagementReply } = await import('./handlers/groupManagementHandlers.js');
         const handled = await handleGroupManagementReply(
           { sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage, session },
