@@ -167,6 +167,11 @@ export default {
     kickDM: '👋 You were removed from *{groupName}*.\n\nReason: {reason}',
     banDM: "⛔ You've been banned in *{groupName}*.\n\nReason: {reason}",
     autoMuteDM: "🔇 You've been automatically muted in *{groupName}* for {duration} after reaching {threshold} warnings.",
-    autoKickDM: "👋 You've been automatically removed from *{groupName}* after reaching {threshold} warnings."
+    autoKickDM: "👋 You've been automatically removed from *{groupName}* after reaching {threshold} warnings.",
+    // Anti-spam / anti-link (Phase 5)
+    antiLinkWarning: '🔗 Links are not allowed in *{groupName}*, {pushName}.\n\nThis is your {count}/{threshold} warning.',
+    antiSpamWarning: '⚠️ Slow down, {pushName}. Too many messages in *{groupName}*.\n\nThis is your {count}/{threshold} warning.',
+    antiLinkMuted: "🔇 You've been muted in *{groupName}* for posting a link.\n\nDuration: {duration}",
+    antiSpamMuted: "🔇 You've been muted in *{groupName}* for flooding.\n\nDuration: {duration}"
   }
 };

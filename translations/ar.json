@@ -3365,7 +3365,11 @@
       "mod_kick": "رسالة إزالة",
       "mod_ban": "رسالة حظر",
       "mod_auto_mute": "رسالة كتم تلقائي",
-      "mod_auto_kick": "رسالة إزالة تلقائية"
+      "mod_auto_kick": "رسالة إزالة تلقائية",
+      "moderation_anti_link_warning": "تحذير الروابط",
+      "moderation_anti_spam_warning": "تحذير الرسائل المزعجة",
+      "moderation_anti_link_muted": "كتم بسبب رابط",
+      "moderation_anti_spam_muted": "كتم بسبب تكرار الرسائل"
     },
     "group_management": {
       "heading": "إدارة المجموعات",

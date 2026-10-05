@@ -3372,7 +3372,11 @@
       "mod_kick": "DM expulsion",
       "mod_ban": "DM ban",
       "mod_auto_mute": "DM silencio auto",
-      "mod_auto_kick": "DM expulsion auto"
+      "mod_auto_kick": "DM expulsion auto",
+      "moderation_anti_link_warning": "Aviso de enlace",
+      "moderation_anti_spam_warning": "Aviso antiflood",
+      "moderation_anti_link_muted": "Silencio por enlace",
+      "moderation_anti_spam_muted": "Silencio antiflood"
     },
     "group_management": {
       "heading": "Gestion de grupos",

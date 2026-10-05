@@ -101,6 +101,23 @@ export const EDITABLE_FIELDS = {
   'moderationMessages.autoKickDM': {
     labelKey: 'menu.bot_content.mod_auto_kick',
     placeholders: ['pushName', 'groupName', 'threshold']
+  },
+  // Anti-spam / anti-link (Phase 5).
+  'moderationMessages.antiLinkWarning': {
+    labelKey: 'menu.bot_content.moderation_anti_link_warning',
+    placeholders: ['pushName', 'groupName', 'count', 'threshold']
+  },
+  'moderationMessages.antiSpamWarning': {
+    labelKey: 'menu.bot_content.moderation_anti_spam_warning',
+    placeholders: ['pushName', 'groupName', 'count', 'threshold']
+  },
+  'moderationMessages.antiLinkMuted': {
+    labelKey: 'menu.bot_content.moderation_anti_link_muted',
+    placeholders: ['pushName', 'groupName', 'duration']
+  },
+  'moderationMessages.antiSpamMuted': {
+    labelKey: 'menu.bot_content.moderation_anti_spam_muted',
+    placeholders: ['pushName', 'groupName', 'duration']
   }
 };
 

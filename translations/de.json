@@ -3372,7 +3372,11 @@
       "mod_kick": "DM Entfernung",
       "mod_ban": "DM Sperre",
       "mod_auto_mute": "DM automatisch stumm",
-      "mod_auto_kick": "DM automatisch entfernt"
+      "mod_auto_kick": "DM automatisch entfernt",
+      "moderation_anti_link_warning": "Link-Warnung",
+      "moderation_anti_spam_warning": "Anti-Spam-Warnung",
+      "moderation_anti_link_muted": "Link-Stummschaltung",
+      "moderation_anti_spam_muted": "Anti-Spam-Stummschaltung"
     },
     "group_management": {
       "heading": "Gruppenverwaltung",

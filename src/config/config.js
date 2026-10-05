@@ -158,6 +158,28 @@ sessionTimeoutMinutes: 5,
   // Group moderation (Phase 4). moderationEnabled is the kill switch; the
   // block below holds thresholds. canModerate refuses if either is off.
   moderationEnabled: true,
+  // Anti-spam / anti-link detection (Phase 5). The Enabled flags are the global
+  // kill switches; the blocks hold thresholds. Both must be on.
+  antiSpamEnabled: true,
+  antiLinkEnabled: true,
+  antiSpam: {
+    enabled: true,
+    repeatWindowMs: 30000,       // 30s
+    repeatThreshold: 3,          // same normalized text N times -> flag
+    floodWindowMs: 60000,        // 60s
+    floodThreshold: 10,          // N messages in the window -> flag
+    action: 'warn_then_mute',    // 'warn'|'mute'|'warn_then_mute'|'mute_then_kick'
+    firstOffenseMuteMs: 5 * 60 * 1000,
+    secondOffenseMuteMs: 30 * 60 * 1000,
+    offenseDecayMs: 24 * 60 * 60 * 1000
+  },
+  antiLink: {
+    enabled: true,
+    action: 'delete_warn',       // 'delete'|'warn'|'delete_warn'|'delete_warn_mute'
+    whitelist: [],               // hostnames always allowed, e.g. 'github.com'
+    allowInviteLinks: false,     // chat.whatsapp.com invites
+    exemptAdmins: true           // group admins and bot admins bypass
+  },
   moderation: {
     enabled: true,
     warnMuteThreshold: 3,        // active warnings that trigger an auto-mute

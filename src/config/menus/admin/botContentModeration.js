@@ -21,6 +21,11 @@ export default {
     { number: '4', labelKey: 'menu.bot_content.mod_kick', emoji: '\u{1F44B}', action: 'custom:bot_content_edit_mod_kick' },
     { number: '5', labelKey: 'menu.bot_content.mod_ban', emoji: '\u26D4', action: 'custom:bot_content_edit_mod_ban' },
     { number: '6', labelKey: 'menu.bot_content.mod_auto_mute', emoji: '\u{1F507}', action: 'custom:bot_content_edit_mod_auto_mute' },
-    { number: '7', labelKey: 'menu.bot_content.mod_auto_kick', emoji: '\u{1F44B}', action: 'custom:bot_content_edit_mod_auto_kick' }
+    { number: '7', labelKey: 'menu.bot_content.mod_auto_kick', emoji: '\u{1F44B}', action: 'custom:bot_content_edit_mod_auto_kick' },
+    // Anti-spam / anti-link templates (Phase 5). 1-7 were taken by Phase 4.
+    { number: '8', labelKey: 'menu.bot_content.moderation_anti_link_warning', emoji: '\u{1F517}', action: 'custom:bot_content_edit_anti_link_warning' },
+    { number: '9', labelKey: 'menu.bot_content.moderation_anti_spam_warning', emoji: '\u26A0\uFE0F', action: 'custom:bot_content_edit_anti_spam_warning' },
+    { number: '10', labelKey: 'menu.bot_content.moderation_anti_link_muted', emoji: '\u{1F507}', action: 'custom:bot_content_edit_anti_link_muted' },
+    { number: '11', labelKey: 'menu.bot_content.moderation_anti_spam_muted', emoji: '\u{1F507}', action: 'custom:bot_content_edit_anti_spam_muted' }
   ]
 };

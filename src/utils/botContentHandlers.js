@@ -57,6 +57,12 @@ export const botContentHandlers = {
   bot_content_edit_mod_auto_mute: (c) => field(c, 'moderationMessages.autoMuteDM'),
   bot_content_edit_mod_auto_kick: (c) => field(c, 'moderationMessages.autoKickDM'),
 
+  // Anti-spam / anti-link (Phase 5)
+  bot_content_edit_anti_link_warning: (c) => field(c, 'moderationMessages.antiLinkWarning'),
+  bot_content_edit_anti_spam_warning: (c) => field(c, 'moderationMessages.antiSpamWarning'),
+  bot_content_edit_anti_link_muted: (c) => field(c, 'moderationMessages.antiLinkMuted'),
+  bot_content_edit_anti_spam_muted: (c) => field(c, 'moderationMessages.antiSpamMuted'),
+
   // Tools
   bot_content_preview: (c) => impl(c).then((m) => m.botContentPreview(c)),
   bot_content_export: (c) => impl(c).then((m) => m.botContentExport(c)),

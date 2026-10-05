@@ -3404,7 +3404,11 @@
       "mod_kick": "Kick DM",
       "mod_ban": "Ban DM",
       "mod_auto_mute": "Auto-Mute DM",
-      "mod_auto_kick": "Auto-Kick DM"
+      "mod_auto_kick": "Auto-Kick DM",
+      "moderation_anti_link_warning": "Anti-Link Warning",
+      "moderation_anti_spam_warning": "Anti-Spam Warning",
+      "moderation_anti_link_muted": "Anti-Link Muted",
+      "moderation_anti_spam_muted": "Anti-Spam Muted"
     },
     "group_management": {
       "heading": "Group Management",

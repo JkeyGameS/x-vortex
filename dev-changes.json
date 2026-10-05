@@ -1,6 +1,43 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-05T02-20-00",
+      "timestamp": "2026-10-05T10:13:56Z",
+      "agent": "Cline",
+      "promptSummary": "Group Management Phase 5: anti-spam and anti-link detection",
+      "changes": [
+        "Added link detector with an explicit-URL pass and a bare-domain pass guarded by a file-extension blocklist, plus hostname whitelist and invite-link detection",
+        "Added anti-spam service detecting repeated messages and flood volume per user per group, with decaying offense counts",
+        "Added auto-delete of offending messages when the bot is a WhatsApp group admin, falling back to warn-only when it is not",
+        "Added auto-warn and escalating auto-mute on violations, reusing the Phase 4 moderation service",
+        "Wired both checks into the group message router between the Phase 4 mute gate and /groupinfo, sharing one admin lookup per message",
+        "Added four editable anti-spam and anti-link templates to the Bot Content moderation submenu as options 8 to 11",
+        "Added admin logging for group_user_link_detected and group_user_antispam_detected using the system actor",
+        "Added 24 link detector tests and 18 anti-spam tests"
+      ],
+      "files": [
+        "src/utils/linkDetector.js",
+        "src/utils/deleteMessage.js",
+        "src/services/antiSpamService.js",
+        "tests/linkDetector.test.mjs",
+        "tests/antiSpam.test.mjs",
+        "src/config/config.js",
+        "src/config/defaultBotContent.js",
+        "src/config/botContentFields.js",
+        "src/handlers/groupMessageHandler.js",
+        "src/config/menus/admin/botContentModeration.js",
+        "src/utils/botContentHandlers.js",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.7.4"
+    },
+    {
       "id": "chg-2026-10-05T01-10-00",
       "timestamp": "2026-10-05T09:24:23Z",
       "agent": "Cline",

@@ -3380,7 +3380,11 @@
       "mod_kick": "DM retrait",
       "mod_ban": "DM ban",
       "mod_auto_mute": "DM silence auto",
-      "mod_auto_kick": "DM retrait auto"
+      "mod_auto_kick": "DM retrait auto",
+      "moderation_anti_link_warning": "Avertissement lien",
+      "moderation_anti_spam_warning": "Avertissement anti-spam",
+      "moderation_anti_link_muted": "Silence pour lien",
+      "moderation_anti_spam_muted": "Silence anti-spam"
     },
     "group_management": {
       "heading": "Gestion des groupes",
