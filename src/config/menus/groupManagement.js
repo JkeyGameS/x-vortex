@@ -42,7 +42,7 @@ export default {
     },
     {
       number: '5',
-      labelKey: 'menu.group_management.moderation',
+      labelKey: 'menu.group_management.moderation_menu_label',
       emoji: '\u26A0\uFE0F',
       action: 'custom:groups_moderation'
     },

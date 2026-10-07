@@ -26,7 +26,16 @@ import {
  * Session-state prefixes this module owns. The router dispatches on these;
  * keep them in step with the predicate in src/index.js.
  */
-export const GROUP_STATE_PREFIXES = ['group_management', 'group_settings', 'group_defaults', 'group_moderation'];
+export const GROUP_STATE_PREFIXES = [
+  'group_management',
+  'group_settings',
+  'group_defaults',
+  'group_moderation',
+  // Must match the prefix list in src/index.js. Without this the guard below
+  // rejected every group_stats_* state before its branch ran, so "0" fell
+  // through to the DM chat rules instead of going back.
+  'group_stats'
+];
 
 /**
  * DM-side Group Management handlers (Phase 1).
@@ -215,15 +224,18 @@ export async function handleGroupManagementReply(context, trimmedText) {
   const input = String(trimmedText || '').trim();
   const back = () => backToMenu(sock, sender, chatId);
 
-  // Moderation submenu owns its own numeric flow (Phase 4).
-  if (state.startsWith('group_moderation')) {
-    return handleModerationSubState({ sock, sender, chatId, user, session }, state, input);
-  }
+// Stats viewers and the moderation log are informational: 0 goes back, anything
+      // else is an invalid choice and the panel stays. Checked BEFORE the
+      // moderation branch because group_moderation_log also starts with
+      // 'group_moderation' and would otherwise be captured by it.
+      if (state === 'group_moderation_log' || state.startsWith('group_stats')) {
+        return handleStatsSubState({ sock, sender, chatId, user, session }, state, input);
+      }
 
-  // Stats viewers are informational; 0 goes back (Phase 6).
-  if (state.startsWith('group_stats') || state === 'group_moderation_log') {
-    return handleStatsSubState({ sock, sender, chatId, user, session }, state, input);
-  }
+      // Moderation submenu owns its own numeric flow (Phase 4).
+      if (state.startsWith('group_moderation')) {
+        return handleModerationSubState({ sock, sender, chatId, user, session }, state, input);
+      }
 
   if (input === '0' || input === 'back') {
     return back();
@@ -671,6 +683,7 @@ async function handleModerationSubState(context, state, input) {
 
   const back = async (patch = {}) => {
     const sessionManager = (await import('../utils/sessionManager.js')).default;
+    const { sendMenuById } = await import('../utils/menuSender.js');
     sessionManager.setState(sender, chatId, {
       moderationGroupIds: null,
       currentGroupJid: null,
@@ -768,7 +781,8 @@ async function handleModerationSubState(context, state, input) {
     const flow = flows[n];
     if (!flow) return true;
     await flow({ sock, sender, chatId, user }, { groupJid, userJid });
-    return openUserActions(context);
+    await openUserActions(context);
+    return true;
   }
 
   // --- pick a mute duration ----------------------------------------------
@@ -796,7 +810,8 @@ async function handleModerationSubState(context, state, input) {
     await mod.flowMute({ sock, sender, chatId, user }, {
       groupJid, userJid, durationMs: presets[n - 1]
     });
-    return openUserActions(context);
+    await openUserActions(context);
+    return true;
   }
 
   // --- custom mute duration (free text) ----------------------------------
@@ -812,7 +827,8 @@ async function handleModerationSubState(context, state, input) {
     await mod.flowMute({ sock, sender, chatId, user }, {
       groupJid, userJid, durationMs: minutes * 60_000
     });
-    return openUserActions(context);
+    await openUserActions(context);
+    return true;
   }
 
   return false;
@@ -1026,14 +1042,35 @@ async function openModerationLog(context, groupJid) {
 async function handleStatsSubState(context, state, input) {
   const { sock, sender, chatId, user, session } = context;
   const sessionManager = (await import('../utils/sessionManager.js')).default;
+  const { sendMenuById } = await import('../utils/menuSender.js');
 
   if (input === '0' || input === 'back') {
+    if (state === 'group_stats_panel' || state === 'group_moderation_log') {
+      // Both are opened from a group's settings panel, so "back" returns there
+      // with the group still selected. currentGroupJid is preserved deliberately
+      // so the panel can be re-rendered without re-picking.
+      const groupJid = session?.statsGroupJid;
+      sessionManager.setState(sender, chatId, { statsGroupJid: null, currentGroupJid: groupJid });
+      if (!groupJid) {
+        return sendMenuById(
+          MENU,
+          { sock, sender, chatId, user, language: user?.language },
+          'settings_back'
+        );
+      }
+      return renderPanelFor({ sock, sender, chatId, user, session }, groupJid);
+    }
+    // aggregate + about are opened from the Group Management menu.
     sessionManager.setState(sender, chatId, { statsGroupJid: null });
-    // Return to the Group Management menu from every stats view.
-    return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, 'settings_back');
+    return sendMenuById(
+      MENU,
+      { sock, sender, chatId, user, language: user?.language },
+      'settings_back'
+    );
   }
 
-  // These views are informational; anything else is an invalid choice.
+  // These views are informational; anything else is an invalid choice and the
+  // panel stays put.
   await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
   return true;
 }

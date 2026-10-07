@@ -1,6 +1,36 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-06T00-30-00",
+      "timestamp": "2026-10-07T00:44:04Z",
+      "agent": "Cline",
+      "promptSummary": "Fix GM label collision + state fall-through to chat rules",
+      "changes": [
+        "Renamed the moderation option label key so it no longer collides with the moderation submenu namespace that rendered [object Object]",
+        "Added group_stats to GROUP_STATE_PREFIXES so the stats panels are actually dispatched instead of falling through to chat rules",
+        "Fixed a sendMenuById ReferenceError that made 0 back throw silently from the moderation pickers and the moderation log",
+        "Gave each stats panel the correct back target and made the moderation branch return handled instead of undefined",
+        "Added fall-through guards in the router so no group_* or registered-menu input can reach chat rules",
+        "Added a non-string label guard in the menu renderer that logs the collision and falls back to the last key segment",
+        "Added 18 tests covering label rendering, state routing, back navigation and the fall-through guards"
+      ],
+      "files": [
+        "src/config/menus/groupManagement.js",
+        "src/handlers/groupManagementHandlers.js",
+        "src/index.js",
+        "src/utils/menuRenderer.js",
+        "tests/groupManagement.test.mjs",
+        "package.json",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.8.1"
+    },
+    {
       "id": "chg-2026-10-05T23-20-00",
       "timestamp": "2026-10-05T23:22:55Z",
       "agent": "Cline",

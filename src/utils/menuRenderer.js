@@ -1,5 +1,6 @@
 import config from '../config/config.js';
 import { toSmallCaps } from './smallCaps.js';
+import logger from './logger.js';
 import { t } from '../services/localeService.js';
 import { getMenu } from '../config/menus/registry.js';
 import { getOptionMarker, isOptionAvailable } from './menuFeatureMarkers.js';
@@ -24,15 +25,38 @@ export function visibleMenuOptions(definition, user) {
   });
 }
 
-/** Translate with old-key fallback chain (missing key returns the key itself). */
+/**
+ * Translate with old-key fallback chain (missing key returns the key itself).
+ *
+ * Also guards against a key that RESOLVES to a non-string. That happens when a
+ * label key and a namespace collide -- menu.group_management.moderation was
+ * both a label and the moderation submenu object, and the menu rendered
+ * "[object Object]". A non-string is never a usable label, so fall back to the
+ * last dotted segment in small caps rather than printing the object.
+ */
 function tx(lang, key, fallbackKey, params = {}) {
-  const primary = t(lang, key, params);
+  const pick = (k) => {
+    const v = t(lang, k, params);
+    if (typeof v === 'string') return v;
+    if (v !== undefined && v !== null && typeof v !== 'string') {
+      logger.warn({ key: k, lang, type: typeof v }, '[i18n] key resolves to non-string');
+      return lastKeySegment(k);
+    }
+    return k; // missing: the sentinel that triggers the fallback chain
+  };
+
+  const primary = pick(key);
   if (primary !== key) return primary;
   if (fallbackKey) {
-    const fb = t(lang, fallbackKey, params);
+    const fb = pick(fallbackKey);
     if (fb !== fallbackKey) return fb;
   }
   return primary;
+}
+
+/** "menu.group_management.moderation" -> toSmallCaps("moderation") */
+function lastKeySegment(key) {
+  return toSmallCaps(String(key || '').split('.').pop() || String(key || ''));
 }
 
 /**

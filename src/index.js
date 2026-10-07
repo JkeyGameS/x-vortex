@@ -3081,13 +3081,29 @@ if (isGroup) {
       // defaults editor own their input. Three prefixes, because the settings and
       // defaults states are not nested under group_management by name.
       if (session?.currentMenu && ['group_management', 'group_settings', 'group_defaults', 'group_moderation', 'group_stats'].some((p) => session.currentMenu.startsWith(p))) {
-        const { handleGroupManagementReply } = await import('./handlers/groupManagementHandlers.js');
-        const handled = await handleGroupManagementReply(
-          { sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage, session },
-          trimmedText
-        );
-        if (handled) return;
-      }
+const { handleGroupManagementReply } = await import('./handlers/groupManagementHandlers.js');
+          const handled = await handleGroupManagementReply(
+            { sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage, session },
+            trimmedText
+          );
+          if (handled) return;
+          // Defensive guard (Section 2 Step D). If a group_* state was active but
+          // the handler consumed nothing, do NOT let the input reach chat rules --
+          // that is how "0" in the stats panel turned into a chat reply.
+          if (session?.currentMenu && session.currentMenu.startsWith('group_')) {
+            logger.warn(
+              { currentMenu: session.currentMenu, input: trimmedText },
+              '[GROUP] handler fell through'
+            );
+            await sendText(
+              sock,
+              sender,
+              toSmallCaps('Something went wrong. Send 0 to return to the menu.'),
+              { skipTyping: true }
+            );
+            return;
+          }
+        }
 
       // Custom Commands wizard: every state owns its own prompts and validation.
       if (session?.currentMenu && session.currentMenu.startsWith('custom_command')) {
@@ -3476,6 +3492,25 @@ if (isGroup) {
           await sendText(sock, sender, tr('common.invalidChoiceMinMax', { min: 0, max: genericResult.max }));
           return;
         }
+      }
+
+      // Defensive guard (Section 2 Step E). A registered menu state was active but
+      // nothing consumed the input and it was not a recognised command. Sending
+      // it to chat rules would answer a menu interaction as if it were chit-chat.
+      // getMenu() already returned null for stale ids above, so reaching here
+      // with a live id means a handler declined to handle it.
+      if (session?.currentMenu && getMenu(session.currentMenu)) {
+        logger.warn(
+          { currentMenu: session.currentMenu, input: trimmedText },
+          '[ROUTER] menu state fell through'
+        );
+        await sendText(
+          sock,
+          sender,
+          toSmallCaps('Something went wrong. Send 0 to return.'),
+          { skipTyping: true }
+        );
+        return;
       }
 
       // Free text (no prefix, nothing menu-related) goes to the conversational layer.
