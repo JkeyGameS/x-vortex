@@ -3077,33 +3077,44 @@ if (isGroup) {
         return;
       }
 
-      // Group Management sub-states: pickers, the per-group settings panel and the
-      // defaults editor own their input. Three prefixes, because the settings and
-      // defaults states are not nested under group_management by name.
-      if (session?.currentMenu && ['group_management', 'group_settings', 'group_defaults', 'group_moderation', 'group_stats'].some((p) => session.currentMenu.startsWith(p))) {
-const { handleGroupManagementReply } = await import('./handlers/groupManagementHandlers.js');
-          const handled = await handleGroupManagementReply(
-            { sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage, session },
-            trimmedText
+// Group Management sub-states: pickers, the per-group settings panel, the
+      // defaults editor, moderation flows and the stats views own their input
+      // directly through handleGroupManagementReply.
+      //
+      // The TOP-LEVEL group_management menu is a normal registered menu: its
+      // options are resolved by the generic menu resolver further down. So when
+      // the handler declines, we must NOT answer here -- we check whether a menu
+      // exists for this state and, if one does, let the resolver own it. Only a
+      // group_* state with no menu and no handler is genuinely unhandled, and
+      // only that case reaches chat rules if we do not answer it.
+      const groupState = session?.currentMenu &&
+        ['group_management', 'group_settings', 'group_defaults', 'group_moderation', 'group_stats']
+          .some((p) => session.currentMenu.startsWith(p));
+      if (groupState) {
+        const { handleGroupManagementReply } = await import('./handlers/groupManagementHandlers.js');
+        const handled = await handleGroupManagementReply(
+          { sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage, session },
+          trimmedText
+        );
+        if (handled) return;
+        // Idempotent and cached after the first call; the registry is loaded
+        // lazily, so make sure it is warm before asking whether this is a menu.
+        await import('./config/menus/index.js');
+        if (!getMenu(session.currentMenu)) {
+          logger.warn(
+            { currentMenu: session.currentMenu, input: trimmedText },
+            '[GROUP] handler fell through'
           );
-          if (handled) return;
-          // Defensive guard (Section 2 Step D). If a group_* state was active but
-          // the handler consumed nothing, do NOT let the input reach chat rules --
-          // that is how "0" in the stats panel turned into a chat reply.
-          if (session?.currentMenu && session.currentMenu.startsWith('group_')) {
-            logger.warn(
-              { currentMenu: session.currentMenu, input: trimmedText },
-              '[GROUP] handler fell through'
-            );
-            await sendText(
-              sock,
-              sender,
-              toSmallCaps('Something went wrong. Send 0 to return to the menu.'),
-              { skipTyping: true }
-            );
-            return;
-          }
+          await sendText(
+            sock,
+            sender,
+            toSmallCaps('Something went wrong. Send 0 to return to the menu.'),
+            { skipTyping: true }
+          );
+          return;
         }
+        // A registered menu: fall through to the generic resolver on purpose.
+      }
 
       // Custom Commands wizard: every state owns its own prompts and validation.
       if (session?.currentMenu && session.currentMenu.startsWith('custom_command')) {

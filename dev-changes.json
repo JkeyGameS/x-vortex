@@ -1,6 +1,29 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-06T01-05-00",
+      "timestamp": "2026-10-09T16:15:53Z",
+      "agent": "Cline",
+      "promptSummary": "Fix GM fall-through guard overreach",
+      "changes": [
+        "Narrowed the fall-through guard so it fires only when a group state has no registered menu and no handler",
+        "Top-level Group Management menu now routes through the menu resolver instead of being intercepted and guarded",
+        "handleGroupManagementReply declines the top-level group_management state entirely, so options 1-7 and 0 resolve normally",
+        "Fixed 0 on the top-level GM menu re-rendering itself instead of returning to the main menu",
+        "Kept the DM menu guard, which was already correct because it sits after the menu resolver",
+        "Added 14 routing tests covering option handling, back targets, invalid input, unknown states and guard placement"
+      ],
+      "files": [
+        "src/index.js",
+        "src/handlers/groupManagementHandlers.js",
+        "tests/groupManagement.test.mjs",
+        "tests/groupRouting.test.mjs",
+        "package.json"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.8.2"
+    },
+    {
       "id": "chg-2026-10-06T00-30-00",
       "timestamp": "2026-10-07T00:44:04Z",
       "agent": "Cline",

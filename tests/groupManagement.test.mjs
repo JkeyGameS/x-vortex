@@ -230,8 +230,14 @@ test('an unknown group_* state does not reach chat rules', async () => {
   assert.strictEqual(handled, false, 'handler correctly declines an unknown state');
   // The guard exists in index.js and keys off the group_ prefix.
   const src = fs.readFileSync(path.resolve('src/index.js'), 'utf8');
-  assert.ok(src.includes("startsWith('group_')"), 'group fall-through guard missing');
   assert.ok(src.includes('[GROUP] handler fell through'), 'guard log line missing');
+  // The guard must be gated on the state having NO registered menu, otherwise it
+  // fires for the top-level group_management menu and eats valid options.
+  assert.ok(
+    /!getMenu\(session\.currentMenu\)/.test(src),
+    'group guard must skip states that are registered menus'
+  );
+  assert.ok(src.includes("'group_stats'"), "the group_stats prefix must remain in the dispatch");
 });
 
 test('the general DM menu fall-through guard exists', () => {

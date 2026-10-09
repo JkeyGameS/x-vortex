@@ -216,6 +216,13 @@ export async function handleGroupManagementReply(context, trimmedText) {
   const state = session?.currentMenu;
   if (!state || !GROUP_STATE_PREFIXES.some((p) => state.startsWith(p))) return false;
 
+  // The top-level Group Management menu is a normal registered menu: its
+  // options (1-7) and its back option (0 -> main_menu) belong to the generic
+  // menu resolver. Decline every input for it so the resolver owns them.
+  // Without this, "0" here re-rendered this same menu and the user could not
+  // leave Group Management at all.
+  if (state === MENU) return false;
+
   try {
     const { cancelStartHint } = await import('../services/startHintService.js');
     cancelStartHint(sender);
