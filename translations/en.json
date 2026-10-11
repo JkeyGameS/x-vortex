@@ -777,7 +777,8 @@
       "optionWelcomeBack": "Welcome back messages",
       "welcomeBackOn": "Welcome-back messages enabled.",
       "welcomeBackOff": "Welcome-back messages disabled.",
-      "optionBotContent": "Bot Content"
+      "optionBotContent": "Bot Content",
+      "optionDangerZone": "Danger Zone"
     },
     "optionAnalytics": "Command Analytics",
     "stats": {
@@ -2842,7 +2843,8 @@
       "custom_commands": "Custom Commands",
       "footer": "Reply with the number of your choice.",
       "changelog": "Changelog",
-      "bot_content": "Bot Content"
+      "bot_content": "Bot Content",
+      "danger_zone": "Danger Zone"
     },
     "backup_restore": {
       "heading": "Backup & Restore",
@@ -2871,7 +2873,9 @@
     "settings": {
       "heading": "Settings",
       "help": "Help",
-      "footer": "Reply with a number."
+      "footer": "Reply with a number.",
+      "reset_account": "Reset Account",
+      "delete_account": "Delete Account"
     },
     "statistics": {
       "heading": "Statistics",
@@ -3465,6 +3469,12 @@
       "active_warnings": "Active warnings",
       "active_mutes": "Active mutes",
       "active_bans": "Active bans"
+    },
+    "danger_zone": {
+      "heading": "Danger Zone",
+      "reset_self": "Reset My Account",
+      "delete_self": "Delete My Account",
+      "purge_snapshots": "Purge Snapshots"
     }
   },
   "lifecycle": {

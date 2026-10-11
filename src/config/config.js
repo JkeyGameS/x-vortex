@@ -222,6 +222,19 @@ sessionTimeoutMinutes: 5,
     editAttemptsBeforeDelete: 2, // hybrid: edits before falling back to delete+send
     editFallbackTimeout: 60000 // treat a menu older than this as "too old to edit"
   },
+  // Account lifecycle: reset (keep the identity, wipe the data) and delete
+  // (remove the record). Every destructive path snapshots first and aborts if
+  // the snapshot cannot be written, so nothing here is ever one-way.
+  account: {
+    resetEnabled: true,
+    deleteEnabled: true,
+    snapshotRetentionCount: 50,
+    confirmationWordReset: 'RESET',
+    confirmationWordDelete: 'DELETE',
+    maxWrongConfirmAttempts: 2,
+    notifyAdminsOnDelete: true,
+    notifyUserOnAdminAction: true
+  },
   // Bot lifecycle notifications (admin-only: startup / shutdown / crash)
   botNotifications: {
     enabled: true,

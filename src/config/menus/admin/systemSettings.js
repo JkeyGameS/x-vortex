@@ -14,7 +14,9 @@ const OPTS = [
   ['10', 'custom_commands', 'custom:sys_custom_commands', 'admin.systemSettings.optionCustomCommands', '🛠️'],
   ['11', 'changelog', 'open:changelog_manager', 'admin.systemSettings.optionChangelog', '📝'],
   // 12: option 11 was already taken by the changelog manager.
-  ['12', 'bot_content', 'open:bot_content', 'admin.systemSettings.optionBotContent', '🎨']
+  ['12', 'bot_content', 'open:bot_content', 'admin.systemSettings.optionBotContent', '🎨'],
+  // 13: account reset / delete / snapshot purge (admin self-service).
+  ['13', 'danger_zone', 'open:danger_zone', 'admin.systemSettings.optionDangerZone', '⚠️']
 ];
 
 export default {

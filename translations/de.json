@@ -375,7 +375,7 @@
       "test": "🧪 Testbenutzer",
       "search": "Benutzer suchen",
       "list": "Alle Benutzer anzeigen",
-      "delete": "Benutzer löschen",
+      "delete": "Delete User",
       "block": "Benutzer blockieren",
       "unblock": "Benutzer entsperren",
       "listBlocked": "Blockierte Benutzer anzeigen",
@@ -384,7 +384,7 @@
       "advancedTitle": "Erweiterte Benutzerverwaltung",
       "edit": "Benutzer bearbeiten",
       "export": "Benutzerdaten exportieren",
-      "reset": "Benutzerdaten zurücksetzen",
+      "reset": "Reset User Data",
       "notes": "Admin-Notizen",
       "ban": "Benutzer bannen",
       "activity": "Letzte Aktivität",
@@ -752,7 +752,8 @@
       "optionWelcomeBack": "Willkommensnachrichten",
       "welcomeBackOn": "Willkommensnachrichten aktiviert.",
       "welcomeBackOff": "Willkommensnachrichten deaktiviert.",
-      "optionBotContent": "Bot-Inhalte"
+      "optionBotContent": "Bot-Inhalte",
+      "optionDangerZone": "Gefahrenzone"
     },
     "optionAnalytics": "Befehlsanalyse",
     "stats": {
@@ -2817,7 +2818,8 @@
       "custom_commands": "Eigene Befehle",
       "footer": "Antworte mit der Nummer deiner Wahl.",
       "changelog": "Anderungsprotokoll",
-      "bot_content": "Bot-Inhalte"
+      "bot_content": "Bot-Inhalte",
+      "danger_zone": "Gefahrenzone"
     },
     "backup_restore": {
       "heading": "Backup & Wiederherstellung",
@@ -2846,7 +2848,9 @@
     "settings": {
       "heading": "Einstellungen",
       "help": "Hilfe",
-      "footer": "Antworte mit einer Nummer."
+      "footer": "Antworte mit einer Nummer.",
+      "reset_account": "Konto zurücksetzen",
+      "delete_account": "Konto löschen"
     },
     "statistics": {
       "heading": "Statistiken",
@@ -3433,6 +3437,12 @@
       "active_warnings": "Aktive Verwarnungen",
       "active_mutes": "Aktive Stummschaltungen",
       "active_bans": "Aktive Sperren"
+    },
+    "danger_zone": {
+      "heading": "Gefahrenzone",
+      "reset_self": "Mein Konto zurücksetzen",
+      "delete_self": "Mein Konto löschen",
+      "purge_snapshots": "Snapshots löschen"
     }
   },
   "lifecycle": {

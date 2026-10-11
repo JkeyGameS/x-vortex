@@ -1,6 +1,52 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-11T22-45-00",
+      "timestamp": "2026-10-11T23:32:05Z",
+      "agent": "opencode",
+      "promptSummary": "Reset Account + Delete Account (Part 1)",
+      "changes": [
+        "Added accountService with reset and delete operations, both snapshot-first and aborting if the snapshot cannot be written",
+        "Added user-facing reset and delete flows under Settings, reachable via options 4/5 and /reset, /delete",
+        "Added admin Danger Zone submenu as System Settings option 13, with self reset, self delete and snapshot purge",
+        "Added per-user reset and delete to the User Management detail panel, including the last-admin guard on the target",
+        "Added standalone commands /reset, /delete, /resetuser and /deleteuser, with the two admin ones declared admin-only in menuConfig",
+        "Added last-admin protection and a two-strike anti-brute-force confirmation that auto-cancels",
+        "Added a snapshot system under data/snapshots/users with 50-file retention, plus ACCOUNT_DATA_PATH overrides so tests never touch live data",
+        "Seeded successCommands, featureUsage and recentCommands in ensureUserProfile so a reset record is byte-identical to a new one"
+      ],
+      "files": [
+        "src/services/accountService.js",
+        "src/services/userService.js",
+        "src/services/feedbackService.js",
+        "src/services/blockedUsersService.js",
+        "src/handlers/settingsHandlers.js",
+        "src/handlers/dangerZoneHandlers.js",
+        "src/handlers/accountCommands.js",
+        "src/handlers/userManagementCommand.js",
+        "src/utils/notifyAdmins.js",
+        "src/utils/menuCustomHandlers.js",
+        "src/config/config.js",
+        "src/config/menuConfig.js",
+        "src/config/menus/settings.js",
+        "src/config/menus/index.js",
+        "src/config/menus/admin/systemSettings.js",
+        "src/config/menus/admin/dangerZone.js",
+        "src/index.js",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json",
+        "tests/accountService.test.mjs",
+        "tests/botContent.test.mjs",
+        "tests/changelogManager.test.mjs",
+        "package.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.9.0"
+    },
+    {
       "id": "chg-2026-10-11T15-50-00",
       "timestamp": "2026-10-11T16:34:22Z",
       "agent": "opencode",

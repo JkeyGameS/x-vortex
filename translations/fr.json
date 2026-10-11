@@ -375,7 +375,7 @@
       "test": "🧪 Utilisateurs de test",
       "search": "Rechercher un utilisateur",
       "list": "Lister tous les utilisateurs",
-      "delete": "Supprimer un utilisateur",
+      "delete": "Delete User",
       "block": "Bloquer un utilisateur",
       "unblock": "Débloquer un utilisateur",
       "listBlocked": "Lister les utilisateurs bloqués",
@@ -384,7 +384,7 @@
       "advancedTitle": "Gestion avancée des utilisateurs",
       "edit": "Modifier l'utilisateur",
       "export": "Exporter les données",
-      "reset": "Réinitialiser les données",
+      "reset": "Reset User Data",
       "notes": "Notes admin",
       "ban": "Bannir l'utilisateur",
       "activity": "Activité récente",
@@ -752,7 +752,8 @@
       "optionWelcomeBack": "Messages de retour",
       "welcomeBackOn": "Messages de retour activees.",
       "welcomeBackOff": "Messages de retour desactives.",
-      "optionBotContent": "Contenu du bot"
+      "optionBotContent": "Contenu du bot",
+      "optionDangerZone": "Zone de danger"
     },
     "optionAnalytics": "Analyse des commandes",
     "stats": {
@@ -2817,7 +2818,8 @@
       "custom_commands": "Commandes personnalisees",
       "footer": "Répondez avec le numéro de votre choix.",
       "changelog": "Journal des modifications",
-      "bot_content": "Contenu du bot"
+      "bot_content": "Contenu du bot",
+      "danger_zone": "Zone de danger"
     },
     "backup_restore": {
       "heading": "Sauvegarde & Restauration",
@@ -2846,7 +2848,9 @@
     "settings": {
       "heading": "Paramètres",
       "help": "Aide",
-      "footer": "Répondez avec un numéro."
+      "footer": "Répondez avec un numéro.",
+      "reset_account": "Réinitialiser le compte",
+      "delete_account": "Supprimer le compte"
     },
     "statistics": {
       "heading": "Statistiques",
@@ -3441,6 +3445,12 @@
       "active_warnings": "Avertissements actifs",
       "active_mutes": "Silences actifs",
       "active_bans": "Bans actifs"
+    },
+    "danger_zone": {
+      "heading": "Zone de danger",
+      "reset_self": "Réinitialiser mon compte",
+      "delete_self": "Supprimer mon compte",
+      "purge_snapshots": "Purger les instantanés"
     }
   },
   "lifecycle": {

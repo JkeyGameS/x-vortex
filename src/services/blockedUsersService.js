@@ -4,7 +4,12 @@ import { fileURLToPath } from 'url';
 import logger from '../utils/logger.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.join(__dirname, '../../data');
+// ACCOUNT_DATA_PATH points at an alternate data DIRECTORY (not a single file)
+// so accountService tests never touch the live blockedUsers.json. Unset in
+// production, which resolves to the normal data/ folder.
+const DATA_DIR = process.env.ACCOUNT_DATA_PATH
+  ? path.resolve(process.env.ACCOUNT_DATA_PATH)
+  : path.join(__dirname, '../../data');
 const BLOCKED_FILE = path.join(DATA_DIR, 'blockedUsers.json');
 
 let blockedUsers = {};

@@ -838,6 +838,15 @@ export function resolveMenuOption(menuKey, input) {
  */
 export const menuCommands = {
   start: { adminOnly: false },
+  // Account lifecycle. /reset and /delete act on the sender; /resetuser and
+  // /deleteuser act on someone else and must stay admin-only. loadCommands()
+  // applies these values, so declaring them here is what actually enforces it.
+  reset: { adminOnly: false },
+  resetaccount: { adminOnly: false },
+  delete: { adminOnly: false },
+  deleteaccount: { adminOnly: false },
+  resetuser: { adminOnly: true },
+  deleteuser: { adminOnly: true },
   profile: { adminOnly: false },
   editprofile: { adminOnly: false },
   stats: { adminOnly: false },

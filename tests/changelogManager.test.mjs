@@ -160,7 +160,7 @@ try {
 const sysDef = getMenu('system_settings');
   // 12 rows now: option 12 is the Bot Content & Timing editor, which took the
   // next free number rather than renumbering the changelog manager off 11.
-  check('A: system settings has 12 options', sysDef.options.length === 12, String(sysDef.options.length));
+  check('A: system settings has 13 options', sysDef.options.length === 13, String(sysDef.options.length));
   check('A: the changelog manager keeps option 11', sysDef.options[10]?.number === '11', sysDef.options[10]?.number);
   check('A: system settings option 11 opens the manager', sysDef.options[10]?.action === 'open:changelog_manager', sysDef.options[10]?.action);
   check('A: option 12 is the bot content editor', sysDef.options[11]?.number === '12' && sysDef.options[11]?.action === 'open:bot_content', JSON.stringify(sysDef.options[11]));

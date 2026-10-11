@@ -4,7 +4,12 @@ import { fileURLToPath } from 'url';
 import sessionManager from '../utils/sessionManager.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.join(__dirname, '../../data');
+// ACCOUNT_DATA_PATH points at an alternate data DIRECTORY (not a single file)
+// so accountService tests never touch the live users.json. Unset in production,
+// which resolves to the normal data/ folder.
+const DATA_DIR = process.env.ACCOUNT_DATA_PATH
+  ? path.resolve(process.env.ACCOUNT_DATA_PATH)
+  : path.join(__dirname, '../../data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 
 const users = new Map(); // key: jid, value: user object
@@ -108,7 +113,14 @@ export async function ensureUserProfile({ jid, name, username = null, isTest = f
       commandCounts: {},
       lastCommand: null,
       lastCommandTime: null,
-      points: 0
+      points: 0,
+      // These three are written by trackFeatureUsage / trackCommandSuccess /
+      // trackCommandError after first use. Seeding them here keeps a brand new
+      // record shaped exactly like every existing user, which is what lets
+      // accountService.resetAccount() reproduce a fresh record byte for byte.
+      successCommands: 0,
+      featureUsage: {},
+      recentCommands: []
     }
   };
 
@@ -560,6 +572,76 @@ export async function deleteUserByJid(jid) {
   const existed = users.delete(jid);
   if (existed) saveUsers();
   return existed;
+}
+
+/**
+ * Replace a user record wholesale.
+ *
+ * updateUser() merges via Object.assign, so any key the caller omits survives
+ * in the stored record. Account reset needs an exact replacement -- a stale
+ * `stats` or `preferences` sub-object would otherwise leak through -- so this
+ * overwrites the whole entry instead.
+ *
+ * @param {string} jid
+ * @param {object} replacement complete user record (must include `jid`)
+ * @returns {Promise<object|null>} the stored record, or null if absent
+ */
+export async function replaceUser(jid, replacement) {
+  const resolvedJid = resolveUserJid(jid);
+  if (!replacement || typeof replacement !== 'object') return null;
+  const record = { ...replacement, jid: replacement.jid || resolvedJid };
+  users.set(resolvedJid, record);
+  saveUsers();
+  return record;
+}
+
+/**
+ * The exact shape ensureUserProfile() creates for a brand new user.
+ *
+ * Exported so accountService.resetAccount() cannot drift from the real
+ * creation path; tests/accountService.test.mjs diffs the two.
+ * @returns {object} a fresh user skeleton
+ */
+export function defaultUserSkeleton() {
+  const now = new Date().toISOString();
+  return {
+    jid: null,
+    name: null,
+    isTest: false,
+    username: null,
+    bio: '',
+    language: null,
+    timezone: 'UTC',
+    joined: now,
+    lastUpdated: now,
+    lastActive: now,
+    accountType: 'free',
+    level: 1,
+    rank: null,
+    profileCompleteness: 0,
+    notifyRequests: {},
+    chatReplyHistory: {},
+    preferences: {
+      notifications: true,
+      theme: 'dark',
+      announcements: true,
+      replyStyle: 'formal',
+      privacy: 'contacts',
+      tutorialProgress: defaultTutorialProgress()
+    },
+    stats: {
+      messagesSent: 0,
+      commandsUsed: 0,
+      recentCommandTimestamps: [],
+      commandCounts: {},
+      lastCommand: null,
+      lastCommandTime: null,
+      points: 0,
+      successCommands: 0,
+      featureUsage: {},
+      recentCommands: []
+    }
+  };
 }
 
 /**

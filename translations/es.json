@@ -375,7 +375,7 @@
       "test": "🧪 Usuarios de prueba",
       "search": "Buscar usuario",
       "list": "Listar todos los usuarios",
-      "delete": "Eliminar usuario",
+      "delete": "Delete User",
       "block": "Bloquear usuario",
       "unblock": "Desbloquear usuario",
       "listBlocked": "Listar usuarios bloqueados",
@@ -384,7 +384,7 @@
       "advancedTitle": "Gestión avanzada de usuarios",
       "edit": "Editar usuario",
       "export": "Exportar datos",
-      "reset": "Restablecer datos",
+      "reset": "Reset User Data",
       "notes": "Notas de administrador",
       "ban": "Banear usuario",
       "activity": "Actividad reciente",
@@ -752,7 +752,8 @@
       "optionWelcomeBack": "Mensajes de bienvenida",
       "welcomeBackOn": "Mensajes de bienvenida activados.",
       "welcomeBackOff": "Mensajes de bienvenida desactivados.",
-      "optionBotContent": "Contenido del bot"
+      "optionBotContent": "Contenido del bot",
+      "optionDangerZone": "Zona de peligro"
     },
     "optionAnalytics": "Análisis de comandos",
     "stats": {
@@ -2817,7 +2818,8 @@
       "custom_commands": "Comandos personalizados",
       "footer": "Responde con el número de tu elección.",
       "changelog": "Registro de cambios",
-      "bot_content": "Contenido del bot"
+      "bot_content": "Contenido del bot",
+      "danger_zone": "Zona de peligro"
     },
     "backup_restore": {
       "heading": "Copia de seguridad y restauración",
@@ -2846,7 +2848,9 @@
     "settings": {
       "heading": "Ajustes",
       "help": "Ayuda",
-      "footer": "Responde con un número."
+      "footer": "Responde con un número.",
+      "reset_account": "Restablecer cuenta",
+      "delete_account": "Eliminar cuenta"
     },
     "statistics": {
       "heading": "Estadísticas",
@@ -3433,6 +3437,12 @@
       "active_warnings": "Avisos activos",
       "active_mutes": "Silencios activos",
       "active_bans": "Bans activos"
+    },
+    "danger_zone": {
+      "heading": "Zona de peligro",
+      "reset_self": "Restablecer mi cuenta",
+      "delete_self": "Eliminar mi cuenta",
+      "purge_snapshots": "Purgar instantáneas"
     }
   },
   "lifecycle": {

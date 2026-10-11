@@ -9,6 +9,7 @@ import { t } from '../services/localeService.js';
 import * as userService from '../services/userService.js';
 import * as blockService from '../services/blockedUsersService.js';
 import { logAdminAction } from '../services/adminLogService.js';
+import logger from '../utils/logger.js';
 
 const PAGE_SIZE = 10;
 const languageOf = (context) => context.language || config.defaultLanguage;
@@ -196,10 +197,13 @@ function userDetails(language, user) {
     `📅 ${L(language, 'admin.userManagement.joined')}: ${user.joined || '-'}`,
     `🔄 ${L(language, 'admin.userManagement.lastActive')}: ${user.lastActive || '-'}`,
     '',
-    `1. ❌ ${L(language, 'admin.userManagement.delete')}`,
-    `2. ⛔ ${L(language, 'admin.userManagement.block')}`,
-    `3. ✅ ${L(language, 'admin.userManagement.unblock')}`,
-    `4. 🔧 ${L(language, 'admin.userManagement.more')}`
+    `1. ♻️ ${L(language, 'admin.userManagement.reset')}`,
+    `2. ❌ ${L(language, 'admin.userManagement.delete')}`,
+    `3. ⛔ ${L(language, 'admin.userManagement.block')}`,
+    `4. ✅ ${L(language, 'admin.userManagement.unblock')}`,
+    `5. 🔧 ${L(language, 'admin.userManagement.more')}`,
+    '',
+    `0. ${L(language, 'common.back')}`
   ];
 }
 
@@ -234,6 +238,126 @@ async function confirmAction(context, action, user, extra = {}) {
     ? t(language, 'admin.userManagement.purgeConfirm', extra)
     : t(language, 'admin.userManagement.deleteConfirm', { name: user.name || user.jid });
   return render(context, 'user_management_confirm', `❓ ${t(language, 'admin.userManagement.confirm')}`, [question, '', `1. ${L(language, 'admin.yes')}`, `2. ${L(language, 'admin.no')}`], 'user_management_confirm', { targetUser: user?.jid, pendingUserAction: action, ...extra });
+}
+
+/**
+ * Per-user action panel.
+ *
+ * Option 1 (reset) is new and goes through accountService, which snapshots
+ * first. The legacy delete path below still uses userService.deleteUser for
+ * callers that arrive via the old "3" search flow; both write to the same
+ * user record, so they must not be confused with each other.
+ */
+async function handleUserDetailsReply(context, value) {
+  const language = languageOf(context);
+  const session = sessionManager.getSession(context.sender, context.chatId || context.sender) || {};
+  const targetJid = session.targetUser;
+  if (!targetJid) return sendUserManagementMenu(context);
+
+  const user = await userService.getUserByJid(targetJid);
+  if (!user) {
+    await sendText(context.sock, context.sender, L(language, 'admin.userManagement.noUserFound'));
+    return sendUserManagementMenu(context);
+  }
+
+  if (value === '0') return sendUserManagementMenu(context);
+  if (value === '1') {
+    return confirmAdminAccountAction(context, user, 'reset');
+  }
+  if (value === '2') {
+    // Deleting another admin would strip the bot of its last admin; the check
+    // is on the TARGET, not on whoever is pressing the button.
+    const { isLastBotAdmin } = await import('../services/accountService.js');
+    if (isLastBotAdmin(targetJid)) {
+      return render(context, 'user_management_confirm', '⚠️', [
+        toSmallCaps('This user is the only bot admin.'),
+        '',
+        toSmallCaps('Deleting them would leave the bot without admins.'),
+        '',
+        `0. ${L(language, 'common.back')}`
+      ], 'user_management_confirm', { targetUser: targetJid, pendingUserAction: 'blocked_last_admin' });
+    }
+    return confirmAdminAccountAction(context, user, 'delete');
+  }
+  if (value === '3') return confirmAction(context, 'block', user);
+  if (value === '4') return confirmAction(context, 'unblock', user);
+  if (value === '5') {
+    return render(context, 'user_management_advanced', `🔧 ${t(language, 'admin.userManagement.advancedTitle')}`, [
+      `1. ✏️ ${L(language, 'admin.userManagement.edit')}`,
+      `2. 📤 ${L(language, 'admin.userManagement.export')}`,
+      `3. 🔄 ${L(language, 'admin.userManagement.reset')}`,
+      `4. 📝 ${L(language, 'admin.userManagement.notes')}`,
+      `5. 🔒 ${L(language, 'admin.userManagement.ban')}`,
+      `6. 🕒 ${L(language, 'admin.userManagement.activity')}`,
+      `7. 💬 ${L(language, 'admin.userManagement.message')}`,
+      `8. 🧩 ${L(language, 'admin.userManagement.flags')}`,
+      `9. 📅 ${L(language, 'admin.userManagement.sortFilter')}`
+    ]);
+  }
+  return showDetails(context, user);
+}
+
+/** Yes/No gate in front of an admin-initiated reset or delete. */
+async function confirmAdminAccountAction(context, user, action) {
+  const language = languageOf(context);
+  const question = action === 'reset'
+    ? t(language, 'admin.userManagement.resetConfirm', { name: user.name || user.jid })
+    : t(language, 'admin.userManagement.deleteConfirm', { name: user.name || user.jid });
+  return render(context, 'user_management_confirm', `? ${t(language, 'admin.userManagement.confirm')}`,
+    [question, '', `1. ${L(language, 'admin.yes')}`, `2. ${L(language, 'admin.no')}`],
+    'user_management_confirm', { targetUser: user.jid, pendingUserAction: `account_${action}` });
+}
+
+/** Execute a confirmed admin reset/delete and notify the target. */
+async function runAdminAccountAction(context, targetJid, action) {
+  const language = languageOf(context);
+  const target = await userService.getUserByJid(targetJid);
+  const name = target?.name || targetJid;
+
+  if (action === 'account_reset') {
+    const { resetAccount } = await import('../services/accountService.js');
+    const result = await resetAccount(targetJid, { actorJid: context.sender, pushName: name });
+    if (!result.success) {
+      await sendText(context.sock, context.sender, '❌ ' + toSmallCaps('Operation failed. Nothing was changed.'));
+      return sendUserManagementMenu(context);
+    }
+    logAdminAction(context.sender, 'account_reset', JSON.stringify({ targetJid, snapshot: result.snapshot }));
+    if (config.account?.notifyUserOnAdminAction) {
+      await notifyTargetBestEffort(context, targetJid, '♻️ ' + toSmallCaps('Your account was reset by an admin.'));
+    }
+    await sendText(context.sock, context.sender, '✅ ' + L(language, 'admin.userManagement.reset'));
+    return sendUserManagementMenu(context);
+  }
+
+  if (action === 'account_delete') {
+    const { deleteAccount, isLastBotAdmin } = await import('../services/accountService.js');
+    if (isLastBotAdmin(targetJid)) {
+      await sendText(context.sock, context.sender, '⚠️ ' + toSmallCaps('That user is the only bot admin.'));
+      return sendUserManagementMenu(context);
+    }
+    const result = await deleteAccount(targetJid, { actorJid: context.sender });
+    if (!result.success) {
+      await sendText(context.sock, context.sender, '❌ ' + toSmallCaps('Operation failed. Nothing was changed.'));
+      return sendUserManagementMenu(context);
+    }
+    // Sent AFTER deletion: the record is gone, but the JID still routes.
+    if (config.account?.notifyUserOnAdminAction) {
+      await notifyTargetBestEffort(context, targetJid, '\uD83D\uDDD1\uFE0F ' + toSmallCaps('Your account was deleted by an admin.'));
+    }
+    await sendText(context.sock, context.sender, '✅ ' + L(language, 'admin.userManagement.delete'));
+    return sendUserManagementMenu(context);
+  }
+
+  return sendUserManagementMenu(context);
+}
+
+/** Notify a user about an admin action; failures are never fatal. */
+async function notifyTargetBestEffort(context, jid, text) {
+  try {
+    await context.sock.sendMessage(jid, { text });
+  } catch (err) {
+    logger.warn({ err, jid }, '[ACCOUNT] admin-action notice to user failed');
+  }
 }
 
 export async function handleUserManagementReply(context, input) {
@@ -281,11 +405,16 @@ export async function handleUserManagementReply(context, input) {
 
   if (menu === 'user_management_confirm') {
     if (value === '2' || value === '0') return sendUserManagementMenu(context);
+    if (session.pendingUserAction === 'blocked_last_admin') return sendUserManagementMenu(context);
     if (value !== '1') return confirmAction(context, session.pendingUserAction === 'purge' ? 'purge' : 'delete', { name: session.targetUser }, { count: session.count });
     if (session.pendingUserAction === 'purge') {
       const removed = await userService.purgeTestUsers();
       logAdminAction(context.sender, 'purge_test_users', String(removed.length));
       return sendUserManagementMenu(context);
+    }
+    // New account paths go through accountService (snapshot + full cleanup).
+    if (session.pendingUserAction === 'account_reset' || session.pendingUserAction === 'account_delete') {
+      return runAdminAccountAction(context, session.targetUser, session.pendingUserAction);
     }
     if (session.pendingUserAction === 'delete') {
       await userService.deleteUser(session.targetUser); logAdminAction(context.sender, 'delete_user', session.targetUser); return sendUserManagementMenu(context);
@@ -318,13 +447,7 @@ export async function handleUserManagementReply(context, input) {
   }
 
   if (menu === 'user_management_details') {
-    if (value === '0') return sendUserManagementMenu(context);
-    const user = await userService.getUserByJid(session.targetUser);
-    if (!user) return sendUserManagementMenu(context);
-    if (value === '1') return confirmAction(context, 'delete', user);
-    if (value === '2') return confirmAction(context, 'block', user);
-    if (value === '3') return confirmAction(context, 'unblock', user);
-    return showDetails(context, user);
+    return handleUserDetailsReply(context, value);
   }
 
   if (menu === 'user_management_advanced') {

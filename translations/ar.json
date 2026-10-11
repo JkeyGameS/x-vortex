@@ -375,7 +375,7 @@
       "test": "🧪 مستخدمو الاختبار",
       "search": "بحث عن مستخدم",
       "list": "عرض جميع المستخدمين",
-      "delete": "حذف مستخدم",
+      "delete": "Delete User",
       "block": "حظر مستخدم",
       "unblock": "إلغاء حظر مستخدم",
       "listBlocked": "عرض المحظورين",
@@ -384,7 +384,7 @@
       "advancedTitle": "إدارة المستخدمين المتقدمة",
       "edit": "تعديل المستخدم",
       "export": "تصدير بيانات المستخدم",
-      "reset": "إعادة تعيين البيانات",
+      "reset": "Reset User Data",
       "notes": "ملاحظات المسؤول",
       "ban": "حظر دائم",
       "activity": "النشاط الأخير",
@@ -752,7 +752,8 @@
       "optionWelcomeBack": "رسائل العودة",
       "welcomeBackOn": "تم تفعيل رسائل العودة.",
       "welcomeBackOff": "تم تعطيل رسائل العودة.",
-      "optionBotContent": "محتوى البوت"
+      "optionBotContent": "محتوى البوت",
+      "optionDangerZone": "منطقة الخطر"
     },
     "optionAnalytics": "تحليل الأوامر",
     "stats": {
@@ -2817,7 +2818,8 @@
       "custom_commands": "اوامر مخصصة",
       "footer": "أجب برقم خيارك.",
       "changelog": "سجل التغييرات",
-      "bot_content": "محتوى البوت"
+      "bot_content": "محتوى البوت",
+      "danger_zone": "منطقة الخطر"
     },
     "backup_restore": {
       "heading": "النسخ الاحتياطي والاستعادة",
@@ -2846,7 +2848,9 @@
     "settings": {
       "heading": "الإعدادات",
       "help": "المساعدة",
-      "footer": "رد برقم."
+      "footer": "رد برقم.",
+      "reset_account": "إعادة تعيين الحساب",
+      "delete_account": "حذف الحساب"
     },
     "statistics": {
       "heading": "الإحصائيات",
@@ -3426,6 +3430,12 @@
       "active_warnings": "تحذيرات نشطة",
       "active_mutes": "كتم نشط",
       "active_bans": "حظر نشط"
+    },
+    "danger_zone": {
+      "heading": "منطقة الخطر",
+      "reset_self": "إعادة تعيين حسابي",
+      "delete_self": "حذف حسابي",
+      "purge_snapshots": "مسح اللقطات"
     }
   },
   "lifecycle": {

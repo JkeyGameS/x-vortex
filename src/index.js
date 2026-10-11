@@ -1,4 +1,6 @@
 import makeWASocket, { useMultiFileAuthState, DisconnectReason } from '@whiskeysockets/baileys';
+import fs from 'fs';
+import path from 'path';
 import config from './config/config.js';
 import logger from './utils/logger.js';
 import sessionManager from './utils/sessionManager.js';
@@ -13,6 +15,7 @@ import { loadBotContent } from './services/botContentService.js';
 import { loadGroups, loadGroupDefaults } from './services/groupService.js';
 import { loadGroupStats, pruneOldStats, flushStats as flushGroupStats } from './services/groupStatsService.js';
 import { SUB_STATES as CHANGELOG_SUB_STATES } from './handlers/changelogManagerCommand.js';
+import { isAccountConfirmState } from './handlers/settingsHandlers.js';
 import { dispatchCommand } from './handlers/commandDispatch.js';
 import { handleLanguageSelection, buildLanguageMenu } from './handlers/languageCommand.js';
 import {
@@ -403,6 +406,16 @@ let lifecycleSock = null;
 
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState(config.sessionPath);
+
+  // Account snapshot folder. accountService writes here before every reset or
+  // delete, and Part 2 will restore from it. Created up front so the first
+  // destructive action never fails on a missing directory. It is gitignored:
+  // the files are real user records.
+  try {
+    fs.mkdirSync(path.join('data', 'snapshots', 'users'), { recursive: true });
+  } catch (err) {
+    logger.warn({ err }, '[ACCOUNT] could not create snapshot directory');
+  }
 
   // PaaS liveness probe. Started before the socket so the platform sees a
   // healthy process even while WhatsApp is still handshaking. A bind failure is
@@ -3121,6 +3134,33 @@ if (isGroup) {
         if (!isAdminOperator(sender)) return;
         const { handleCustomCommandWizard } = await import('./utils/customCommandWizard.js');
         await handleCustomCommandWizard({ sock, sender, chatId, pushName, user: userInfo, language: userInfo?.language || config.defaultLanguage }, trimmedText);
+        return;
+      }
+
+      // Account reset / delete confirmation states (Settings + Danger Zone).
+      // These must own every keystroke, including nonsense: if an input ever
+      // escaped here it would reach chat rules, which is exactly the wrong
+      // reply while someone is holding a "type DELETE to confirm" prompt.
+      if (session?.currentMenu && isAccountConfirmState(session.currentMenu)) {
+        const { handleAccountConfirmReply } = await import('./handlers/settingsHandlers.js');
+        await handleAccountConfirmReply(
+          { sock, sender, chatId, pushName, text: trimmedText, language, user: userInfo, session },
+          session.currentMenu,
+          trimmedText
+        );
+        return;
+      }
+
+      // Danger Zone menu and its snapshot-purge confirmation (admin only).
+      if (session?.currentMenu
+          && (session.currentMenu === 'danger_zone' || session.currentMenu === 'danger_purge_confirm')) {
+        if (!isAdminOperator(sender)) return;
+        const { handleDangerZoneReply } = await import('./handlers/dangerZoneHandlers.js');
+        await handleDangerZoneReply(
+          { sock, sender, chatId, pushName, text: trimmedText, language, user: userInfo, session },
+          session.currentMenu,
+          trimmedText
+        );
         return;
       }
 

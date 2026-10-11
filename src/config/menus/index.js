@@ -1,4 +1,4 @@
-// Menu definitions register here. Imported for side effects by the
+﻿// Menu definitions register here. Imported for side effects by the
 // command loader before buildMenuCommands() runs.
 // Phase 3: main_menu. Phase 4: profile cluster. Phase 5: chat & FAQ cluster.
 import { registerMenu } from './registry.js';
@@ -20,6 +20,7 @@ import quickActionsMenu from './admin/quickActions.js';
 import broadcastMenu from './admin/broadcast.js';
 import userManagementMenu from './admin/userManagement.js';
 import systemSettingsMenu from './admin/systemSettings.js';
+import dangerZoneMenu from './admin/dangerZone.js';
 import backupRestoreMenu from './admin/backupRestore.js';
 import logsMenu from './admin/logs.js';
 import scheduledTasksMenu from './admin/scheduledTasks.js';
@@ -78,6 +79,7 @@ registerMenu(quickActionsMenu);
 registerMenu(broadcastMenu);
 registerMenu(userManagementMenu);
 registerMenu(systemSettingsMenu);
+registerMenu(dangerZoneMenu);
 registerMenu(backupRestoreMenu);
 registerMenu(logsMenu);
 registerMenu(scheduledTasksMenu);

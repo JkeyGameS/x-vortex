@@ -424,8 +424,12 @@ try {
     JSON.stringify(resolveMenuOption('system_settings', '12', null, 'en')));
   check('the changelog manager keeps option 11',
     resolveMenuOption('system_settings', '11', null, 'en').action === 'open:changelog_manager');
-  check('system_settings rejects 13',
-    resolveMenuOption('system_settings', '13', null, 'en').kind === 'invalid');
+  check('system_settings option 13 opens danger_zone',
+    resolveMenuOption('system_settings', '13', null, 'en').action === 'open:danger_zone',
+    JSON.stringify(resolveMenuOption('system_settings', '13', null, 'en')));
+  check('system_settings rejects the first free number after 13',
+    resolveMenuOption('system_settings', '14', null, 'en').kind === 'invalid',
+    JSON.stringify(resolveMenuOption('system_settings', '14', null, 'en')));
   check('every bot_content option resolves',
     getMenu('bot_content').options.every((o) => {
       const r = resolveMenuOption('bot_content', o.number, null, 'en');

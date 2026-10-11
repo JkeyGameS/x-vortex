@@ -339,6 +339,30 @@ export const adminCustomHandlers = {
 // ---------------------------------------------------------------------------
 
 export const userCustomHandlers = {
+  // Settings menu account lifecycle. Each entry only opens the confirmation
+  // prompt; every subsequent keystroke is owned by the settings_* states
+  // intercepted in index.js.
+  settings_reset_account: async (context) => {
+    const { settingsResetAccount } = await import('../handlers/settingsHandlers.js');
+    return settingsResetAccount(context);
+  },
+  settings_delete_account: async (context) => {
+    const { settingsDeleteAccount } = await import('../handlers/settingsHandlers.js');
+    return settingsDeleteAccount(context);
+  },
+  // Danger Zone (admin). Reset/delete reuse the same confirmation flow.
+  danger_reset_self: async (context) => {
+    const { dangerResetSelf } = await import('../handlers/dangerZoneHandlers.js');
+    return dangerResetSelf(context);
+  },
+  danger_delete_self: async (context) => {
+    const { dangerDeleteSelf } = await import('../handlers/dangerZoneHandlers.js');
+    return dangerDeleteSelf(context);
+  },
+  danger_purge_snapshots: async (context) => {
+    const { dangerPurgeSnapshots } = await import('../handlers/dangerZoneHandlers.js');
+    return dangerPurgeSnapshots(context);
+  },
   // Settings menu option 9 (help). Currently handled by the dedicated
   // `session.currentMenu === 'settings'` branch in index.js; registered here
   // so the declared `custom:` name resolves if that branch is ever removed.
