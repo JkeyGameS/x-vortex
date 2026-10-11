@@ -1,6 +1,33 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-11T15-50-00",
+      "timestamp": "2026-10-11T16:34:22Z",
+      "agent": "opencode",
+      "promptSummary": "Default menu mode -> send_new; typing indicator off except chat replies",
+      "changes": [
+        "Changed the default message display mode to send_new, so every menu transition sends a new message instead of editing or delete+send",
+        "Updated data/messageSettings.json and the service defaults so the runtime actually reads send_new (config.js alone is not what the bot reads)",
+        "Reset existing user overrides to null so they pick up the new default; a user preference always beats the global default",
+        "Typing indicator now off for menus, transitions, confirmations and errors; on only for chat replies, via the targeting block with the master flag left true",
+        "Added a migration script that snapshots and refreshes user preferences and is safe to re-run",
+        "Kept typingSettings.json on singular admin keys and botContent.json on plural keys; the two stores were deliberately not unified",
+        "My Groups back navigation already used sendMenuById, so it now honors send_new with no handler change"
+      ],
+      "files": [
+        "src/config/config.js",
+        "src/services/messageSettingsService.js",
+        "data/messageSettings.json",
+        "data/typingSettings.json",
+        "data/botContent.json",
+        "scripts/refreshMenuDefaults.js",
+        "tests/messageDefaults.test.mjs",
+        "package.json"
+      ],
+      "type": "improvement",
+      "versionSuggested": "1.8.3"
+    },
+    {
       "id": "chg-2026-10-06T01-05-00",
       "timestamp": "2026-10-09T16:15:53Z",
       "agent": "Cline",

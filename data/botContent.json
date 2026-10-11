@@ -86,8 +86,8 @@
     "typingAdaptiveMinMs": 200,
     "typingAdaptiveMaxMs": 2500,
     "typingTargeting": {
-      "mainMenu": true,
-      "submenuTransitions": true,
+      "mainMenu": false,
+      "submenuTransitions": false,
       "chatReplies": true,
       "confirmations": false,
       "errors": false

@@ -8,8 +8,8 @@
     "typingType": "composing",
     "readReceipts": true,
     "targeting": {
-      "mainMenu": true,
-      "submenuTransition": true,
+      "mainMenu": false,
+      "submenuTransition": false,
       "chatReply": true,
       "confirmation": false,
       "error": false

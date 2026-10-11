@@ -216,7 +216,7 @@ sessionTimeoutMinutes: 5,
   },
   // Message display modes (edit / send_new / delete_send / hybrid)
   messageDisplay: {
-    defaultMode: 'hybrid', // 'hybrid' keeps each transition's legacy behavior
+    defaultMode: 'send_new', // 'hybrid' kept each transition's legacy edit/delete behavior
     allowUserOverride: true,
     perMenuOverrideEnabled: true,
     editAttemptsBeforeDelete: 2, // hybrid: edits before falling back to delete+send

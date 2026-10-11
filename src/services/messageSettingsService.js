@@ -10,7 +10,7 @@ const FILE = path.join(DATA_DIR, 'messageSettings.json');
 export const MESSAGE_MODES = ['edit', 'send_new', 'delete_send', 'hybrid'];
 
 export const DEFAULTS = {
-  defaultMode: 'hybrid',
+  defaultMode: 'send_new',
   allowUserOverride: true,
   perMenuOverrideEnabled: true,
   userOverrideRange: ['edit', 'send_new', 'delete_send', 'hybrid']

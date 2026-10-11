@@ -1,5 +1,5 @@
 {
-  "defaultMode": "hybrid",
+  "defaultMode": "send_new",
   "allowUserOverride": true,
   "perMenuOverrideEnabled": true,
   "userOverrideRange": [
