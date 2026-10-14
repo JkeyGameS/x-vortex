@@ -2,11 +2,11 @@
 //
 // Options 1 and 2 are thin wrappers: they drop the admin into the exact same
 // confirmation states Settings uses, so there is one implementation of the
-// reset/delete flow rather than two that can drift. The difference is the
-// back target -- from the Danger Zone, 0 returns to System Settings.
-//
+// reset/delete flow rather than two that can drift. They set
+// accountReturnMenu first, which is what makes a cancelled confirmation return
+// to the Danger Zone instead of to Settings.
 // Option 3 (purge snapshots) is destructive in the other direction: it throws
-// away the Part 2 restore material. It gets its own confirmation.
+// away the account snapshots. It gets its own confirmation.
 import sessionManager from '../utils/sessionManager.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { sendText } from '../services/messageService.js';
@@ -26,10 +26,70 @@ function setState(context, state, extra = {}) {
   });
 }
 
+/**
+ * Return to System Settings.
+ *
+ * This sends the menu directly rather than delegating to
+ * handleSystemSettingsReply(context, '0'). That handler's "0" means "back from
+ * System Settings", i.e. it calls sendAdminPanel() -- so delegating landed the
+ * user in the Admin Panel, two levels up from where they actually were. The
+ * Danger Zone declares parent: 'system_settings', so that is where "back" has
+ * to mean.
+ */
 async function backToSystemSettings(context, note) {
-  const { handleSystemSettingsReply } = await import('./adminCommand.js');
+  const { sendMenuById } = await import('../utils/menuSender.js');
+  const chatId = context.chatId || context.sender;
+  sessionManager.setState(context.sender, chatId, {
+    currentMenu: null,
+    accountReturnMenu: null,
+    confirmAttempts: 0
+  });
   if (note) await sendText(context.sock, context.sender, note);
-  return handleSystemSettingsReply(context, '0');
+  const { getUserByJid } = await import('../services/userService.js');
+  const user = await getUserByJid(context.sender);
+  return sendMenuById(
+    'system_settings',
+    {
+      sock: context.sock,
+      sender: context.sender,
+      chatId: context.chatId,
+      user,
+      language: user?.language || context.language
+    },
+    'system_settings',
+    { sessionMenu: 'system_settings' }
+  );
+}
+
+/** Re-send the Danger Zone menu. Used by purge cancel and purge success. */
+async function backToDangerZone(context, note) {
+  const { sendMenuById } = await import('../utils/menuSender.js');
+  const chatId = context.chatId || context.sender;
+  sessionManager.setState(context.sender, chatId, {
+    currentMenu: null,
+    confirmAttempts: 0
+  });
+  if (note) await sendText(context.sock, context.sender, note);
+  const { getUserByJid } = await import('../services/userService.js');
+  const user = await getUserByJid(context.sender);
+  return sendMenuById(
+    'danger_zone',
+    {
+      sock: context.sock,
+      sender: context.sender,
+      chatId: context.chatId,
+      user,
+      language: user?.language || context.language
+    },
+    'system_settings',
+    { sessionMenu: 'danger_zone' }
+  );
+}
+
+/** Bad input must not eject the user from the panel they are working in. */
+async function invalidChoice(context) {
+  return sendText(context.sock, context.sender,
+    '\u274C ' + toSmallCaps('Invalid choice.'));
 }
 
 /** Enter the shared reset flow but remember we came from the Danger Zone. */
@@ -79,12 +139,17 @@ export async function handleDangerZoneReply(context, state, input) {
 
   if (state === PURGE_INTENT) {
     if (value === '0' || value === '2') {
-      return backToSystemSettings(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
+      return backToDangerZone(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
     }
-    if (value !== '1') return backToSystemSettings(context);
+    // Bad input stays on the purge panel. Bailing out here used to strand the
+    // admin in System Settings with no way back and no idea what happened.
+    if (value !== '1') {
+      await invalidChoice(context);
+      return dangerPurgeSnapshots(context);
+    }
     const removed = purgeUserSnapshots();
     logAdminAction(context.sender, 'snapshots_purged', String(removed));
-    return backToSystemSettings(
+    return backToDangerZone(
       context,
       CHECK + ' ' + toSmallCaps('Snapshots purged:') + ' *' + removed + '*'
     );
@@ -95,14 +160,8 @@ export async function handleDangerZoneReply(context, state, input) {
     if (value === '1') return dangerResetSelf(context);
     if (value === '2') return dangerDeleteSelf(context);
     if (value === '3') return dangerPurgeSnapshots(context);
-    const { sendMenuById } = await import('../utils/menuSender.js');
-    return sendMenuById('danger_zone', {
-      sock: context.sock,
-      sender: context.sender,
-      chatId: context.chatId,
-      user: context.user,
-      language: context.user?.language || context.language
-    }, 'system_settings');
+    await invalidChoice(context);
+    return backToDangerZone(context);
   }
 
   return false;

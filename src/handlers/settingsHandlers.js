@@ -41,10 +41,49 @@ function setState(context, state, extra = {}) {
   });
 }
 
-async function backToSettings(context, note) {
-  const { openSettings } = await import('./settingsCommand.js');
+/**
+ * Where a cancelled confirmation should send the user back to.
+ *
+ * These confirmation states are shared by two entry points: the user's own
+ * Settings menu, and the admin Danger Zone (dangerResetSelf / dangerDeleteSelf
+ * set accountReturnMenu before delegating here). Without this, cancelling from
+ * the Danger Zone dropped the admin into Settings -- a menu they did not open
+ * and, being admin-only flows, one they were never on.
+ *
+ * The origin is read from the live session rather than from context.session,
+ * because setState merges and the caller's snapshot of the session can be
+ * stale by the time a later keystroke arrives. It is cleared immediately after
+ * reading so the next flow starts from the default.
+ *
+ * @param {object} context
+ * @returns {Promise<'danger_zone'|'settings'>} the menu id to re-send
+ */
+async function backToAccountOrigin(context, note) {
+  const chatId = context.chatId || context.sender;
+  const live = sessionManager.getSession(context.sender, chatId) || {};
+  const origin = live.accountReturnMenu === 'danger_zone' ? 'danger_zone' : 'settings';
+  sessionManager.setState(context.sender, chatId, {
+    currentMenu: null,
+    accountReturnMenu: null,
+    confirmAttempts: 0
+  });
   if (note) await sendText(context.sock, context.sender, note);
-  return openSettings(context);
+
+  const { sendMenuById } = await import('../utils/menuSender.js');
+  const { getUserByJid } = await import('../services/userService.js');
+  const user = await getUserByJid(context.sender);
+  return sendMenuById(
+    origin,
+    {
+      sock: context.sock,
+      sender: context.sender,
+      chatId: context.chatId,
+      user,
+      language: user?.language || context.language
+    },
+    origin === 'danger_zone' ? 'system_settings' : 'main_to_settings',
+    { sessionMenu: origin }
+  );
 }
 
 /** A snapshot that cannot be written means the data is gone for good. */
@@ -59,7 +98,7 @@ function snapshotFailedNotice() {
 
 function resetPanel() {
   return [
-    '> *\u267B ' + toSmallCaps('Reset account') + '*',
+    '> *\u267B\uFE0F ' + toSmallCaps('Reset account') + '*',
     '',
     toSmallCaps('This will clear:'),
     '',
@@ -107,9 +146,9 @@ export async function settingsResetAccount(context) {
 }
 
 async function onResetIntent(context, input) {
-  if (input === '0') return backToSettings(context);
-  if (input === '2') return backToSettings(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
-  if (input !== '1') return backToSettings(context);
+  if (input === '0') return backToAccountOrigin(context);
+  if (input === '2') return backToAccountOrigin(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
+  if (input !== '1') return backToAccountOrigin(context);
   setState(context, RESET_WORD);
   await sendText(context.sock, context.sender, resetWordPrompt());
   return true;
@@ -117,7 +156,7 @@ async function onResetIntent(context, input) {
 
 async function onResetWord(context, input) {
   const language = languageOf(context);
-  if (input === '0' || input === '2') return backToSettings(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
+  if (input === '0' || input === '2') return backToAccountOrigin(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
 
   const word = (config.account?.confirmationWordReset || 'RESET').toLowerCase();
   if (input.trim().toLowerCase() === word) {
@@ -127,7 +166,7 @@ async function onResetWord(context, input) {
     });
     if (!result.success) {
       await sendText(context.sock, context.sender, snapshotFailedNotice());
-      return backToSettings(context);
+      return backToAccountOrigin(context);
     }
     sessionManager.setState(context.sender, context.chatId || context.sender, {
       currentMenu: 'main',
@@ -200,8 +239,8 @@ export async function settingsDeleteAccount(context) {
 }
 
 async function onDeleteIntent(context, input) {
-  if (input === '0' || input === '2') return backToSettings(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
-  if (input !== '1') return backToSettings(context);
+  if (input === '0' || input === '2') return backToAccountOrigin(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
+  if (input !== '1') return backToAccountOrigin(context);
   if (isLastBotAdmin(context.sender)) {
     setState(context, DELETE_INTENT);
     await sendText(context.sock, context.sender, lastAdminBlock());
@@ -213,7 +252,7 @@ async function onDeleteIntent(context, input) {
 }
 
 async function onDeleteWord(context, input) {
-  if (input === '0' || input === '2') return backToSettings(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
+  if (input === '0' || input === '2') return backToAccountOrigin(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
 
   const word = (config.account?.confirmationWordDelete || 'DELETE').toLowerCase();
   if (input.trim().toLowerCase() === word) {
@@ -227,7 +266,7 @@ async function onDeleteWord(context, input) {
     const result = await deleteAccount(context.sender, { actorJid: context.sender });
     if (!result.success) {
       await sendText(context.sock, context.sender, snapshotFailedNotice());
-      return backToSettings(context);
+      return backToAccountOrigin(context);
     }
     sessionManager.clear(context.sender, context.chatId || context.sender);
     await sendText(context.sock, context.sender, deleteSuccess());
@@ -261,7 +300,7 @@ async function wrongAttempt(context, state, promptFn) {
   const max = config.account?.maxWrongConfirmAttempts || 2;
   const attempts = (Number(context.session?.confirmAttempts) || 0) + 1;
   if (attempts >= max) {
-    await backToSettings(context, CROSS + ' ' + toSmallCaps('Too many attempts. Cancelled.'));
+    await backToAccountOrigin(context, CROSS + ' ' + toSmallCaps('Too many attempts. Cancelled.'));
     return true;
   }
   sessionManager.setState(context.sender, context.chatId || context.sender, {

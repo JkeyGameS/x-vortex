@@ -1,6 +1,32 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-12T23-20-00",
+      "timestamp": "2026-10-14T00:37:43Z",
+      "agent": "opencode",
+      "promptSummary": "Fix Settings menu numbering + Danger Zone back navigation",
+      "changes": [
+        "Renumbered the Settings menu to 1 (delete account), 2 (reset account), 9 (help) and taught the settings dispatcher to route 1 and 2",
+        "Fixed Danger Zone reset and delete cancelling into the Settings menu: the entry points already set accountReturnMenu, but nothing read it",
+        "Added a shared backToAccountOrigin() helper that reads and then clears accountReturnMenu, used by all four settings confirm states",
+        "Danger Zone 0 now re-sends System Settings directly instead of delegating to handleSystemSettingsReply(\"0\"), which went to the Admin Panel",
+        "Purge snapshots cancel and success now return to the Danger Zone rather than System Settings",
+        "Bad input in the Danger Zone or purge panel now shows invalid-choice and preserves the panel instead of ejecting the user",
+        "Replaced bare U+267B with U+267B U+FE0F so the reset glyph renders as an emoji, and gave Settings a gear heading"
+      ],
+      "files": [
+        "src/config/menus/settings.js",
+        "src/config/menus/admin/dangerZone.js",
+        "src/handlers/settingsHandlers.js",
+        "src/handlers/dangerZoneHandlers.js",
+        "src/index.js",
+        "tests/settingsRouting.test.mjs",
+        "package.json"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.9.2"
+    },
+    {
       "id": "chg-2026-10-11T22-45-00",
       "timestamp": "2026-10-11T23:32:05Z",
       "agent": "opencode",

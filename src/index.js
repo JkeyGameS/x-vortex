@@ -3316,6 +3316,20 @@ if (isGroup) {
             await showHelpFor({ sender, chatId }, 'settings');
             return;
           }
+          // 1 = delete account, 2 = reset account. These only open the
+          // confirmation prompt; every later keystroke belongs to the
+          // settings_* states intercepted further up.
+          if (trimmedText === '1' || trimmedText === '2') {
+            const { settingsDeleteAccount, settingsResetAccount } =
+              await import('./handlers/settingsHandlers.js');
+            const ctxForAccount = {
+              sock, sender, chatId, pushName,
+              language, user: userInfo, session
+            };
+            if (trimmedText === '1') await settingsDeleteAccount(ctxForAccount);
+            else await settingsResetAccount(ctxForAccount);
+            return;
+          }
           await sendText(sock, sender, tr('common.invalidChoiceValid'));
           return;
         }

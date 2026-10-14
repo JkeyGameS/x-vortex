@@ -20,7 +20,7 @@ export default {
   sessionMenu: 'danger_zone',
   adminOnly: true,
   options: [
-    { number: '1', labelKey: 'menu.danger_zone.reset_self', emoji: '\u267B', action: 'custom:danger_reset_self' },
+    { number: '1', labelKey: 'menu.danger_zone.reset_self', emoji: '\u267B\uFE0F', action: 'custom:danger_reset_self' },
     { number: '2', labelKey: 'menu.danger_zone.delete_self', emoji: '\uD83D\uDDD1\uFE0F', action: 'custom:danger_delete_self' },
     { number: '3', labelKey: 'menu.danger_zone.purge_snapshots', emoji: '\uD83F\uDDF9', action: 'custom:danger_purge_snapshots' }
   ]
