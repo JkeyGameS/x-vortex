@@ -105,7 +105,7 @@ test('1c. every settings action has a registered custom handler', async () => {
 });
 
 test('1d. settings menu keeps a gear heading and main_menu back', () => {
-  assert.strictEqual(settingsMenu.headingEmoji, '⚙️');
+  assert.strictEqual(settingsMenu.headingEmoji, '\u2699\uFE0F');
   assert.strictEqual(settingsMenu.backTo, 'main_menu');
   assert.strictEqual(settingsMenu.parent, 'main_menu');
 });
@@ -319,4 +319,154 @@ test('7. danger zone menu still has three options, purge last', () => {
   assert.strictEqual(dangerMenu.parent, 'system_settings');
   assert.strictEqual(dangerMenu.backTo, 'system_settings');
   assert.strictEqual(dangerMenu.adminOnly, true);
+});
+
+// ---------------------------------------------------------------------------
+// 8. Rate limit: menus bypass, chat replies do not
+//
+// Regression cover for the second-pass back-navigation failure. Walking
+// /start -> settings -> delete -> back -> back and back in again consumed the
+// 8/min per-chat budget, and the eighth message -- the second-pass back -- was
+// silently dropped. The session had already advanced, so the user saw nothing
+// and had no menu on screen to retry from.
+// ---------------------------------------------------------------------------
+
+test('8. ten rapid menu sends all get delivered', async () => {
+  const rate = await import('../src/services/outboundRateLimitService.js');
+  const { sendMenuById } = await import('../src/utils/menuSender.js');
+  rate.resetOutboundRateLimit();
+
+  let delivered = 0;
+  const sock = {
+    sendMessage: async () => { delivered++; return { key: { id: 'k' + delivered } }; },
+    sendPresenceUpdate: async () => {},
+    readMessages: async () => true
+  };
+  const jid = 'rate-menu@lid';
+  for (let i = 0; i < 10; i++) {
+    await sendMenuById('settings', { sock, sender: jid, chatId: jid, user: null, language: 'en' }, 'main_to_settings');
+  }
+  assert.strictEqual(delivered, 10, `menu sends must not be rate limited (got ${delivered}/10)`);
+  const stats = rate.getOutboundRateLimitStats();
+  assert.ok(!stats.chats || !stats.chats[jid], 'menu sends must not consume the per-chat budget');
+});
+
+test('8b. ten rapid chat replies ARE limited, and say so', async () => {
+  const config = (await import('../src/config/config.js')).default;
+  const rate = await import('../src/services/outboundRateLimitService.js');
+  const { sendText } = await import('../src/services/messageService.js');
+  // The suite-level before() disables the limiter so menu tests are not
+  // suppressed; these tests are about the limiter, so switch it back on.
+  config.rateLimit.enabled = true;
+  rate.resetOutboundRateLimit();
+
+  const bodies = [];
+  const sock = {
+    sendMessage: async (j, c) => { bodies.push(String(c?.text ?? '')); return { key: { id: 'k' + bodies.length } }; },
+    sendPresenceUpdate: async () => {},
+    readMessages: async () => true
+  };
+  const jid = 'rate-chat@lid';
+  const limit = config.rateLimit.perChatPerMinute;
+  for (let i = 0; i < limit + 4; i++) {
+    await sendText(sock, jid, `reply ${i}`, { skipTyping: true });
+  }
+  const replies = bodies.filter((b) => b.startsWith('reply '));
+  assert.strictEqual(replies.length, limit, `chat replies must stop at the limit (got ${replies.length})`);
+  const slowdowns = bodies.filter((b) => b.startsWith('\u23F3'));
+  assert.ok(slowdowns.length > 0, 'a suppressed chat reply must tell the user to slow down');
+  rate.resetOutboundRateLimit();
+});
+
+test('8c. the slow-down notice itself is never suppressed', async () => {
+  const config = (await import('../src/config/config.js')).default;
+  const rate = await import('../src/services/outboundRateLimitService.js');
+  const { sendText } = await import('../src/services/messageService.js');
+  config.rateLimit.enabled = true;
+  rate.resetOutboundRateLimit();
+
+  const bodies = [];
+  const sock = {
+    sendMessage: async (j, c) => { bodies.push(String(c?.text ?? '')); return { key: { id: 'k' + bodies.length } }; },
+    sendPresenceUpdate: async () => {},
+    readMessages: async () => true
+  };
+  const jid = 'rate-notice@lid';
+  const limit = config.rateLimit.perChatPerMinute;
+  for (let i = 0; i < limit + 6; i++) {
+    await sendText(sock, jid, `reply ${i}`, { skipTyping: true });
+  }
+  const slowdowns = bodies.filter((b) => b.startsWith('\u23F3'));
+  assert.ok(
+    slowdowns.length >= 1,
+    'the notice must reach the user even after the budget is exhausted'
+  );
+  rate.resetOutboundRateLimit();
+});
+
+test('8d. the bypass is configurable and defaults on', async () => {
+  const config = (await import('../src/config/config.js')).default;
+  assert.strictEqual(config.rateLimit.bypassForUserOutcomes, true,
+    'menu/user-outcome bypass must default to on');
+
+  const src = fs.readFileSync(path.resolve('src/utils/messageHelper.js'), 'utf8');
+  assert.ok(
+    src.includes('bypassForUserOutcomes'),
+    'sendMenu must read the bypass flag from config so an admin can turn it off'
+  );
+});
+
+// ---------------------------------------------------------------------------
+// 9. Typing indicator: panels must not type, chat replies must
+// ---------------------------------------------------------------------------
+
+test('9. no account panel emits a typing indicator', async () => {
+  const presence = [];
+  const sock = {
+    sendMessage: async () => ({ key: { id: 'k' } }),
+    sendPresenceUpdate: async (j, p) => { presence.push(p); },
+    readMessages: async () => true
+  };
+  const jid = 'typing-panel@lid';
+  const c = {
+    sock, sender: jid, chatId: jid, pushName: 'A',
+    user: { jid, language: 'en', preferences: {} }, language: 'en',
+    session: sessionManager.getSession(jid, jid)
+  };
+
+  presence.length = 0;
+  await settingsHandlers.settingsDeleteAccount(c);
+  assert.deepStrictEqual(presence, [], 'delete account panel must not type');
+
+  presence.length = 0;
+  await settingsHandlers.settingsResetAccount(c);
+  assert.deepStrictEqual(presence, [], 'reset account panel must not type');
+
+  presence.length = 0;
+  await dangerHandlers.dangerPurgeSnapshots(c);
+  assert.deepStrictEqual(presence, [], 'purge snapshots panel must not type');
+});
+
+test('9b. both panel files route every send through a typed helper', () => {
+  // A raw sendText(context.sock, ...) would default to type 'chatReply' and
+  // bring the typing indicator straight back.
+  for (const f of ['src/handlers/settingsHandlers.js', 'src/handlers/dangerZoneHandlers.js']) {
+    const src = fs.readFileSync(path.resolve(f), 'utf8');
+    assert.ok(!/sendText\(\s*context\.sock/.test(src),
+      `${f} still calls sendText(context.sock,...) without a type`);
+    assert.ok(/type:\s*'submenuTransition'/.test(src),
+      `${f} must declare the submenuTransition panel type`);
+  }
+});
+
+test('9c. a chat reply still shows typing', async () => {
+  const presence = [];
+  const sock = {
+    sendMessage: async () => ({ key: { id: 'k' } }),
+    sendPresenceUpdate: async (j, p) => { presence.push(p); },
+    readMessages: async () => true
+  };
+  const { sendText } = await import('../src/services/messageService.js');
+  await sendText(sock, 'typing-chat@lid', 'hello');
+  assert.ok(presence.length > 0, 'chat replies must keep their typing indicator');
 });

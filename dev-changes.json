@@ -1,6 +1,31 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-13T00-10-00",
+      "timestamp": "2026-10-15T17:32:13Z",
+      "agent": "opencode",
+      "promptSummary": "Fix second-pass menu back navigation + typing indicator on menus",
+      "changes": [
+        "Menu sends bypass the outbound rate limiter, so navigating a menu twice in a row no longer eats the reply",
+        "Chat replies, welcome-back and broadcasts still count in full, and a suppressed one now answers with a short slow-down notice instead of vanishing",
+        "The 16 account panel sends in settingsHandlers and dangerZoneHandlers now pass type submenuTransition instead of defaulting to chatReply",
+        "Fixed the actual typing cause: withTyping sent a paused presence in a finally block even when showTyping had decided not to type",
+        "Added rateLimit.bypassForUserOutcomes, default on, so an admin can restore strict counting if they want it",
+        "Added tests for the menu bypass, the chat-reply limit, the slow-down notice and the typing classification"
+      ],
+      "files": [
+        "src/config/config.js",
+        "src/utils/messageHelper.js",
+        "src/services/messageService.js",
+        "src/utils/typingHelper.js",
+        "src/handlers/settingsHandlers.js",
+        "src/handlers/dangerZoneHandlers.js",
+        "tests/settingsRouting.test.mjs"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.9.3"
+    },
+    {
       "id": "chg-2026-10-12T23-20-00",
       "timestamp": "2026-10-14T00:37:43Z",
       "agent": "opencode",

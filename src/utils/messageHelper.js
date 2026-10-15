@@ -43,7 +43,19 @@ export async function sendMenu({ sock, sender, chatId, text, transitionKey, skip
   // send: sendMenuById delegates here, and the edit/delete/send variants below
   // are all one logical message, so the check belongs at the top rather than
   // around each sock.sendMessage.
-  if (bypassRateLimit !== true) {
+  //
+  // Menu sends bypass by default. A menu is only ever produced in direct
+  // response to a key the user just pressed, so its arrival rate is bounded by
+  // the user's own typing rate -- but it used to consume the same per-chat
+  // budget as unsolicited traffic. A user walking /start -> settings ->
+  // delete -> back -> back and back in again burned 8 messages and had the
+  // next reply silently swallowed, while the session had already advanced.
+  // That reads as being ignored, and leaves no menu on screen to retry from.
+  //
+  // Callers that are NOT user-driven can opt back in with
+  // bypassRateLimit: false (nothing does today, but the escape hatch exists).
+  const menusBypass = config.rateLimit?.bypassForUserOutcomes !== false;
+  if (bypassRateLimit !== true && !menusBypass) {
     const check = checkOutbound(sender);
     if (!check.allowed) {
       logger.warn({ sender, reason: check.reason }, '[OUTBOUND_RATE_LIMIT] menu suppressed');

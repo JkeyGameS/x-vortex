@@ -29,6 +29,19 @@ export const CONFIRM_STATES = [RESET_INTENT, RESET_WORD, DELETE_INTENT, DELETE_W
 const CHECK = '\u2705';
 const CROSS = '\u274C';
 
+// Every panel in this file is a menu-like view, not a chat reply. Without an
+// explicit type, sendText defaults to 'chatReply', which is the one type the
+// typing resolver still shows an indicator for -- so users saw the bot
+// "typing" before a confirmation panel that was already sitting in their chat.
+// Routing all of them through one helper makes the omission impossible to
+// repeat in a new panel.
+const PANEL_OPTS = { type: 'submenuTransition' };
+
+/** Send a panel/note as a menu transition: no typing indicator. */
+function sendPanel(sock, jid, text, extra = {}) {
+  return sendText(sock, jid, text, { ...PANEL_OPTS, ...extra });
+}
+
 function languageOf(context) {
   return context.user?.language || context.language || 'en';
 }
@@ -67,7 +80,7 @@ async function backToAccountOrigin(context, note) {
     accountReturnMenu: null,
     confirmAttempts: 0
   });
-  if (note) await sendText(context.sock, context.sender, note);
+  if (note) await sendPanel(context.sock, context.sender, note);
 
   const { sendMenuById } = await import('../utils/menuSender.js');
   const { getUserByJid } = await import('../services/userService.js');
@@ -141,7 +154,7 @@ function resetSuccess() {
 
 export async function settingsResetAccount(context) {
   setState(context, RESET_INTENT);
-  await sendText(context.sock, context.sender, resetPanel());
+  await sendPanel(context.sock, context.sender, resetPanel());
   return true;
 }
 
@@ -150,7 +163,7 @@ async function onResetIntent(context, input) {
   if (input === '2') return backToAccountOrigin(context, CROSS + ' ' + toSmallCaps('Cancelled.'));
   if (input !== '1') return backToAccountOrigin(context);
   setState(context, RESET_WORD);
-  await sendText(context.sock, context.sender, resetWordPrompt());
+  await sendPanel(context.sock, context.sender, resetWordPrompt());
   return true;
 }
 
@@ -165,14 +178,14 @@ async function onResetWord(context, input) {
       pushName: context.pushName
     });
     if (!result.success) {
-      await sendText(context.sock, context.sender, snapshotFailedNotice());
+      await sendPanel(context.sock, context.sender, snapshotFailedNotice());
       return backToAccountOrigin(context);
     }
     sessionManager.setState(context.sender, context.chatId || context.sender, {
       currentMenu: 'main',
       confirmAttempts: 0
     });
-    await sendText(context.sock, context.sender, resetSuccess());
+    await sendPanel(context.sock, context.sender, resetSuccess());
     return true;
   }
   return wrongAttempt(context, RESET_WORD, resetWordPrompt, language);
@@ -234,7 +247,7 @@ function lastAdminBlock() {
 
 export async function settingsDeleteAccount(context) {
   setState(context, DELETE_INTENT);
-  await sendText(context.sock, context.sender, deletePanel());
+  await sendPanel(context.sock, context.sender, deletePanel());
   return true;
 }
 
@@ -243,11 +256,11 @@ async function onDeleteIntent(context, input) {
   if (input !== '1') return backToAccountOrigin(context);
   if (isLastBotAdmin(context.sender)) {
     setState(context, DELETE_INTENT);
-    await sendText(context.sock, context.sender, lastAdminBlock());
+    await sendPanel(context.sock, context.sender, lastAdminBlock());
     return true;
   }
   setState(context, DELETE_WORD);
-  await sendText(context.sock, context.sender, deleteWordPrompt());
+  await sendPanel(context.sock, context.sender, deleteWordPrompt());
   return true;
 }
 
@@ -257,7 +270,7 @@ async function onDeleteWord(context, input) {
   const word = (config.account?.confirmationWordDelete || 'DELETE').toLowerCase();
   if (input.trim().toLowerCase() === word) {
     if (isLastBotAdmin(context.sender)) {
-      await sendText(context.sock, context.sender, lastAdminBlock());
+      await sendPanel(context.sock, context.sender, lastAdminBlock());
       setState(context, DELETE_INTENT);
       return true;
     }
@@ -265,11 +278,11 @@ async function onDeleteWord(context, input) {
     const name = context.pushName || user?.name || context.sender;
     const result = await deleteAccount(context.sender, { actorJid: context.sender });
     if (!result.success) {
-      await sendText(context.sock, context.sender, snapshotFailedNotice());
+      await sendPanel(context.sock, context.sender, snapshotFailedNotice());
       return backToAccountOrigin(context);
     }
     sessionManager.clear(context.sender, context.chatId || context.sender);
-    await sendText(context.sock, context.sender, deleteSuccess());
+    await sendPanel(context.sock, context.sender, deleteSuccess());
 
     if (config.account?.notifyAdminsOnDelete) {
       const stamp = new Date().toISOString();
@@ -307,7 +320,7 @@ async function wrongAttempt(context, state, promptFn) {
     currentMenu: state,
     confirmAttempts: attempts
   });
-  await sendText(context.sock, context.sender, promptFn());
+  await sendPanel(context.sock, context.sender, promptFn());
   return true;
 }
 

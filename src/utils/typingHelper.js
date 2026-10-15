@@ -49,13 +49,18 @@ async function sendPresence(sock, jid, state) {
  * Show the typing indicator per the resolved typing preferences.
  * Options: { type, typingDelayMs (explicit override), presenceType (explicit override) }.
  * Resolves immediately when typing is disabled for this message type.
+ *
+ * @returns {Promise<boolean>} true when a typing indicator is active after this
+ *   call -- either because we just started one, or because the debounce found
+ *   one already running. False when this message type must not show typing.
+ *   Callers use this to decide whether there is anything to tear down.
  */
 export async function showTyping(sock, jid, text = '', options = {}) {
-  if (!isTypingEnabled()) return;
+  if (!isTypingEnabled()) return false;
   // Legacy compat: global conversation toggle also gates typing here.
-  if (config.conversationTypingIndicator === false) return;
+  if (config.conversationTypingIndicator === false) return false;
   const messageType = options && typeof options.type === 'string' && options.type ? options.type : 'chatReply';
-  if (messageType === 'silent') return;
+  if (messageType === 'silent') return false;
   let user = null;
   try {
     user = getUserByJidSync(jid);
@@ -64,14 +69,15 @@ export async function showTyping(sock, jid, text = '', options = {}) {
   try {
     decision = shouldShowTyping({ user, messageType, textLength: String(text || '').length });
   } catch {
-    return;
+    return false;
   }
-  if (!decision.show) return;
+  if (!decision.show) return false;
   const now = Date.now();
   const last = lastTypingAt.get(jid) || 0;
-  // Debounce: a typing session is already active for this chat — skip both
-  // the presence restart and the extra delay.
-  if (now - last <= TYPING_DEBOUNCE_MS) return;
+  // Debounce: a typing session is already active for this chat -- skip both
+  // the presence restart and the extra delay, but the session is still ours to
+  // close, so report it as active.
+  if (now - last <= TYPING_DEBOUNCE_MS) return true;
   const presence = (options && (options.presenceType === 'composing' || options.presenceType === 'recording'))
     ? options.presenceType
     : decision.presenceType;
@@ -81,6 +87,7 @@ export async function showTyping(sock, jid, text = '', options = {}) {
     ? Math.min(10000, Math.max(0, Math.floor(Number(options.typingDelayMs) || 0)))
     : decision.delayMs;
   if (waitMs > 0) await delay(waitMs);
+  return true;
 }
 
 /** Mark typing as done (best effort). */
@@ -92,16 +99,27 @@ export async function hideTyping(sock, jid) {
 /**
  * Run fn() wrapped in typing presence + resolved delay.
  * Options: { skipTyping: true, type } — 'silent' type bypasses presence and delay.
+ *
+ * hideTyping() only runs when this call actually started (or joined) a typing
+ * session. It used to fire unconditionally in the finally block, which sent a
+ * 'paused' presence even for message types that never showed an indicator --
+ * so every menu panel typed 'composing' was silently followed by a 'paused',
+ * and WhatsApp still rendered an indicator flash.
  */
 export async function withTyping(sock, jid, fn, options = {}) {
   if (options && (options.skipTyping || options.type === 'silent')) return fn();
   // Legacy compat: global conversation toggle also gates typing here.
   if (config.conversationTypingIndicator === false) return fn();
-  await showTyping(sock, jid, '', options);
+  let typingShown = false;
+  try {
+    typingShown = await showTyping(sock, jid, '', options);
+  } catch {
+    typingShown = false;
+  }
   try {
     return await fn();
   } finally {
-    await hideTyping(sock, jid);
+    if (typingShown) await hideTyping(sock, jid);
   }
 }
 

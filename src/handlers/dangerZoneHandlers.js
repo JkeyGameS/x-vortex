@@ -1,4 +1,4 @@
-// Danger Zone sub-states (admin-only).
+﻿// Danger Zone sub-states (admin-only).
 //
 // Options 1 and 2 are thin wrappers: they drop the admin into the exact same
 // confirmation states Settings uses, so there is one implementation of the
@@ -17,6 +17,15 @@ export const PURGE_INTENT = 'danger_purge_confirm';
 
 const CHECK = '\u2705';
 const CROSS = '\u274C';
+
+// Same reasoning as settingsHandlers: these are menu-like panels, so they are
+// typed as submenu transitions and never flash a typing indicator.
+const PANEL_OPTS = { type: 'submenuTransition' };
+
+/** Send a panel/note as a menu transition: no typing indicator. */
+function sendPanel(sock, jid, text) {
+  return sendText(sock, jid, text, PANEL_OPTS);
+}
 
 function setState(context, state, extra = {}) {
   sessionManager.setState(context.sender, context.chatId || context.sender, {
@@ -44,7 +53,7 @@ async function backToSystemSettings(context, note) {
     accountReturnMenu: null,
     confirmAttempts: 0
   });
-  if (note) await sendText(context.sock, context.sender, note);
+  if (note) await sendPanel(context.sock, context.sender, note);
   const { getUserByJid } = await import('../services/userService.js');
   const user = await getUserByJid(context.sender);
   return sendMenuById(
@@ -69,7 +78,7 @@ async function backToDangerZone(context, note) {
     currentMenu: null,
     confirmAttempts: 0
   });
-  if (note) await sendText(context.sock, context.sender, note);
+  if (note) await sendPanel(context.sock, context.sender, note);
   const { getUserByJid } = await import('../services/userService.js');
   const user = await getUserByJid(context.sender);
   return sendMenuById(
@@ -88,7 +97,7 @@ async function backToDangerZone(context, note) {
 
 /** Bad input must not eject the user from the panel they are working in. */
 async function invalidChoice(context) {
-  return sendText(context.sock, context.sender,
+  return sendPanel(context.sock, context.sender,
     '\u274C ' + toSmallCaps('Invalid choice.'));
 }
 
@@ -112,7 +121,7 @@ export async function dangerDeleteSelf(context) {
 export async function dangerPurgeSnapshots(context) {
   const count = listUserSnapshots().length;
   setState(context, PURGE_INTENT);
-  await sendText(context.sock, context.sender, [
+  await sendPanel(context.sock, context.sender, [
     '> *\uD83D\uDDF9 ' + toSmallCaps('Purge snapshots') + '*',
     '',
     toSmallCaps('This deletes every user snapshot in'),

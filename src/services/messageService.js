@@ -1,19 +1,62 @@
 import logger from '../utils/logger.js';
+import config from '../config/config.js';
 import { scheduleSelfDestruct } from './selfDestructService.js';
 import { withTyping } from '../utils/typingHelper.js';
+import { toSmallCaps } from '../utils/smallCaps.js';
 import { checkOutbound, recordBlock } from './outboundRateLimitService.js';
+
+/**
+ * Message types that are the direct consequence of a button the user just
+ * pressed, and so should never be suppressed by the counter they were
+ * triggered by.
+ *
+ * 'mainMenu' and 'submenuTransition' are handled separately in sendMenu (the
+ * menu path has its own gate). 'confirmation' covers the short notes that
+ * answer an action: "Cancelled.", "Account reset.", "Saved." Sending one of
+ * those after the user's input was counted is exactly how the second-pass bug
+ * happened -- the action was accepted, then its own reply was swallowed.
+ */
+const USER_OUTCOME_TYPES = new Set(['confirmation', 'mainMenu', 'submenuTransition']);
+
+/**
+ * True when this send is the answer to a user action and should bypass the
+ * per-chat counter.
+ */
+function isUserOutcome(options = {}) {
+  if (options && options.bypassRateLimit === true) return true;
+  if (config.rateLimit?.bypassForUserOutcomes === false) return false;
+  return USER_OUTCOME_TYPES.has(options?.type);
+}
+
+/**
+ * Tell the user their input was rate-limited.
+ *
+ * Dropping a reply with no explanation is the worst outcome: the user has no
+ * way to tell "slow down" from "ignored". Sent with the limiter bypassed --
+ * telling someone to slow down must not itself be dropped -- and without
+ * typing, because the point is to be instant.
+ */
+async function sendSlowDownNotice(sock, jid) {
+  try {
+    await sock.sendMessage(jid, {
+      text: '\u23F3 ' + toSmallCaps('Slow down a bit. Try again in a few seconds.')
+    });
+  } catch (err) {
+    logger.warn({ err, jid }, '[OUTBOUND_RATE_LIMIT] slow-down notice failed');
+  }
+}
 
 /**
  * Shared gate for every outbound send that goes through this module.
  *
  * Returns true when the send may proceed. Admin notifications pass
  * options.bypassRateLimit so a spam warning can never be suppressed by the
- * limit it is reporting.
+ * limit it is reporting. User-outcome messages bypass for the same reason.
  *
  * @returns {boolean} whether to proceed
  */
 async function outboundAllowed(sock, jid, options = {}) {
-  if (options && options.bypassRateLimit === true) return true;
+  if (isUserOutcome(options)) return true;
   const check = checkOutbound(jid);
   if (check.allowed) return true;
 
@@ -28,6 +71,10 @@ async function outboundAllowed(sock, jid, options = {}) {
     // Warning delivery must never turn a blocked send into a thrown error.
     logger.warn({ err }, '[OUTBOUND_RATE_LIMIT] failed to record block');
   }
+  // Say so instead of vanishing. Only fires for traffic that was actually
+  // suppressed (unsolicited sends); menu and user-outcome sends never reach
+  // this point because they bypass above.
+  await sendSlowDownNotice(sock, jid);
   return false;
 }
 

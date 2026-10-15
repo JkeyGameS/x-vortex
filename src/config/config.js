@@ -150,7 +150,15 @@ sessionTimeoutMinutes: 5,
     adminWarnThreshold: 5,      // blocks in the warn window before alerting admins
     adminWarnWindowMs: 300000,  // window the threshold is counted over
     adminWarnCooldownMs: 900000, // min gap between admin warnings
-    bypassForAdminNotifications: true
+    bypassForAdminNotifications: true,
+    // Menu sends and the short notes that are the direct result of a button the
+    // user just pressed ("Cancelled.", "Account reset.") bypass the counter.
+    // They are paced by the user's own input rate, so counting them can only
+    // ever suppress the answer to a message that was just received -- which
+    // reads as "the bot ignored me" and, on the second pass through a menu,
+    // leaves the session advanced with nothing on screen. Unsolicited traffic
+    // (chat rules, welcome-back, broadcasts) still counts in full.
+    bypassForUserOutcomes: true
   },
   // Group Management Phase 1. Global kill switch: when false every group
   // message is ignored, which restores the pre-Phase-1 behaviour.
