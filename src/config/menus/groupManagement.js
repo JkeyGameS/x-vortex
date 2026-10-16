@@ -1,8 +1,20 @@
 /**
- * Group Management (Phase 1) — activation and routing skeleton.
+ * Group Management.
  *
- * Per-group settings, welcome/goodbye, moderation, anti-spam and stats are
- * later phases; options here are deliberately coarse.
+ * Four options, not seven. Activate, Deactivate and About Stats used to be
+ * top-level entries, which split one job across three screens and left the user
+ * with no single place to see which groups they actually have:
+ *
+ *   - Activate / Deactivate are now folded into My Groups, which lists every
+ *     group the user manages with an explicit status (active / deactivated /
+ *     available) and gives each one an action that makes sense for that status.
+ *   - About Stats is now a one-line footnote on the Aggregate Stats panel.
+ *
+ * The list is capped and the summary shows counts, so the menu stays readable
+ * no matter how many groups the user manages.
+ *
+ * `/groups` stays primary and `/gm` stays the alias. Users know both; swapping
+ * them would break muscle memory for no gain.
  */
 export default {
   id: 'group_management',
@@ -24,39 +36,23 @@ export default {
     },
     {
       number: '2',
-      labelKey: 'menu.group_management.activate',
-      emoji: '\u2795',
-      action: 'custom:groups_activate'
+      labelKey: 'menu.group_management.aggregate_stats',
+      emoji: '\u{1F4CA}',
+      action: 'custom:groups_aggregate_stats'
     },
     {
+      // moderation_menu_label, not moderation: `moderation` collides with the
+      // Moderation menu's own heading key and resolved to the wrong label.
       number: '3',
-      labelKey: 'menu.group_management.deactivate',
-      emoji: '\u26D4',
-      action: 'custom:groups_deactivate'
+      labelKey: 'menu.group_management.moderation_menu_label',
+      emoji: '\u26A0\uFE0F',
+      action: 'custom:groups_moderation'
     },
     {
       number: '4',
       labelKey: 'menu.group_management.defaults',
       emoji: '\u2699\uFE0F',
       action: 'custom:groups_defaults'
-    },
-    {
-      number: '5',
-      labelKey: 'menu.group_management.moderation_menu_label',
-      emoji: '\u26A0\uFE0F',
-      action: 'custom:groups_moderation'
-    },
-    {
-      number: '6',
-      labelKey: 'menu.group_management.aggregate_stats',
-      emoji: '\u{1F4CA}',
-      action: 'custom:groups_aggregate_stats'
-    },
-    {
-      number: '7',
-      labelKey: 'menu.group_management.about_stats',
-      emoji: '\u2139\uFE0F',
-      action: 'custom:groups_about_stats'
     }
   ]
 };

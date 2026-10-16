@@ -1,6 +1,37 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-13T01-05-00",
+      "timestamp": "2026-10-16T00:37:02Z",
+      "agent": "opencode",
+      "promptSummary": "Group Management menu refresh -- merged list + three-state handling",
+      "changes": [
+        "Simplified the GM main menu from 7 options to 4: My Groups, Aggregate Stats, Moderation, Defaults",
+        "Added active/deactivated/available summary counts above the menu",
+        "Unified My Groups into one list with three explicit states, each with an action that fits",
+        "Removed the top-level Activate and Deactivate options and deleted their now-unreachable handlers",
+        "Folded About Stats into a footnote on the Aggregate Stats panel; the panel itself is unchanged",
+        "Eliminated Group not found from the selection path: the old list came from Baileys alone, so a group you manage but never activated was listed and then unopenable",
+        "Cached listBotGroups for 60s with explicit invalidation on join/leave, activate, deactivate and remove"
+      ],
+      "files": [
+        "src/config/menus/groupManagement.js",
+        "src/handlers/groupManagementHandlers.js",
+        "src/utils/menuResolvers.js",
+        "src/utils/groupHelper.js",
+        "src/services/groupService.js",
+        "src/handlers/groupParticipantHandler.js",
+        "translations/en.json",
+        "translations/fr.json",
+        "translations/de.json",
+        "translations/es.json",
+        "translations/ar.json",
+        "tests/groupManagement.test.mjs"
+      ],
+      "type": "improvement",
+      "versionSuggested": "1.10.0"
+    },
+    {
       "id": "chg-2026-10-13T00-10-00",
       "timestamp": "2026-10-15T17:32:13Z",
       "agent": "opencode",

@@ -23,6 +23,20 @@ const { t } = await import('../src/services/localeService.js');
 const gm = await import('../src/handlers/groupManagementHandlers.js');
 
 const LANGS = ['en', 'fr', 'de', 'es', 'ar'];
+
+// Panel text is small-capped, so ASCII regexes never match it ("ɪɴᴠᴀʟɪᴅ" is not
+// "invalid"). This map is derived from toSmallCaps itself rather than
+// hand-written, so it cannot drift from the renderer's table.
+const { toSmallCaps } = await import('../src/utils/smallCaps.js');
+const SMALL_CAPS_MAP = new Map(
+  [...'abcdefghijklmnopqrstuvwxyz'].map((ch) => [toSmallCaps(ch), ch])
+);
+function readText(s) {
+  return [...String(s)]
+    .map((c) => SMALL_CAPS_MAP.get(c) ?? c)
+    .join('')
+    .toLowerCase();
+}
 const GM_MENU = 'group_management';
 
 let config;
@@ -74,12 +88,12 @@ test('every group_management option labelKey resolves to a string', () => {
   }
 });
 
-test('option 5 label is not [object Object]', () => {
+test('option 3 label is not [object Object]', () => {
   const def = registry.getMenu(GM_MENU);
-  const opt5 = def.options.find((o) => o.number === '5');
-  assert.strictEqual(opt5.labelKey, 'menu.group_management.moderation_menu_label',
-    'option 5 must not point at the moderation namespace object');
-  assert.strictEqual(typeof t('en', opt5.labelKey), 'string');
+  const opt = def.options.find((o) => o.number === '3');
+  assert.strictEqual(opt.labelKey, 'menu.group_management.moderation_menu_label',
+    'option 3 must not point at the moderation namespace object');
+  assert.strictEqual(typeof t('en', opt.labelKey), 'string');
 });
 
 test('the rendered menu contains no [object Object] anywhere', async () => {
@@ -89,13 +103,13 @@ test('the rendered menu contains no [object Object] anywhere', async () => {
   }
 });
 
-test('option 5 renders as a real label in all five languages', async () => {
+test('option 3 renders as a real label in all five languages', async () => {
   for (const lang of LANGS) {
     const r = await renderMenu(GM_MENU, { jid: '1@lid', username: 'a' }, lang);
-    const line = r.options.find((o) => o.startsWith('5.'));
-    assert.ok(line, `${lang}: no option 5 line`);
-    assert.ok(!line.includes('['), `${lang}: option 5 still bracketed -> ${line}`);
-    assert.ok(!/^[5.]\s*$/.test(line), `${lang}: option 5 is empty`);
+    const line = r.options.find((o) => o.startsWith('3.'));
+    assert.ok(line, `${lang}: no option 3 line`);
+    assert.ok(!line.includes('['), `${lang}: option 3 still bracketed -> ${line}`);
+    assert.ok(!/^[3.]\s*$/.test(line), `${lang}: option 3 is empty`);
   }
 });
 
@@ -145,8 +159,7 @@ const GM_STATES = [
   'group_moderation_duration_custom',
   'group_moderation_log',
   'group_stats_panel',
-  'group_stats_aggregate',
-  'group_stats_about'
+  'group_stats_aggregate'
 ];
 
 test('GROUP_STATE_PREFIXES covers every GM state', () => {
@@ -167,7 +180,7 @@ test('index.js prefix predicate and GROUP_STATE_PREFIXES agree', () => {
 });
 
 test('every informational panel handles invalid input instead of falling through', async () => {
-  for (const st of ['group_stats_panel', 'group_stats_aggregate', 'group_stats_about', 'group_moderation_log']) {
+  for (const st of ['group_stats_panel', 'group_stats_aggregate', 'group_moderation_log']) {
     const ctx = makeCtx(st, { statsGroupJid: 'g@g.us', currentGroupJid: 'g@g.us' });
     const handled = await gm.handleGroupManagementReply(ctx, '99');
     assert.strictEqual(handled, true, `${st} fell through on invalid input`);
@@ -176,7 +189,7 @@ test('every informational panel handles invalid input instead of falling through
 });
 
 test('0 is handled by every informational panel and sends a reply', async () => {
-  for (const st of ['group_stats_panel', 'group_stats_aggregate', 'group_stats_about', 'group_moderation_log']) {
+  for (const st of ['group_stats_panel', 'group_stats_aggregate', 'group_moderation_log']) {
     const ctx = makeCtx(st, { statsGroupJid: 'g@g.us', currentGroupJid: 'g@g.us' });
     const handled = await gm.handleGroupManagementReply(ctx, '0');
     assert.strictEqual(handled, true, `${st} did not handle 0`);
@@ -248,4 +261,218 @@ test('the general DM menu fall-through guard exists', () => {
 
 test('GROUP_STATE_PREFIXES includes group_stats', () => {
   assert.ok(gm.GROUP_STATE_PREFIXES.includes('group_stats'));
+});
+
+// ---------------------------------------------------------------------------
+// 3. Menu refresh: four options, three-state list, no "Group not found."
+// ---------------------------------------------------------------------------
+
+test('the GM menu has exactly four options', () => {
+  const def = registry.getMenu(GM_MENU);
+  assert.deepStrictEqual(def.options.map((o) => o.number), ['1', '2', '3', '4']);
+  assert.deepStrictEqual(
+    def.options.map((o) => o.action),
+    [
+      'custom:groups_my_groups',
+      'custom:groups_aggregate_stats',
+      'custom:groups_moderation',
+      'custom:groups_defaults'
+    ]
+  );
+});
+
+test('the removed Activate / Deactivate / About Stats options are gone', () => {
+  const actions = registry.getMenu(GM_MENU).options.map((o) => o.action);
+  assert.ok(!actions.includes('custom:groups_activate'), 'activate option still present');
+  assert.ok(!actions.includes('custom:groups_deactivate'), 'deactivate option still present');
+  assert.ok(!actions.includes('custom:groups_about_stats'), 'about stats option still present');
+});
+
+test('the handlers for the removed options were deleted', async () => {
+  assert.strictEqual(gm.groupsActivate, undefined, 'groupsActivate should be gone');
+  assert.strictEqual(gm.groupsDeactivate, undefined, 'groupsDeactivate should be gone');
+  const map = gm.groupManagementCustomHandlers;
+  assert.strictEqual(map.groups_activate, undefined);
+  assert.strictEqual(map.groups_deactivate, undefined);
+  assert.strictEqual(map.groups_about_stats, undefined);
+  assert.strictEqual(typeof map.groups_my_groups, 'function');
+});
+
+test('the removed translation keys are gone from every locale', () => {
+  for (const lang of LANGS) {
+    const j = JSON.parse(fs.readFileSync(path.resolve('translations', `${lang}.json`), 'utf8'));
+    const gmns = j.menu.group_management;
+    for (const key of ['activate', 'deactivate', 'about_stats', 'enabled']) {
+      assert.ok(!(key in gmns), `${lang} still defines menu.group_management.${key}`);
+    }
+    for (const key of ['summary_active', 'summary_deactivated', 'summary_available']) {
+      assert.strictEqual(typeof gmns[key], 'string', `${lang} missing summary key ${key}`);
+    }
+  }
+});
+
+test('/groups stays primary and /gm stays the alias', () => {
+  const def = registry.getMenu(GM_MENU);
+  assert.strictEqual(def.standaloneCommand, '/groups');
+  assert.deepStrictEqual(def.aliases, ['/gm']);
+});
+
+test('the summary resolver reports active, deactivated and available', async () => {
+  const { summaryResolvers } = await import('../src/utils/menuResolvers.js');
+  const fn = summaryResolvers.groupManagementSummary;
+  assert.strictEqual(typeof fn, 'function', 'groupManagementSummary not registered');
+
+  // Synthetic fixture -- data/groups.json is empty on a fresh install, so a
+  // real assertion against it would only ever see zeros.
+  const { __setCacheForTests } = await import('../src/services/groupService.js');
+  __setCacheForTests({
+    'a@g.us': { id: 'a@g.us', name: 'Alpha', enabled: true },
+    'b@g.us': { id: 'b@g.us', name: 'Beta', enabled: true },
+    'c@g.us': { id: 'c@g.us', name: 'Gamma', enabled: false }
+  });
+
+  const sock = {
+    groupFetchAllParticipating: async () => ({
+      a: { id: 'a@g.us', subject: 'Alpha' },
+      b: { id: 'b@g.us', subject: 'Beta' },
+      c: { id: 'c@g.us', subject: 'Gamma' },
+      d: { id: 'd@g.us', subject: 'Delta' }
+    }),
+    groupMetadata: async () => ({
+      participants: [{ id: '999@lid', admin: 'superadmin' }]
+    })
+  };
+  const out = await fn(sock, '999@lid');
+  assert.strictEqual(out.length, 4, 'three count lines plus the trailing blank');
+
+  // Asserted by position: the labels go through toSmallCaps, so their letters
+  // are non-ASCII and cannot be used as map keys.
+  const counts = out.slice(0, 3).map((l) => l.dynamic);
+  assert.deepStrictEqual(counts, ['2*', '1*', '1*'],
+    'expected 2 active / 1 deactivated / 1 available, got ' + JSON.stringify(out));
+  for (const l of out.slice(0, 3)) {
+    assert.strictEqual(typeof l.static, 'string');
+    assert.ok(l.static.includes(':'), 'each count line needs a label');
+  }
+});
+
+test('listBotGroups is cached and the cache can be invalidated', async () => {
+  const { listBotGroups, invalidateBotGroupsCache } = await import('../src/utils/groupHelper.js');
+  let calls = 0;
+  const sock = {
+    groupFetchAllParticipating: async () => {
+      calls++;
+      return { x: { id: 'x@g.us', subject: 'X' } };
+    }
+  };
+  await listBotGroups(sock);
+  await listBotGroups(sock);
+  assert.strictEqual(calls, 1, 'second call should be served from cache');
+
+  invalidateBotGroupsCache(sock);
+  await listBotGroups(sock);
+  assert.strictEqual(calls, 2, 'invalidation must force a refetch');
+});
+
+test('the unified list gives every row a status and a defined action', async () => {
+  const { __setCacheForTests } = await import('../src/services/groupService.js');
+  __setCacheForTests({
+    'a@g.us': { id: 'a@g.us', name: 'Alpha', enabled: true },
+    'c@g.us': { id: 'c@g.us', name: 'Gamma', enabled: false }
+  });
+  const { invalidateBotGroupsCache } = await import('../src/utils/groupHelper.js');
+
+  const sock = makeSock();
+  sock.groupFetchAllParticipating = async () => ({
+    a: { id: 'a@g.us', subject: 'Alpha' },
+    c: { id: 'c@g.us', subject: 'Gamma' },
+    d: { id: 'd@g.us', subject: 'Delta' },
+    e: { id: 'e@g.us', subject: 'Epsilon' }
+  });
+  sock.groupMetadata = async () => ({
+    participants: [{ id: '999@lid', admin: 'superadmin' }]
+  });
+  invalidateBotGroupsCache(sock);
+
+  const ctx = {
+    sock,
+    sender: '999@lid',
+    chatId: '999@lid',
+    user: { jid: '999@lid', language: 'en' },
+    session: { currentMenu: GM_MENU },
+    state: GM_MENU
+  };
+  await gm.groupsMyGroups(ctx);
+
+  const text = ctx.sock.sent.join('\n');
+  assert.ok(text.includes('Alpha'), 'active group missing');
+  assert.ok(text.includes('Gamma'), 'deactivated group missing');
+  assert.ok(text.includes('Delta'), 'available group missing');
+  assert.ok(text.includes('Epsilon'), 'available group missing');
+  // The three markers, and no trace of the old on/off pair.
+  assert.ok(/\u2705/i.test(text) || text.includes('\u02705'), 'active marker missing');
+  assert.ok(!text.includes('[object Object]'), 'rendered [object Object]');
+});
+
+test('selecting an active group opens its settings panel', async () => {
+  const { __setCacheForTests } = await import('../src/services/groupService.js');
+  __setCacheForTests({ 'a@g.us': { id: 'a@g.us', name: 'Alpha', enabled: true } });
+
+  const ctx = makeCtx('group_management_list', {
+    managedGroups: [{ jid: 'a@g.us', name: 'Alpha', status: 'active', manageable: true }],
+    pendingGroupIds: ['a@g.us']
+  });
+  const handled = await gm.handleGroupManagementReply(ctx, '1');
+  assert.strictEqual(handled, true);
+  assert.ok(ctx.sock.sent.length > 0, 'no reply');
+  assert.ok(
+    !ctx.sock.sent.join('').includes('Group not found'),
+    'selecting an active group must never report "Group not found."'
+  );
+});
+
+test('selecting a deactivated group asks before reactivating, and 2 cancels', async () => {
+  const ctx = makeCtx('group_management_list', {
+    managedGroups: [{ jid: 'c@g.us', name: 'Gamma', status: 'deactivated', manageable: true }],
+    pendingGroupIds: ['c@g.us']
+  });
+  await gm.handleGroupManagementReply(ctx, '1');
+  const prompted = ctx.sock.sent.join('\n');
+  assert.ok(prompted.includes('Gamma'), 'the prompt must name the group');
+  assert.ok(readText(prompted).includes('deactivated'), 'must say the group is deactivated');
+  assert.strictEqual(ctx.state, 'group_management_list');
+});
+
+test('selecting an available group asks before activating', async () => {
+  const ctx = makeCtx('group_management_list', {
+    managedGroups: [{ jid: 'd@g.us', name: 'Delta', status: 'available', manageable: true }],
+    pendingGroupIds: ['d@g.us']
+  });
+  await gm.handleGroupManagementReply(ctx, '1');
+  const prompted = ctx.sock.sent.join('\n');
+  assert.ok(prompted.includes('Delta'), 'the prompt must name the group');
+  assert.ok(
+    !/group not found/i.test(prompted),
+    'an available group must never produce "Group not found."'
+  );
+});
+
+test('an out-of-range selection is an invalid choice, not a crash', async () => {
+  const ctx = makeCtx('group_management_list', {
+    managedGroups: [{ jid: 'a@g.us', name: 'Alpha', status: 'active', manageable: true }],
+    pendingGroupIds: ['a@g.us']
+  });
+  const handled = await gm.handleGroupManagementReply(ctx, '9');
+  assert.strictEqual(handled, true);
+  assert.ok(readText(ctx.sock.sent.join('|')).includes('invalid choice'),
+    'expected an invalid-choice reply, got: ' + ctx.sock.sent.join('|'));
+});
+
+test('the aggregate panel carries the About Stats footnote and no such menu option', async () => {
+  const ctx = makeCtx('group_stats_aggregate');
+  const handled = await gm.handleGroupManagementReply(ctx, '0');
+  assert.strictEqual(handled, true);
+  const src = fs.readFileSync(path.resolve('src/handlers/groupManagementHandlers.js'), 'utf8');
+  assert.ok(src.includes('90-day history'), 'the About Stats footnote is missing');
+  assert.ok(!src.includes('openAboutStats'), 'openAboutStats should be deleted');
 });

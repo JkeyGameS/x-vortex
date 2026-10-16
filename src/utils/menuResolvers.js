@@ -1,3 +1,4 @@
+import config from '../config/config.js';
 import { t } from '../services/localeService.js';
 import { toSmallCaps } from './smallCaps.js';
 import { getSettings as getChatSettings, getIgnoreList } from '../services/chatSettingsService.js';
@@ -14,7 +15,7 @@ import { changelogOptions, formatEntryHeading } from './changelogFormat.js';
 import * as messageSettings from '../services/messageSettingsService.js';
 import { MESSAGE_MODES } from '../services/messageSettingsService.js';
 import * as customCommandStore from '../services/customCommandService.js';
-import { getAllGroups, getEnabledGroups } from '../services/groupService.js';
+import { getAllGroups } from '../services/groupService.js';
 
 /**
  * Suffix resolvers for dynamic option labels: (user, language) => string.
@@ -375,16 +376,49 @@ function contentRelativeTime(iso) {
 // every other summary in the codebase registers the same way.
 // ---------------------------------------------------------------------------
 
-registerSummaryResolver('groupManagementSummary', () => {
+registerSummaryResolver('groupManagementSummary', async (sock, sender) => {
     // Returns { static, dynamic } objects so pushBodyLine small-caps the label
     // and leaves the counts untouched. A bare string would also work, but the
     // counts would then be small-capped too. The trailing '' matches
     // changelogManagerSummary: renderMenu does not insert a blank line between
     // the summary block and the options.
-    const enabled = getEnabledGroups().length;
-    const total = getAllGroups().length;
+    //
+    // Three counts rather than one "enabled / total", because the menu below
+    // now offers one action per state and the user needs to see the split to
+    // know which action each group will get:
+    //   active       - registered and enabled
+    //   deactivated  - registered but disabled (reactivateable)
+    //   available    - bot is in it, user is admin, never registered
+    const all = getAllGroups();
+    const active = all.filter((g) => g.enabled === true).length;
+    const deactivated = all.filter((g) => g.enabled === false).length;
+
+    let available = 0;
+    try {
+      const { listBotGroups } = await import('./groupHelper.js');
+      const registered = new Set(all.map((g) => g.id));
+      const botGroups = await listBotGroups(sock);
+      const isBotAdmin = config.adminJids?.includes(sender);
+      for (const g of botGroups) {
+        if (!g?.id || registered.has(g.id)) continue;
+        if (isBotAdmin) { available++; continue; }
+        const { isGroupAdmin } = await import('./groupHelper.js');
+        if (await isGroupAdmin(sock, g.id, sender)) available++;
+      }
+    } catch {
+      // A failed fetch must not blank the menu; the two registry counts still
+      // render and "available" simply reads 0.
+      available = 0;
+    }
+
+    const line = (key, value) => ({
+      static: toSmallCaps(t('en', key)) + ': *',
+      dynamic: String(value) + '*'
+    });
     return [
-      { static: toSmallCaps(t('en', 'menu.group_management.enabled')) + ': *', dynamic: enabled + ' / ' + total + '*' },
+      line('menu.group_management.summary_active', active),
+      line('menu.group_management.summary_deactivated', deactivated),
+      line('menu.group_management.summary_available', available),
       ''
     ];
   });

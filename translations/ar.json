@@ -3378,10 +3378,7 @@
     "group_management": {
       "heading": "إدارة المجموعات",
       "my_groups": "مجموعاتي",
-      "activate": "تفعيل مجموعة",
-      "deactivate": "تعطيل مجموعة",
       "defaults": "الإعدادات الافتراضية",
-      "enabled": "مفعّلة",
       "settings": {
         "heading": "إعدادات المجموعة",
         "mention_only": "الإشارات فقط",
@@ -3417,7 +3414,6 @@
       },
       "moderation_menu_label": "الإشراف",
       "aggregate_stats": "إحصائيات عامة",
-      "about_stats": "عن الإحصائيات",
       "group_stats_heading": "إحصائيات المجموعة",
       "total_messages": "إجمالي الرسائل",
       "members": "الأعضاء",
@@ -3429,7 +3425,10 @@
       "moderation_log_heading": "سجل الإشراف",
       "active_warnings": "تحذيرات نشطة",
       "active_mutes": "كتم نشط",
-      "active_bans": "حظر نشط"
+      "active_bans": "حظر نشط",
+      "summary_active": "نشط",
+      "summary_deactivated": "معطّل",
+      "summary_available": "متاح"
     },
     "danger_zone": {
       "heading": "منطقة الخطر",

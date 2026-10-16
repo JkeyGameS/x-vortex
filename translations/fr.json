@@ -3393,10 +3393,7 @@
     "group_management": {
       "heading": "Gestion des groupes",
       "my_groups": "Mes groupes",
-      "activate": "Activer un groupe",
-      "deactivate": "Desactiver un groupe",
       "defaults": "Parametres par defaut",
-      "enabled": "Actives",
       "settings": {
         "heading": "Parametres du groupe",
         "mention_only": "Mention uniquement",
@@ -3432,7 +3429,6 @@
       },
       "moderation_menu_label": "Moderation",
       "aggregate_stats": "Statistiques globales",
-      "about_stats": "A propos des stats",
       "group_stats_heading": "Statistiques du groupe",
       "total_messages": "Messages au total",
       "members": "Membres",
@@ -3444,7 +3440,10 @@
       "moderation_log_heading": "Journal de moderation",
       "active_warnings": "Avertissements actifs",
       "active_mutes": "Silences actifs",
-      "active_bans": "Bans actifs"
+      "active_bans": "Bans actifs",
+      "summary_active": "Actif",
+      "summary_deactivated": "Désactivé",
+      "summary_available": "Disponible"
     },
     "danger_zone": {
       "heading": "Zone de danger",

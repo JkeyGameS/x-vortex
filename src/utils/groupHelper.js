@@ -79,14 +79,49 @@ export async function getMemberCount(sock, groupJid) {
   return meta?.participants?.length || 0;
 }
 
-/** Every group the bot participates in. Used to build the DM picker. */
+/**
+ * Every group the bot participates in. Used to build the DM picker and the
+ * Group Management summary.
+ *
+ * groupFetchAllParticipating() returns the participant list of every group the
+ * bot is in, so it is far heavier than a single groupMetadata() call -- on a
+ * bot in thirty groups that is thirty fetch rounds. The Group Management
+ * summary runs on every render of that menu, including every back-navigation
+ * into it, which made it repeat that cost on each keystroke.
+ *
+ * So the whole list is cached for BOT_GROUPS_TTL_MS. Membership changes are
+ * rare, and the events that can change it (join/leave, activation, removal)
+ * all call invalidateBotGroupsCache() explicitly.
+ */
+const botGroupsCache = new Map(); // sock -> { data, fetchedAt }
+const BOT_GROUPS_TTL_MS = 60 * 1000;
+
 export async function listBotGroups(sock) {
   if (!sock || typeof sock.groupFetchAllParticipating !== 'function') return [];
+  const cached = botGroupsCache.get(sock);
+  if (cached && Date.now() - cached.fetchedAt < BOT_GROUPS_TTL_MS) return cached.data;
   try {
     const map = await sock.groupFetchAllParticipating();
-    return Object.values(map || {});
+    const data = Object.values(map || {});
+    botGroupsCache.set(sock, { data, fetchedAt: Date.now() });
+    return data;
   } catch (err) {
     logger.warn({ err }, '[GROUP] failed to list bot groups');
     return [];
   }
+}
+
+/**
+ * Drop the cached bot-group list for one socket, or for all of them.
+ *
+ * Call this whenever membership may have changed: the bot joining or leaving a
+ * group, and activateGroup / deactivateGroup / removeGroup.
+ */
+export function invalidateBotGroupsCache(sock) {
+  if (sock) botGroupsCache.delete(sock);
+  else botGroupsCache.clear();
+}
+
+export function clearBotGroupsCache() {
+  botGroupsCache.clear();
 }

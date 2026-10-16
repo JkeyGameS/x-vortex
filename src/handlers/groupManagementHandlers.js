@@ -11,7 +11,6 @@ import config from '../config/config.js';
 import { canManageGroups, canManageGroup, isBotAdmin } from '../utils/groupPermission.js';
 import {
   getAllGroups,
-  getEnabledGroups,
   getGroup,
   activateGroup,
   deactivateGroup,
@@ -69,93 +68,156 @@ async function setMenu(sock, sender, chatId, menuId, patch = {}) {
   sessionManager.setState(sender, chatId, { currentMenu: menuId, ...patch });
 }
 
-/** Groups the user may act on: bot admin sees all, others only their own. */
-async function manageableGroups(sock, userJid) {
-  const all = await listBotGroups(sock);
-  if (isBotAdmin(userJid)) return all;
-  const out = [];
-  for (const g of all) {
-    const { isGroupAdmin } = await import('../utils/groupHelper.js');
-    if (await isGroupAdmin(sock, g.id, userJid)) out.push(g);
-  }
-  return out;
-}
+/**
+ * Build the unified "My Groups" rows.
+ *
+ * Two sources, deduplicated by JID:
+ *   1. everything in data/groups.json the user can manage -> active or deactivated
+ *   2. every other group the bot is in that the user can manage -> available
+ *
+ * Source 2 is the fix for the "Group not found." bug: the old list was built
+ * from Baileys alone, so a group the user manages but never activated appeared
+ * with an "off" marker and selecting it called openGroupSettings ->
+ * getGroup() -> undefined -> "Group not found.". Every row now has a status
+ * and a defined action.
+ *
+ * Rows carry jid, name and status; the numeric dispatcher reads them from
+ * session.managedGroups rather than re-resolving anything.
+ */
+async function buildGroupRows(sock, sender) {
+  const rows = [];
+  const seen = new Set();
+  const botAdmin = isBotAdmin(sender);
 
-function renderList(title, groups, startAt = 1) {
-  const lines = ['> *\u{1F465} ' + toSmallCaps(title) + '*', ''];
-  if (!groups.length) {
-    lines.push(toSmallCaps('You do not manage any groups.'), '', '0. ' + toSmallCaps('Back'));
-    return lines.join('\n');
+  for (const g of getAllGroups()) {
+    if (!g?.id || seen.has(g.id)) continue;
+    seen.add(g.id);
+    // A registered group the user cannot manage is still theirs -- they
+    // activated it -- so it stays visible, just not selectable as an action
+    // target for them.
+    const manageable = botAdmin || await canManageGroup(sock, sender, g.id);
+    rows.push({
+      jid: g.id,
+      name: g.name || 'Unknown',
+      status: g.enabled === true ? 'active' : 'deactivated',
+      manageable
+    });
   }
-  groups.forEach((g, i) => {
-    lines.push(`${startAt + i}. ${g.subject || g.name || 'Unknown'}`);
+
+  try {
+    const { listBotGroups } = await import('../utils/groupHelper.js');
+    for (const g of await listBotGroups(sock)) {
+      if (!g?.id || seen.has(g.id)) continue;
+      seen.add(g.id);
+      const manageable = botAdmin || await canManageGroup(sock, sender, g.id);
+      if (!manageable) continue;
+      rows.push({ jid: g.id, name: g.subject || 'Unknown', status: 'available', manageable: true });
+    }
+  } catch { /* the registry rows above are still worth showing */ }
+
+  const order = { active: 0, deactivated: 1, available: 2 };
+  rows.sort((a, b) => {
+    const o = order[a.status] - order[b.status];
+    return o !== 0 ? o : String(a.name).localeCompare(String(b.name));
   });
-  lines.push('', '0. ' + toSmallCaps('Back'));
-  return lines.join('\n');
+  return rows;
 }
 
-/** 1. My Groups — read-only list with activation state. */
+function statusLabel(status) {
+  if (status === 'active') return '\u2705 ' + toSmallCaps('Active');
+  if (status === 'deactivated') return '\u23F8\uFE0F ' + toSmallCaps('Deactivated');
+  return '\u26AA ' + toSmallCaps('Available');
+}
+
+const GROUP_LIST_LIMIT = 10;
+
+/** 1. My Groups — one list, three states, one action per row. */
 export async function groupsMyGroups(context) {
   const { sock, sender, chatId } = context;
   if (!await canManageGroups(sock, sender)) return denied(sock, sender);
   try {
-    const visible = await manageableGroups(sock, sender);
-    const registered = getAllGroups();
+    const rows = await buildGroupRows(sock, sender);
+    const shown = rows.slice(0, GROUP_LIST_LIMIT);
     const lines = ['> *\u{1F4CB} ' + toSmallCaps('My Groups') + '*', ''];
-    if (!visible.length) {
-      lines.push(toSmallCaps('You do not manage any groups.'), '', '0. ' + toSmallCaps('Back'));
-    } else {
+
+    if (!shown.length) {
       lines.push(
-        toSmallCaps('Groups you manage') + ': ' + visible.length,
-        toSmallCaps('Activated') + ': ' + getEnabledGroups().length,
-        ''
+        toSmallCaps('You don\'t manage any groups where I\'m a member.'),
+        '',
+        '0. ' + toSmallCaps('Back')
       );
-      visible.forEach((g, i) => {
-        const known = getGroup(g.id);
-        const on = known && known.enabled === true;
-        lines.push(`${i + 1}. ${g.subject || g.name || 'Unknown'} ${on ? '\u2705 ' + toSmallCaps('on') : '\u274C ' + toSmallCaps('off')}`);
+    } else {
+      shown.forEach((r, i) => {
+        lines.push(`${i + 1}. ${r.name} ${statusLabel(r.status)}`);
       });
+      if (rows.length > GROUP_LIST_LIMIT) {
+        lines.push(
+          '',
+          toSmallCaps('Showing') + ' *' + GROUP_LIST_LIMIT + '* ' + toSmallCaps('of') + ' *' + rows.length + '*'
+        );
+      }
       lines.push('', '0. ' + toSmallCaps('Back'));
+      lines.push('', '_' + toSmallCaps('Reply with the number of your choice.') + '_');
     }
+
     await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
     await setMenu(sock, sender, chatId, 'group_management_list', {
-      pendingGroupIds: visible.map((g) => g.id)
+      // Rows, not just JIDs: the dispatcher needs the status to pick an action.
+      managedGroups: shown,
+      managedGroupTotal: rows.length,
+      pendingGroupIds: shown.map((r) => r.jid),
+      pendingGroupJid: null
     });
   } catch (err) {
     await failed(sock, sender);
   }
 }
 
-/** 2. Activate — pick a group, then confirm. */
-export async function groupsActivate(context) {
+/** Re-render the list after a cancel, without rebuilding it. */
+async function reopenGroupList(context, note) {
   const { sock, sender, chatId } = context;
-  if (!await canManageGroups(sock, sender)) return denied(sock, sender);
-  try {
-    const visible = await manageableGroups(sock, sender);
-    const ids = visible.map((g) => g.id);
-    await sendText(sock, sender, renderList('Select a group to activate', visible), GROUP_OPTS);
-    await setMenu(sock, sender, chatId, 'group_management_activate', { pendingGroupIds: ids });
-  } catch (err) {
-    await failed(sock, sender);
-  }
+  const rows = Array.isArray(context.session?.managedGroups) ? context.session.managedGroups : [];
+  if (note) await sendText(sock, sender, note, GROUP_OPTS);
+  if (!rows.length) return groupsMyGroups(context);
+  const lines = ['> *\u{1F4CB} ' + toSmallCaps('My Groups') + '*', ''];
+  rows.forEach((r, i) => lines.push(`${i + 1}. ${r.name} ${statusLabel(r.status)}`));
+  lines.push('', '0. ' + toSmallCaps('Back'));
+  lines.push('', '_' + toSmallCaps('Reply with the number of your choice.') + '_');
+  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
+  await setMenu(sock, sender, chatId, 'group_management_list', {
+    managedGroups: rows,
+    pendingGroupIds: rows.map((r) => r.jid),
+    pendingGroupJid: null,
+    pendingGroupAction: null,
+    confirmAttempts: 0
+  });
+  return true;
 }
 
-/** 3. Deactivate — pick an enabled group, then confirm. */
-export async function groupsDeactivate(context) {
+/** Ask before turning the bot on in a group that is not currently on. */
+async function promptActivate(context, row) {
   const { sock, sender, chatId } = context;
-  if (!await canManageGroups(sock, sender)) return denied(sock, sender);
-  try {
-    const enabled = getEnabledGroups();
-    const visible = [];
-    for (const g of enabled) {
-      if (await canManageGroup(sock, sender, g.id)) visible.push(g);
-    }
-    const ids = visible.map((g) => g.id);
-    await sendText(sock, sender, renderList('Select a group to deactivate', visible), GROUP_OPTS);
-    await setMenu(sock, sender, chatId, 'group_management_deactivate', { pendingGroupIds: ids });
-  } catch (err) {
-    await failed(sock, sender);
-  }
+  const isReactivate = row.status === 'deactivated';
+  const lines = [
+    isReactivate
+      ? toSmallCaps('This group is deactivated.')
+      : toSmallCaps('This group is not activated yet.'),
+    '',
+    toSmallCaps(isReactivate ? 'Do you want to reactivate' : 'Do you want to activate the bot in') + ' *' + row.name + '*?',
+    '',
+    '1. \u2705 ' + toSmallCaps(isReactivate ? 'Reactivate' : 'Activate'),
+    '2. \u274C ' + toSmallCaps('Cancel'),
+    '',
+    '0. ' + toSmallCaps('Back')
+  ];
+  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
+  await setMenu(sock, sender, chatId, 'group_management_activate_confirm', {
+    pendingGroupJid: row.jid,
+    pendingGroupName: row.name,
+    pendingGroupAction: isReactivate ? 'reactivate' : 'activate',
+    confirmAttempts: 0
+  });
+  return true;
 }
 
 /**
@@ -249,8 +311,74 @@ export async function handleGroupManagementReply(context, trimmedText) {
   }
 
   // Numeric pick against the stored list for this state.
-  const pickStates = ['group_management_list', 'group_management_activate', 'group_management_deactivate'];
-  if (pickStates.includes(state)) {
+if (state === 'group_management_list') {
+          // Unified list: the row carries its own status, so the action follows
+          // from it instead of from which screen the list was opened from.
+          // Selecting an active group opens its settings panel; anything not
+          // active asks first, then activates. There is no longer a path from
+          // here to "Group not found." -- every row has a defined outcome.
+          const rows = Array.isArray(session?.managedGroups) ? session.managedGroups : [];
+          const idx = Number(input);
+          if (!Number.isInteger(idx) || idx < 1 || idx > rows.length) {
+            await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
+            return true;
+          }
+          const row = rows[idx - 1];
+          if (row.status === 'active') {
+            return openGroupSettings({ sock, sender, chatId, user, session }, row.jid);
+          }
+          return promptActivate({ sock, sender, chatId, user, session }, row);
+        }
+
+        if (state === 'group_management_activate_confirm') {
+          const groupJid = session?.pendingGroupJid;
+          if (input === '0' || input === '2') {
+            return reopenGroupList(
+              { sock, sender, chatId, user, session },
+              '\u274C ' + toSmallCaps('Cancelled.')
+            );
+          }
+          if (input !== '1') {
+            await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
+            return true;
+          }
+          if (!await canManageGroup(sock, sender, groupJid)) {
+            await denied(sock, sender);
+            return true;
+          }
+          const wasReactivate = session?.pendingGroupAction === 'reactivate';
+          const storedName = session?.pendingGroupName;
+          const meta = await getGroupMetadata(sock, groupJid);
+          const name = storedName || meta?.subject || 'Unknown';
+          activateGroup(groupJid, { name, activatedBy: sender, language: user?.language || 'en' });
+          // Establish the stats-backed member baseline now, so the first welcome
+          // message reports the real count instead of the lagging metadata
+          // roster. Same reason the old top-level activate flow did this.
+          try {
+            const { syncMemberCount } = await import('../utils/groupHelper.js');
+            await syncMemberCount(sock, groupJid);
+          } catch { /* member sync is best-effort */ }
+          await logAction(sender, wasReactivate ? 'group_reactivated' : 'group_activated', { groupJid, groupName: name });
+          await sendText(
+            sock, sender,
+            '\u2705 ' + toSmallCaps(wasReactivate ? 'Group reactivated.' : 'Group activated.') + ' *' + name + '*',
+            GROUP_OPTS
+          );
+          // Clear the activation bookkeeping, then open the panel directly so
+          // the user lands where they would have after activating by hand.
+          sessionManager.setState(sender, chatId, {
+            pendingGroupJid: null,
+            pendingGroupName: null,
+            pendingGroupAction: null,
+            confirmAttempts: 0
+          });
+          return openGroupSettings(
+            { sock, sender, chatId, user, session: sessionManager.getSession(sender, chatId) },
+            groupJid
+          );
+        }
+
+if (state === 'group_management_deactivate') {
     const n = Number(input);
     const ids = Array.isArray(session?.pendingGroupIds) ? session.pendingGroupIds : [];
     if (!Number.isInteger(n) || n < 1 || n > ids.length) {
@@ -258,43 +386,14 @@ export async function handleGroupManagementReply(context, trimmedText) {
       return true;
     }
     const groupJid = ids[n - 1];
-    if (state === 'group_management_list') {
-      // Phase 2: selecting from My Groups opens that group's settings panel.
-      return openGroupSettings({ sock, sender, chatId, user, session }, groupJid);
-    }
-    if (state === 'group_management_deactivate') {
-      if (!await canManageGroup(sock, sender, groupJid)) {
-        await denied(sock, sender);
-        return true;
-      }
-      const meta = await getGroupMetadata(sock, groupJid);
-      const name = meta?.subject || getGroup(groupJid)?.name || 'Unknown';
-      const lines = [
-        toSmallCaps('Do you want to deactivate the bot in') + ' *' + name + '*?',
-        '',
-        '1. \u2705 ' + toSmallCaps('Yes'),
-        '2. \u274C ' + toSmallCaps('No'),
-        '',
-        '0. ' + toSmallCaps('Back')
-      ];
-      await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
-      await setMenu(sock, sender, chatId, 'group_management_deactivate_confirm', {
-        pendingGroupJid: groupJid
-      });
-      return true;
-    }
     if (!await canManageGroup(sock, sender, groupJid)) {
       await denied(sock, sender);
       return true;
     }
     const meta = await getGroupMetadata(sock, groupJid);
-    const name = meta?.subject || 'Unknown';
-    const botAdmin = await isBotGroupAdmin(sock, groupJid, sock?.user?.id);
+    const name = meta?.subject || getGroup(groupJid)?.name || 'Unknown';
     const lines = [
-      toSmallCaps('Do you want to activate the bot in') + ' *' + name + '*?',
-      '',
-      toSmallCaps('Members') + ': ' + (meta?.participants?.length || 0),
-      toSmallCaps('Bot is admin') + ': ' + (botAdmin ? toSmallCaps('yes') : toSmallCaps('no')),
+      toSmallCaps('Do you want to deactivate the bot in') + ' *' + name + '*?',
       '',
       '1. \u2705 ' + toSmallCaps('Yes'),
       '2. \u274C ' + toSmallCaps('No'),
@@ -302,13 +401,16 @@ export async function handleGroupManagementReply(context, trimmedText) {
       '0. ' + toSmallCaps('Back')
     ];
     await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
-    await setMenu(sock, sender, chatId, 'group_management_activate_confirm', {
+    await setMenu(sock, sender, chatId, 'group_management_deactivate_confirm', {
       pendingGroupJid: groupJid
     });
     return true;
   }
 
-  if (state === 'group_management_activate_confirm' || state === 'group_management_deactivate_confirm') {
+  // Deactivation only. Activation has its own branch above, reached from the
+  // unified My Groups list, which reopens the group's settings panel after the
+  // fact rather than bouncing back to the GM menu.
+  if (state === 'group_management_deactivate_confirm') {
     const groupJid = session?.pendingGroupJid;
     const meta = groupJid ? await getGroupMetadata(sock, groupJid) : null;
     const groupName = meta?.subject || getGroup(groupJid)?.name || 'Unknown';
@@ -318,30 +420,13 @@ export async function handleGroupManagementReply(context, trimmedText) {
         await denied(sock, sender);
         return true;
       }
-      if (state === 'group_management_activate_confirm') {
-        activateGroup(groupJid, { name: groupName, activatedBy: sender, language: user?.language || 'en' });
-        // Establish the stats-backed member baseline now, so the first welcome
-        // message reports the real count instead of falling back to the
-        // lagging metadata roster.
-        try {
-          const { syncMemberCount } = await import('../utils/groupHelper.js');
-          await syncMemberCount(sock, groupJid);
-        } catch { /* member sync is best-effort */ }
-        await logAction(sender, 'group_activated', { groupJid, groupName });
-        await sendText(
-          sock, sender,
-          '\u2705 ' + toSmallCaps('Activated in') + ' *' + groupName + '*.',
-          GROUP_OPTS
-        );
-      } else {
-        deactivateGroup(groupJid);
-        await logAction(sender, 'group_deactivated', { groupJid, groupName });
-        await sendText(
-          sock, sender,
-          '\u274C ' + toSmallCaps('Deactivated in') + ' *' + groupName + '*.',
-          GROUP_OPTS
-        );
-      }
+      deactivateGroup(groupJid);
+      await logAction(sender, 'group_deactivated', { groupJid, groupName });
+      await sendText(
+        sock, sender,
+        '\u274C ' + toSmallCaps('Deactivated in') + ' *' + groupName + '*.',
+        GROUP_OPTS
+      );
       const { sendMenuById } = await import('../utils/menuSender.js');
       return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, 'settings_back');
     }
@@ -969,29 +1054,18 @@ async function openAggregateStats(context) {
       lines.push(`${i + 1}. ${names.get(row.jid) || row.jid} — ${num(row.totalMessages)}`);
     });
   }
-  lines.push('', '0. ' + toSmallCaps('Back'));
+lines.push('', '0. ' + toSmallCaps('Back'));
+    // The old top-level "About Stats" screen became this footnote. It is
+    // informational only -- deliberately not a numbered option, because 1..N
+    // is already the top-groups leaderboard above and a menu entry there would
+    // collide with it.
+    lines.push('', '_' + toSmallCaps('Stats track message counts, joins, top members, peak hours (90-day history).') + '_');
 
-  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
-  await setMenu(sock, sender, chatId, 'group_stats_aggregate');
-  return true;
-}
+    await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
+    await setMenu(sock, sender, chatId, 'group_stats_aggregate');
+    return true;
+  }
 
-async function openAboutStats(context) {
-  const { sock, sender, chatId } = context;
-  const lines = [
-    '> *\u2139\uFE0F ' + toSmallCaps('About Stats') + '*',
-    '',
-    toSmallCaps('Stats track message counts, joins, leaves, top members, and peak hours.'),
-    '',
-    toSmallCaps('Available in per-group settings and in the aggregate view.'),
-    toSmallCaps('Daily history is kept for 90 days.'),
-    '',
-    '0. ' + toSmallCaps('Back')
-  ];
-  await sendText(sock, sender, lines.join('\n'), GROUP_OPTS);
-  await setMenu(sock, sender, chatId, 'group_stats_about');
-  return true;
-}
 
 /** Active warnings, mutes and bans for one group. */
 async function openModerationLog(context, groupJid) {
@@ -1084,14 +1158,11 @@ async function handleStatsSubState(context, state, input) {
 
 export const groupManagementCustomHandlers = {
   groups_my_groups: (c) => groupsMyGroups(c),
-  groups_activate: (c) => groupsActivate(c),
-  groups_deactivate: (c) => groupsDeactivate(c),
   groups_defaults: (c) => groupsDefaults(c),
-  // Moderation submenu (Phase 4). Reached from Group Management option 5.
+  // Moderation submenu (Phase 4). Reached from Group Management option 3.
   groups_moderation: (c) => openModerationRoot(c),
-  // Stats viewers (Phase 6). Reached from Group Management options 6 and 7.
+  // Stats viewer (Phase 6). Reached from Group Management option 2.
   groups_aggregate_stats: (c) => openAggregateStats(c),
-  groups_about_stats: (c) => openAboutStats(c),
   groups_group_settings: (c) => {
     const groupJid = c?.pendingGroupJid || c?.session?.pendingGroupJid;
     if (!groupJid) {

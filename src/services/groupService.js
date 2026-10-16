@@ -1,6 +1,19 @@
 import fs from 'fs';
 import path from 'path';
 import logger from '../utils/logger.js';
+import { invalidateBotGroupsCache } from '../utils/groupHelper.js';
+
+/**
+ * The Group Management summary and the DM picker both render from
+ * listBotGroups(), which is cached for a minute. Activation changes whether a
+ * group counts as active, so the cache has to be dropped with it -- otherwise a
+ * group activated in one panel still reads as "available" in the next.
+ */
+function invalidateBotGroups() {
+  try {
+    invalidateBotGroupsCache();
+  } catch { /* cache invalidation must never break a registry write */ }
+}
 
 /**
  * Registry of groups the bot has been activated into.
@@ -203,6 +216,7 @@ export function activateGroup(groupJid, { name, activatedBy, language = 'en' } =
   };
   cache[groupJid] = entry;
   persist();
+  invalidateBotGroups();
   return entry;
 }
 
@@ -212,6 +226,7 @@ export function deactivateGroup(groupJid) {
   if (!g) return null;
   g.enabled = false;
   persist();
+  invalidateBotGroups();
   return g;
 }
 
@@ -222,6 +237,7 @@ export function removeGroup(groupJid) {
   const gone = cache[groupJid];
   delete cache[groupJid];
   persist();
+  invalidateBotGroups();
   return gone;
 }
 

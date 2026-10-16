@@ -1,6 +1,6 @@
 import logger from '../utils/logger.js';
 import { getGroup } from '../services/groupService.js';
-import { getGroupMetadata, invalidateGroupMetadata } from '../utils/groupHelper.js';
+import { getGroupMetadata, invalidateGroupMetadata, invalidateBotGroupsCache } from '../utils/groupHelper.js';
 import { sendText } from '../services/messageService.js';
 import { getContent } from '../services/botContentService.js';
 import { resolvePlaceholders } from '../utils/placeholderResolver.js';
@@ -33,8 +33,18 @@ export async function handleParticipantsUpdate({ sock, update, deps } = {}) {
   try {
     if (!config.groupManagementEnabled) return;
 
-    const { id: groupJid, participants, action } = update || {};
+const { id: groupJid, participants, action } = update || {};
     if (!groupJid || !Array.isArray(participants) || participants.length === 0) return;
+
+    // When the bot itself joins or leaves, the set of groups it participates in
+    // changes, so the cached bot-group list behind the Group Management summary
+    // and the DM picker is stale. Done before the active-group gate below,
+    // because the bot joining a group it is not yet activated in is exactly the
+    // event that must not be missed.
+    const botJid = sock?.user?.id;
+    if (action !== 'promote' && action !== 'demote' && botJid && participants.includes(botJid)) {
+      invalidateBotGroupsCache(sock);
+    }
 
     const group = getGroup(groupJid);
     if (!group || group.enabled !== true) {
@@ -72,7 +82,7 @@ export async function handleParticipantsUpdate({ sock, update, deps } = {}) {
       return;
     }
 
-    // On add the cached participant list is stale, so drop it first to get a
+// On add the cached participant list is stale, so drop it first to get a
     // count that includes the new member. On remove the cached count is close
     // enough and a refetch is not worth the round trip.
     if (action === 'add') invalidateGroupMetadata(groupJid);
