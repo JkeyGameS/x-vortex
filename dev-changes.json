@@ -1,6 +1,26 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-13T01-40-00",
+      "timestamp": "2026-10-17T00:27:49Z",
+      "agent": "opencode",
+      "promptSummary": "Fix GM panel typing regression",
+      "changes": [
+        "GROUP_OPTS now sets type submenuTransition, which covers all ~61 panel sends in the Group Management handler",
+        "moderationHandlers DM_OPTS now names its type so those sends are no longer filed as unsolicited chat replies",
+        "The type half matters beyond typing: the outbound rate limiter classifies on it, so panels were consuming the per-chat budget on the answer to a key the user just pressed",
+        "Added four tests covering both option objects, the absence of bare sendText calls, and a live presence assertion",
+        "Verified the tests are not vacuous by reverting the fix and confirming two of them fail"
+      ],
+      "files": [
+        "src/handlers/groupManagementHandlers.js",
+        "src/handlers/moderationHandlers.js",
+        "tests/groupManagement.test.mjs"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.10.1"
+    },
+    {
       "id": "chg-2026-10-13T01-05-00",
       "timestamp": "2026-10-16T00:37:02Z",
       "agent": "opencode",

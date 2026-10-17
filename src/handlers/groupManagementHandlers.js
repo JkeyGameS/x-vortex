@@ -48,7 +48,16 @@ export const GROUP_STATE_PREFIXES = [
  */
 
 const MENU = 'group_management';
-const GROUP_OPTS = { skipTyping: false };
+
+// Chokepoint for all ~61 panel sends in this file, so they cannot drift.
+// `type` is the important half, not just the typing half:
+//   - the typing resolver gates on it, and 'chatReply' is the only type still
+//     allowed to show an indicator, so panels were flashing one;
+//   - the outbound rate limiter classifies on it too. Chat replies count
+//     against the per-chat budget while menu and user-outcome sends bypass it,
+//     so a panel misfiled as a chatReply burns budget on the answer to a key
+//     the user just pressed.
+const GROUP_OPTS = { type: 'submenuTransition', skipTyping: true };
 
 function denied(sock, sender) {
   return sendText(

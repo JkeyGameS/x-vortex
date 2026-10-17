@@ -476,3 +476,70 @@ test('the aggregate panel carries the About Stats footnote and no such menu opti
   assert.ok(src.includes('90-day history'), 'the About Stats footnote is missing');
   assert.ok(!src.includes('openAboutStats'), 'openAboutStats should be deleted');
 });
+
+// ---------------------------------------------------------------------------
+// 4. Panel typing classification
+//
+// Every panel send in this file goes through GROUP_OPTS, so this is one
+// assertion rather than sixty. It failed in the wild: skipTyping was false and
+// no type was set, so panels flashed a typing indicator and were filed as
+// unsolicited chat replies against the outbound rate limit.
+// ---------------------------------------------------------------------------
+
+test('GROUP_OPTS names the send type and suppresses typing', () => {
+  const src = fs.readFileSync(path.resolve('src/handlers/groupManagementHandlers.js'), 'utf8');
+  const m = src.match(/const GROUP_OPTS = \{([^}]*)\}/);
+  assert.ok(m, 'GROUP_OPTS declaration not found');
+  const body = m[1];
+  assert.ok(/type\s*:\s*'submenuTransition'/.test(body),
+    "GROUP_OPTS must set type: 'submenuTransition', got: " + body.trim());
+  assert.ok(/skipTyping\s*:\s*true/.test(body),
+    "GROUP_OPTS must set skipTyping: true, got: " + body.trim());
+  assert.ok(!/skipTyping\s*:\s*false/.test(body),
+    'skipTyping: false re-enables the indicator');
+});
+
+test('DM_OPTS in moderationHandlers names the send type', () => {
+  const src = fs.readFileSync(path.resolve('src/handlers/moderationHandlers.js'), 'utf8');
+  const m = src.match(/const DM_OPTS = \{([^}]*)\}/);
+  assert.ok(m, 'DM_OPTS declaration not found');
+  assert.ok(/type\s*:\s*'submenuTransition'/.test(m[1]),
+    "DM_OPTS must set type: 'submenuTransition', got: " + m[1].trim());
+});
+
+test('no GM panel send bypasses GROUP_OPTS with its own options', () => {
+  // A call site passing its own opts would reintroduce the indicator without
+  // touching the constant, so assert none exist.
+  const src = fs.readFileSync(path.resolve('src/handlers/groupManagementHandlers.js'), 'utf8');
+  const bare = src.match(/sendText\([^)]*\)\);/g) || [];
+  assert.deepStrictEqual(bare, [],
+    'these sendText calls pass no options: ' + JSON.stringify(bare));
+});
+
+test('no GM panel emits a typing indicator', async () => {
+  const presence = [];
+  const sock = {
+    sendMessage: async () => ({ key: { id: 'k' } }),
+    sendPresenceUpdate: async (j, p) => { presence.push(p); },
+    readMessages: async () => true,
+    groupFetchAllParticipating: async () => ({}),
+    groupMetadata: async () => ({ participants: [{ id: '999@lid', admin: 'superadmin' }] })
+  };
+  const { __setCacheForTests } = await import('../src/services/groupService.js');
+  __setCacheForTests({ 'a@g.us': { id: 'a@g.us', name: 'Alpha', enabled: true } });
+  const { invalidateBotGroupsCache } = await import('../src/utils/groupHelper.js');
+  invalidateBotGroupsCache(sock);
+
+  const base = {
+    sock, sender: '999@lid', chatId: '999@lid',
+    user: { jid: '999@lid', language: 'en' }
+  };
+
+  presence.length = 0;
+  await gm.groupsMyGroups({ ...base, session: { currentMenu: GM_MENU } });
+  assert.deepStrictEqual(presence, [], 'My Groups panel must not type');
+
+  presence.length = 0;
+  await gm.groupsDefaults({ ...base, session: { currentMenu: 'system_settings' } });
+  assert.deepStrictEqual(presence, [], 'Defaults panel must not type');
+});

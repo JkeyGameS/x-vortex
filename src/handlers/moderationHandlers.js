@@ -31,7 +31,10 @@ import config from '../config/config.js';
  * are ordinary sends and count like any other.
  */
 
-const DM_OPTS = { skipTyping: true };
+// skipTyping already suppressed the indicator here, but without a type these
+// sends were still classified as 'chatReply' -- which the rate limiter counts as
+// unsolicited traffic. Naming the type keeps that classification honest.
+const DM_OPTS = { type: 'submenuTransition', skipTyping: true };
 const MEMBER_PAGE_SIZE = 20;
 
 const NO_REASON = 'no reason given';
