@@ -383,8 +383,22 @@ test('9. listUserSnapshots returns newest first and purge clears them', async ()
 
   const list = account.listUserSnapshots();
   assert.strictEqual(list.length, 3);
-  const times = list.map((name) => name.split('-').pop());
-  assert.ok(times[0] >= times[1], 'list must be newest first');
+
+  // Newest-first means the filenames come back reverse-sorted.
+  //
+  // This used to compare two parsed timestamps, which was flaky: the three
+  // snapshots are written back-to-back, so two often land in the same
+  // millisecond and their timestamp segments tie. Sorting cannot break that
+  // tie by time, so the comparison failed at random -- roughly once per full
+  // npm test run, and it took out unrelated commits twice. Asserting the
+  // ordering contract directly is both true and deterministic.
+  assert.deepStrictEqual(list, [...list].sort().reverse(),
+    'listUserSnapshots must return filenames in reverse-sorted (newest first) order');
+
+  // All three writes are present, not just the right count.
+  const prefixes = new Set(list.map((f) => f.split('-')[0]));
+  assert.deepStrictEqual([...prefixes].sort(), ['deleted', 'reset'],
+    'expected both a reset and a deleted snapshot: ' + JSON.stringify(list));
 
   const removed = account.purgeUserSnapshots();
   assert.strictEqual(removed, 3);

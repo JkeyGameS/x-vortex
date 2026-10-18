@@ -1,6 +1,27 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-13T02-05-00",
+      "timestamp": "2026-10-18T02:11:31Z",
+      "agent": "opencode",
+      "promptSummary": "Harden GM back navigation against stale lastMenuKey",
+      "changes": [
+        "Cleared session.lastMenuKey on every GM back path so a submenu key cannot leak into the parent state and be reused as an edit target",
+        "group_stats_panel and group_moderation_log were the leaky ones: they back out through renderPanelFor, a sendText panel that never touches lastMenuKey",
+        "Replaced the undefined settings_back transition key with the menu id across all GM back paths, so the lookup no longer resolves through a miss",
+        "Applied the same clear to the deactivate-confirm paths and the shared group-settings back helper, which had the identical hazard",
+        "Added four tests covering new-send and key clearing for each sub-panel, verified non-vacuous by reverting the fix",
+        "Fixed a pre-existing flaky assertion in accountService.test.mjs that failed roughly once per full npm test run on timestamp ties"
+      ],
+      "files": [
+        "src/handlers/groupManagementHandlers.js",
+        "tests/groupManagement.test.mjs",
+        "tests/accountService.test.mjs"
+      ],
+      "type": "fix",
+      "versionSuggested": "1.10.2"
+    },
+    {
       "id": "chg-2026-10-13T01-40-00",
       "timestamp": "2026-10-17T00:27:49Z",
       "agent": "opencode",

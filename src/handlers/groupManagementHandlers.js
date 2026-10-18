@@ -433,17 +433,21 @@ if (state === 'group_management_deactivate') {
       await logAction(sender, 'group_deactivated', { groupJid, groupName });
       await sendText(
         sock, sender,
-        '\u274C ' + toSmallCaps('Deactivated in') + ' *' + groupName + '*.',
-        GROUP_OPTS
-      );
-      const { sendMenuById } = await import('../utils/menuSender.js');
-      return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, 'settings_back');
-    }
-    if (input === '2') {
-      await sendText(sock, sender, toSmallCaps('Cancelled.'), GROUP_OPTS);
-      const { sendMenuById } = await import('../utils/menuSender.js');
-      return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, 'settings_back');
-    }
+      '\u274C ' + toSmallCaps('Deactivated in') + ' *' + groupName + '*.',
+      GROUP_OPTS
+    );
+    const { sendMenuById } = await import('../utils/menuSender.js');
+    const sessionManager = (await import('../utils/sessionManager.js')).default;
+    sessionManager.setState(sender, chatId, { lastMenuKey: null, pendingGroupJid: null });
+    return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, MENU);
+  }
+  if (input === '2') {
+    await sendText(sock, sender, toSmallCaps('Cancelled.'), GROUP_OPTS);
+    const { sendMenuById } = await import('../utils/menuSender.js');
+    const sessionManager = (await import('../utils/sessionManager.js')).default;
+    sessionManager.setState(sender, chatId, { lastMenuKey: null, pendingGroupJid: null });
+    return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, MENU);
+  }
     await sendText(sock, sender, '\u274C ' + toSmallCaps('Invalid choice.'), GROUP_OPTS);
     return true;
   }
@@ -725,12 +729,20 @@ async function backToMenu(sock, sender, chatId) {
   sessionManager.setState(sender, chatId, {
     pendingGroupIds: null,
     pendingGroupJid: null,
-    currentGroupJid: null
+    currentGroupJid: null,
+    // The submenu we are leaving owns this key. Keeping it lets a later send
+    // edit the submenu's message instead of sending a new one, so it is dropped
+    // here and sendMenuById stores a fresh key for the menu we are entering.
+    lastMenuKey: null
   });
+  // Transition key is the menu id, not 'settings_back'. The latter is not in
+  // menuTransitions at all, so it resolved through a lookup miss to a fallback;
+  // naming the real id keeps the lookup honest and lets the display-mode
+  // resolver decide send_new.
   return sendMenuById(
     MENU,
     { sock, sender, chatId, user, language: user?.language || sess.language },
-    'settings_back'
+    MENU
   );
 }
 
@@ -787,12 +799,13 @@ async function handleModerationSubState(context, state, input) {
     const { sendMenuById } = await import('../utils/menuSender.js');
     sessionManager.setState(sender, chatId, {
       moderationGroupIds: null,
-      currentGroupJid: null,
-      pendingGroupJid: null,
-      pendingPage: null,
-      ...patch
-    });
-    return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, 'settings_back');
+    currentGroupJid: null,
+    pendingGroupJid: null,
+    pendingPage: null,
+    lastMenuKey: null,
+    ...patch
+  });
+  return sendMenuById(MENU, { sock, sender, chatId, user, language: user?.language }, MENU);
   };
 
   if (input === '0' || input === 'back') {
@@ -1139,23 +1152,33 @@ async function handleStatsSubState(context, state, input) {
       // Both are opened from a group's settings panel, so "back" returns there
       // with the group still selected. currentGroupJid is preserved deliberately
       // so the panel can be re-rendered without re-picking.
+      //
+      // lastMenuKey is cleared for a specific reason: renderPanelFor sends via
+      // sendText, which never touches lastMenuKey. Without this the key left
+      // behind by the submenu we are leaving survives into
+      // group_settings_panel, so a later menu send could edit that stale
+      // message instead of sending a new one.
       const groupJid = session?.statsGroupJid;
-      sessionManager.setState(sender, chatId, { statsGroupJid: null, currentGroupJid: groupJid });
+      sessionManager.setState(sender, chatId, {
+        statsGroupJid: null,
+        currentGroupJid: groupJid,
+        lastMenuKey: null
+      });
       if (!groupJid) {
         return sendMenuById(
           MENU,
           { sock, sender, chatId, user, language: user?.language },
-          'settings_back'
+          MENU
         );
       }
       return renderPanelFor({ sock, sender, chatId, user, session }, groupJid);
     }
     // aggregate + about are opened from the Group Management menu.
-    sessionManager.setState(sender, chatId, { statsGroupJid: null });
+    sessionManager.setState(sender, chatId, { statsGroupJid: null, lastMenuKey: null });
     return sendMenuById(
       MENU,
       { sock, sender, chatId, user, language: user?.language },
-      'settings_back'
+      MENU
     );
   }
 

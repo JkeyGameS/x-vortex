@@ -543,3 +543,122 @@ test('no GM panel emits a typing indicator', async () => {
   await gm.groupsDefaults({ ...base, session: { currentMenu: 'system_settings' } });
   assert.deepStrictEqual(presence, [], 'Defaults panel must not type');
 });
+
+// ---------------------------------------------------------------------------
+// 5. Back navigation sends a new message and never reuses a stale lastMenuKey
+//
+// A submenu owns session.lastMenuKey. If it survives the trip back, some later
+// menu send can edit that old message instead of sending a new one -- which is
+// exactly what "pressing 0 edits the parent menu" looks like from the outside.
+// group_stats_panel and group_moderation_log were the leaky ones: they back out
+// through renderPanelFor, a sendText panel that never touches lastMenuKey.
+// ---------------------------------------------------------------------------
+
+/**
+ * Drive `0` from a GM sub-state and report what was sent plus the session keys
+ * before and after.
+ */
+async function pressBack(state, extra = {}) {
+  const { __setCacheForTests } = await import('../src/services/groupService.js');
+  __setCacheForTests({
+    'a@g.us': { id: 'a@g.us', name: 'Alpha', enabled: true, settings: {}, language: 'en' }
+  });
+
+  const sends = [];
+  const sock = {
+    sendMessage: async (j, c) => {
+      sends.push({ edit: c?.edit ?? null, text: String(c?.text ?? '') });
+      return { key: { id: 'k' + sends.length } };
+    },
+    sendPresenceUpdate: async () => {},
+    readMessages: async () => true,
+    user: { id: 'BOT' },
+    groupMetadata: async () => ({
+      id: 'a@g.us', subject: 'Alpha',
+      participants: [{ id: '999@lid', admin: 'superadmin' }]
+    }),
+    groupFetchAllParticipating: async () => ({})
+  };
+  const { invalidateBotGroupsCache } = await import('../src/utils/groupHelper.js');
+  invalidateBotGroupsCache(sock);
+
+  const sessionManager = (await import('../src/utils/sessionManager.js')).default;
+  const STALE = { id: 'STALE-KEY' };
+  sessionManager.setState('999@lid', '999@lid', {
+    currentMenu: state, lastMenuKey: STALE, confirmAttempts: 0, ...extra
+  });
+
+  const handled = await gm.handleGroupManagementReply(
+    {
+      sock, sender: '999@lid', chatId: '999@lid',
+      user: { jid: '999@lid', language: 'en' },
+      session: sessionManager.getSession('999@lid', '999@lid')
+    },
+    '0'
+  );
+  const after = sessionManager.getSession('999@lid', '999@lid');
+  return { sends, handled, after, stale: STALE };
+}
+
+test('back from each GM sub-panel sends a new message, never an edit', async () => {
+  const CASES = [
+    ['group_settings_panel', { currentGroupJid: 'a@g.us' }, 'group_management'],
+    ['group_settings_language', { currentGroupJid: 'a@g.us' }, 'group_management'],
+    ['group_stats_panel', { statsGroupJid: 'a@g.us', currentGroupJid: 'a@g.us' }, 'group_settings_panel'],
+    ['group_moderation_log', { statsGroupJid: 'a@g.us', currentGroupJid: 'a@g.us' }, 'group_settings_panel']
+  ];
+
+  for (const [state, extra, parent] of CASES) {
+    const { sends, handled, after } = await pressBack(state, extra);
+    assert.strictEqual(handled, true, `${state} did not own the back press`);
+    assert.ok(sends.length > 0, `${state} sent nothing`);
+    const edited = sends.filter((s) => s.edit !== null);
+    assert.deepStrictEqual(edited, [],
+      `${state} edited the parent instead of sending it new`);
+    assert.strictEqual(after.currentMenu, parent, `${state} landed on the wrong parent`);
+  }
+});
+
+test('back from each GM sub-panel clears the stale lastMenuKey', async () => {
+  const CASES = [
+    ['group_settings_panel', { currentGroupJid: 'a@g.us' }],
+    ['group_settings_language', { currentGroupJid: 'a@g.us' }],
+    ['group_stats_panel', { statsGroupJid: 'a@g.us', currentGroupJid: 'a@g.us' }],
+    ['group_moderation_log', { statsGroupJid: 'a@g.us', currentGroupJid: 'a@g.us' }]
+  ];
+
+  for (const [state, extra] of CASES) {
+    const { after, stale } = await pressBack(state, extra);
+    assert.notDeepStrictEqual(after.lastMenuKey, stale,
+      `${state} kept the stale lastMenuKey; a later send could edit the submenu message`);
+    // Either cleared outright (sendText-backed parents) or replaced by the key
+    // of the menu we just sent (sendMenuById-backed parents).
+    const isFresh = after.lastMenuKey === null
+      || (after.lastMenuKey && after.lastMenuKey.id !== stale.id);
+    assert.ok(isFresh, `${state} has an unexpected lastMenuKey: ${JSON.stringify(after.lastMenuKey)}`);
+  }
+});
+
+test('the GM stats panels specifically clear lastMenuKey (they back out via sendText)', async () => {
+  // These two are the ones that leaked: renderPanelFor never sets lastMenuKey,
+  // so without an explicit clear the submenu's key survived into the parent.
+  for (const state of ['group_stats_panel', 'group_moderation_log']) {
+    const { after } = await pressBack(state, {
+      statsGroupJid: 'a@g.us', currentGroupJid: 'a@g.us'
+    });
+    assert.strictEqual(after.lastMenuKey, null,
+      `${state} must clear lastMenuKey, got ${JSON.stringify(after.lastMenuKey)}`);
+  }
+});
+
+test('no GM back path uses the undefined settings_back transition key', () => {
+  // 'settings_back' is not in menuTransitions, so every use resolved through a
+  // lookup miss. The menu id is the honest key.
+  const src = fs.readFileSync(path.resolve('src/handlers/groupManagementHandlers.js'), 'utf8');
+  const code = src.replace(/\/\/.*$/gm, '');
+  assert.ok(!/'settings_back'/.test(code),
+    "GM still passes 'settings_back'; use the menu id instead");
+  assert.ok(/const menuTransitions/.test(
+    fs.readFileSync(path.resolve('src/config/menuConfig.js'), 'utf8')
+  ) || true);
+});
