@@ -1,6 +1,31 @@
 {
   "entries": [
     {
+      "id": "chg-2026-10-13T03-00-00",
+      "timestamp": "2026-10-19T00:20:18Z",
+      "agent": "opencode",
+      "promptSummary": "Add group debug mode (admin DM diagnostics)",
+      "changes": [
+        "Added group debug service with per-admin sessions, a 10-minute auto-expiry and a 2s per-admin throttle",
+        "Emitted a decision line at every branch of handleGroupMessage, including the chat-rules point reported as not implemented so the silence is explained",
+        "Added /debug on|off|status, admin-only and DM-only, registered in menuCommands so the central registry keeps it admin-only",
+        "Debug DMs go out via direct sock.sendMessage so diagnostics are never eaten by the outbound limiter, bounded instead by the throttle and a 100-line session cap",
+        "Fixed the flush queue to reschedule after draining, so lines queued during a send are no longer stranded",
+        "Used ?? rather than || for config reads so an explicit rateLimitMs of 0 is honoured instead of silently becoming 2000"
+      ],
+      "files": [
+        "src/services/groupDebugService.js",
+        "src/handlers/debugCommand.js",
+        "src/handlers/groupMessageHandler.js",
+        "src/config/config.js",
+        "src/config/menuConfig.js",
+        "tests/groupDebug.test.mjs",
+        "package.json"
+      ],
+      "type": "feature",
+      "versionSuggested": "1.10.2"
+    },
+    {
       "id": "chg-2026-10-13T02-05-00",
       "timestamp": "2026-10-18T02:11:31Z",
       "agent": "opencode",

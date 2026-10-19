@@ -243,6 +243,20 @@ sessionTimeoutMinutes: 5,
     notifyAdminsOnDelete: true,
     notifyUserOnAdminAction: true
   },
+  // Group diagnostics by DM (/debug). Admin-only and short-lived, so the
+  // decisions are DMed instead of requiring a log dashboard.
+  groupDebug: {
+    enabled: true,
+    autoExpireMs: 10 * 60 * 1000,
+    // Per admin, not global: two admins watching one group each get their own
+    // window, otherwise the second admin would silently suppress the first.
+    rateLimitMs: 2000,
+    // Counts lines, not DMs. A busy group produces several decisions per
+    // message, so a line cap is the meaningful bound; 100 lines is roughly
+    // 30-50 messages, enough to diagnose, small enough not to flood an inbox.
+    maxLinesPerSession: 100,
+    maxLinesPerBatch: 20
+  },
   // Bot lifecycle notifications (admin-only: startup / shutdown / crash)
   botNotifications: {
     enabled: true,

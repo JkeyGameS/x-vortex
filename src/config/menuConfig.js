@@ -847,6 +847,11 @@ export const menuCommands = {
   deleteaccount: { adminOnly: false },
   resetuser: { adminOnly: true },
   deleteuser: { adminOnly: true },
+  // /debug streams group handler decisions to an admin DM. Declared here so the
+  // central registry keeps it admin-only even if the handler's own flag is
+  // edited -- loadCommands() applies these values at load time.
+  debug: { adminOnly: true },
+  gd: { adminOnly: true },
   profile: { adminOnly: false },
   editprofile: { adminOnly: false },
   stats: { adminOnly: false },

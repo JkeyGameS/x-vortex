@@ -18,6 +18,7 @@ import { humanizeDuration } from '../utils/humanizeDuration.js';
 import { logAdminAction } from '../services/adminLogService.js';
 import { toSmallCaps } from '../utils/smallCaps.js';
 import { isBotMentioned } from '../utils/messageHelper.js';
+import { pushDebug } from '../services/groupDebugService.js';
 import config from '../config/config.js';
 
 /**
@@ -42,6 +43,27 @@ import config from '../config/config.js';
  * Group sends go through sendText WITHOUT bypassRateLimit, so they count
  * against the group's per-chat outbound budget.
  */
+/** YES/NO for a debug line; keeps the emissions readable. */
+function yn(value) {
+  return value ? 'YES' : 'NO';
+}
+
+/**
+ * Header identifying which message the decision lines below belong to.
+ * One header per message, reused by every decision, so a throttled batch reads
+ * as a sequence rather than as unrelated lines.
+ */
+function debugLine(chatId, sender, pushName, text, group) {
+  return [
+    '\uD83D\uDD0D *' + toSmallCaps('Group Debug') + '*',
+    '',
+    toSmallCaps('From') + ': ' + (pushName || sender || 'unknown'),
+    toSmallCaps('Sender') + ': @' + String(sender || '?').split('@')[0],
+    toSmallCaps('Group') + ': ' + (group?.name || chatId),
+    toSmallCaps('Text') + ': "' + String(text || '').slice(0, 100) + '"'
+  ].join('\n');
+}
+
 export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, text }) {
   try {
     if (!config.groupManagementEnabled) {
@@ -52,11 +74,21 @@ export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, 
     const group = getGroup(chatId);
     if (!group || group.enabled !== true) {
       logger.debug({ chatId }, '[GROUP] not activated, ignored');
+      await pushDebug(
+        sock, chatId,
+        debugLine(chatId, sender, pushName, text, null,
+          '\u274C ' + toSmallCaps('Group not activated'))
+      );
       return;
     }
 
     const trimmed = String(text || '').trim();
     if (!trimmed) return;
+
+    // One header identifying the message, reused by every decision below so a
+    // batch of lines can be read as a sequence for a single message.
+    const head = debugLine(chatId, sender, pushName, text, group);
+    const say = (statusLine) => pushDebug(sock, chatId, head + '\n\n' + statusLine);
 
     // Stats (Phase 6): one O(1) in-memory increment per message, counted before
     // the banned/muted gates so totals reflect real activity. Slash-prefixed text
@@ -67,6 +99,7 @@ export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, 
 
     if (isBanned(chatId, sender)) {
       logger.debug({ chatId, sender }, '[GROUP] banned user, ignored');
+      await say('\u274C ' + toSmallCaps('User banned'));
       return;
     }
     if (isMuted(chatId, sender)) {
@@ -76,8 +109,13 @@ export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, 
         : await isGroupAdmin(sock, chatId, sender);
       if (!senderAdministers) {
         logger.debug({ chatId, sender }, '[GROUP] muted user, ignored');
+        await say('\u274C ' + toSmallCaps('User muted'));
         return;
       }
+      // Muted but administering: worth seeing, because "I am muted and still
+      // being ignored" is the confusing case this debug mode exists for.
+      await say('\u23ED ' + toSmallCaps('User muted but administers') +
+        ' → ' + toSmallCaps('continuing'));
     }
 
     const opts = { skipTyping: true };
@@ -89,7 +127,6 @@ export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, 
     const senderIsBotAdmin = Array.isArray(config.adminJids) && config.adminJids.includes(sender);
     const senderIsGroupAdmin = senderIsBotAdmin ? false : await isGroupAdmin(sock, chatId, sender);
     const senderExempt = senderIsBotAdmin || senderIsGroupAdmin;
-    const actor = { sock, chatId, sender, msg, pushName, group, senderIsBotAdmin, senderIsGroupAdmin };
 
     // --- anti-link -------------------------------------------------------
     if (settings.antiLink && config.antiLinkEnabled !== false && config.antiLink?.enabled !== false) {
@@ -98,24 +135,45 @@ export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, 
       const exempt = linkCfg.exemptAdmins !== false && senderExempt;
       const allowedHost = isWhitelisted(hostnames, linkCfg.whitelist);
       const allowedInvite = linkCfg.allowInviteLinks === true && isInviteLink(urls);
+      await say(
+        '\uD83D\uDD17 ' + toSmallCaps('Anti-link') + ': ' +
+        toSmallCaps('has link') + '=' + yn(hasLink) + ', ' +
+        toSmallCaps('exempt') + '=' + yn(exempt) + ', ' +
+        toSmallCaps('bot admin') + '=' + yn(senderExempt)
+      );
       if (hasLink && !exempt && !allowedHost && !allowedInvite) {
-        await handleAntiLinkViolation(actor);
+        await say('\uD83D\uDEA8 ' + toSmallCaps('Anti-link violation') + ' → ' + toSmallCaps('handled'));
+        await handleAntiLinkViolation({ sock, chatId, sender, msg, pushName, group, senderIsBotAdmin, senderIsGroupAdmin });
         return;
       }
+    } else {
+      await say('\u23ED\uFE0F ' + toSmallCaps('Anti-link') + ': ' + toSmallCaps('off'));
     }
 
     // --- anti-spam -------------------------------------------------------
     if (settings.antiSpam && config.antiSpamEnabled !== false && antiSpamActive()) {
       if (!senderExempt) {
         const result = recordMessage(chatId, sender, trimmed);
+        await say(
+          '\uD83D\uDEE1\uFE0F ' + toSmallCaps('Anti-spam') + ': ' +
+          toSmallCaps('flagged') + '=' + yn(result.flagged) + ', ' +
+          toSmallCaps('exempt') + '=' + yn(senderExempt)
+        );
         if (result.flagged) {
-          await handleAntiSpamViolation(actor, result.reason);
+          await say('\uD83D\uDEA8 ' + toSmallCaps('Anti-spam violation') + ' → ' + toSmallCaps('handled'));
+          await handleAntiSpamViolation({ sock, chatId, sender, pushName, group }, result.reason);
           return;
         }
+      } else {
+        await say('\u23ED\uFE0F ' + toSmallCaps('Anti-spam') + ': ' + toSmallCaps('exempt') +
+          ' → ' + toSmallCaps('skipped'));
       }
+    } else {
+      await say('\u23ED\uFE0F ' + toSmallCaps('Anti-spam') + ': ' + toSmallCaps('off'));
     }
 
     if (trimmed === '/groupinfo' || trimmed === '/ginfo') {
+      await say('\u2139\uFE0F ' + toSmallCaps('/groupinfo') + ' → ' + toSmallCaps('handled'));
       await handleGroupInfo({ sock, chatId, opts });
       return;
     }
@@ -125,9 +183,16 @@ export async function handleGroupMessage({ sock, msg, chatId, sender, pushName, 
     // activation alone cannot turn the bot noisy.
     if (settings.mentionOnly !== false && !isBotMentioned(msg, sock?.user?.id)) {
       logger.debug({ chatId, sender }, '[GROUP] ignored (mention-only)');
+      await say('\u26A0\uFE0F ' + toSmallCaps('Mention-only') + ': ' + toSmallCaps('off') +
+        ', ' + toSmallCaps('bot not mentioned') + ' → ' + toSmallCaps('ignored'));
       return;
     }
 
+    // No chat-rule evaluation exists yet anywhere in this handler, so this line
+    // is the diagnostic that says so rather than leaving the silence
+    // unexplained. If it is ever wired up, this becomes the match/no-match pair.
+    await say('\u23ED\uFE0F ' + toSmallCaps('Chat rules') + ': ' + toSmallCaps('not implemented'));
+    await say('\u23F9 ' + toSmallCaps('No handler match'));
     logger.debug({ chatId, sender }, '[GROUP] message ignored (Phase 1)');
   } catch (err) {
     logger.error({ err, chatId }, '[GROUP] handler threw');
